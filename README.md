@@ -1,35 +1,48 @@
 # MagicPost
 
-## Backend
+## Prerequisites
 
-### Prerequisites
-
-1. PostgreSQL installed in local
-2. Redis installed in local
-3. Edit .env configuration file
-
-### Development
-
-#### Clone the repository
+### Clone the repository
 
 ```bash
 git clone https://github.com/hairbui76/MagicPost.git
 ```
 
-#### Change directory to backend
+### Utitlities Dependencies
+
+1. PostgreSQL installed in local
+2. Redis installed in local
+
+### Packages dependencies
+
+Run this command to install all the packages required
 
 ```bash
-cd backend
+npm install
 ```
 
-#### Install dependencies
+## Development
+
+### Simultaneously run both backend and frontend
 
 ```bash
-dotnet restore
+npm run dev
 ```
 
-#### Run development server
+### Or separating run manually
+
+#### Backend
+
+Open a new terminal then run
 
 ```bash
-dotnet watch run
+cd backend && dotnet watch run
+```
+
+#### Frontend
+
+Open a new separate terminal then run
+
+```bash
+cd frontend && npm run dev
 ```

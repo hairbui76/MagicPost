@@ -2,10 +2,11 @@ namespace MagicPostApi.Configs;
 
 public class Config
 {
-	public static Base BASE = new();
-	public static Db DB = new();
-	public static Token TOKEN = new();
-	public static string? ENV = Environment.GetEnvironmentVariable("ENV");
+	public Base BASE = new();
+	public Db DB = new();
+	public Token TOKEN = new();
+	public Redis REDIS = new();
+	public string? ENV = Environment.GetEnvironmentVariable("ENV");
 }
 
 public class Base

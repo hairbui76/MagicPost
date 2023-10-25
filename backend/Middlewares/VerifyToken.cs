@@ -8,16 +8,20 @@ using StackExchange.Redis;
 namespace MagicPostApi.Middlewares;
 public class VerifyToken
 {
+	private readonly Config _config;
+	private readonly MyPaseto _paseto;
 	private readonly RequestDelegate _next;
 	private readonly IDataProtectionProvider _dataProtectionProvider;
 	private readonly IDataProtector _protector;
 	private readonly IDatabase _redis;
 
-	public VerifyToken(IDataProtectionProvider dataProtectionProvider, IConnectionMultiplexer muxer, RequestDelegate next)
+	public VerifyToken(Config config, MyPaseto paseto, MyRedis redis, IDataProtectionProvider dataProtectionProvider, RequestDelegate next)
 	{
+		_config = config;
+		_paseto = paseto;
 		_dataProtectionProvider = dataProtectionProvider;
 		_protector = _dataProtectionProvider.CreateProtector("auth");
-		_redis = muxer.GetDatabase();
+		_redis = redis.GetDatabase();
 		_next = next;
 	}
 
@@ -32,7 +36,7 @@ public class VerifyToken
 		else if (accessToken == null && refreshToken != null)
 		{
 			refreshToken = _protector.Unprotect(refreshToken);
-			var payload = Configs.Paseto.Decode(refreshToken, Config.TOKEN.REFRESH_SECRET).Paseto.Payload["value"];
+			var payload = _paseto.Decode(refreshToken, _config.TOKEN.REFRESH_SECRET).Paseto.Payload["value"];
 			if (payload == null)
 				await Unauthorized(context);
 			else
@@ -61,7 +65,7 @@ public class VerifyToken
 		else if (accessToken != null)
 		{
 			accessToken = _protector.Unprotect(accessToken);
-			var payload = Configs.Paseto.Decode(accessToken, Config.TOKEN.SECRET).Paseto.Payload["value"];
+			var payload = _paseto.Decode(accessToken, _config.TOKEN.SECRET).Paseto.Payload["value"];
 			if (payload == null)
 				await Unauthorized(context);
 			else

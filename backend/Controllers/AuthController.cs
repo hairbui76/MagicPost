@@ -1,11 +1,7 @@
-using System.Text.Json.Serialization;
 using MagicPostApi.Configs;
 using MagicPostApi.Models;
 using MagicPostApi.Services;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson.Serialization.Attributes;
-using StackExchange.Redis;
 
 namespace MagicPostApi.Controllers;
 
@@ -13,12 +9,11 @@ namespace MagicPostApi.Controllers;
 [Route("[controller]/[action]")]
 public class AuthController : ControllerBase
 {
+	private readonly Config _config;
 	private readonly UserService _userService;
-	private readonly ILogger<AuthController> _logger;
-
-	public AuthController(ILogger<AuthController> logger, UserService userService)
+	public AuthController(Config config, UserService userService)
 	{
-		_logger = logger;
+		_config = config;
 		_userService = userService;
 	}
 
@@ -36,7 +31,7 @@ public class AuthController : ControllerBase
 				var access = await _userService.PrepareAccessToken(info);
 				Response.Cookies.Append("access_token", access.Item1, new CookieOptions
 				{
-					Secure = Config.ENV == "production",
+					Secure = _config.ENV == "production",
 					HttpOnly = true,
 					Path = "/",
 					Expires = access.Item2,
@@ -76,14 +71,14 @@ public class AuthController : ControllerBase
 		var tasks = await Task.WhenAll(_userService.PrepareAccessToken(info), _userService.PrepareRefreshToken(info));
 		Response.Cookies.Append("access_token", tasks[0].Item1, new CookieOptions
 		{
-			Secure = Config.ENV == "production",
+			Secure = _config.ENV == "production",
 			HttpOnly = true,
 			Path = "/",
 			Expires = tasks[0].Item2,
 		});
 		Response.Cookies.Append("refresh_token", tasks[1].Item1, new CookieOptions
 		{
-			Secure = Config.ENV == "production",
+			Secure = _config.ENV == "production",
 			HttpOnly = true,
 			Path = "/",
 			Expires = tasks[1].Item2,
@@ -100,14 +95,14 @@ public class AuthController : ControllerBase
 		var tasks = await Task.WhenAll(_userService.PrepareAccessToken(info), _userService.PrepareRefreshToken(info));
 		Response.Cookies.Append("access_token", tasks[0].Item1, new CookieOptions
 		{
-			Secure = Config.ENV == "production",
+			Secure = _config.ENV == "production",
 			HttpOnly = true,
 			Path = "/",
 			Expires = tasks[0].Item2,
 		});
 		Response.Cookies.Append("refresh_token", tasks[1].Item1, new CookieOptions
 		{
-			Secure = Config.ENV == "production",
+			Secure = _config.ENV == "production",
 			HttpOnly = true,
 			Path = "/",
 			Expires = tasks[1].Item2,
@@ -126,8 +121,6 @@ public class AuthController : ControllerBase
 
 public class LoginModel
 {
-	[BsonElement("username")]
 	public string? Username { get; set; }
-	[BsonElement("password")]
 	public string? Password { get; set; }
 }

@@ -2,24 +2,32 @@ using MagicPostApi.Configs;
 using MagicPostApi.Models;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.Driver;
 using StackExchange.Redis;
 
 namespace MagicPostApi.Services;
 
+public interface IUserService
+{
+
+}
+
 public class UserService
 {
+	private readonly Config _config;
+	private readonly MyPaseto _paseto;
 	private readonly WebAPIDataContext _webAPIDataContext;
 	private readonly IDatabase _redis;
 	private readonly IDataProtectionProvider _dataProtectionProvider;
 	private readonly IDataProtector _protector;
 
-	public UserService(WebAPIDataContext webAPIDataContext, IConnectionMultiplexer muxer, IDataProtectionProvider dataProtectionProvider)
+	public UserService(Config config, MyPaseto paseto, MyRedis redis, WebAPIDataContext webAPIDataContext, IDataProtectionProvider dataProtectionProvider)
 	{
+		_config = config;
+		_paseto = paseto;
 		_webAPIDataContext = webAPIDataContext;
 		_dataProtectionProvider = dataProtectionProvider;
 		_protector = _dataProtectionProvider.CreateProtector("auth");
-		_redis = muxer.GetDatabase();
+		_redis = redis.GetDatabase();
 	}
 
 	public async Task<List<User>> GetAsync() =>
@@ -43,8 +51,8 @@ public class UserService
 
 	public async Task<(string, DateTime)> PrepareAccessToken(PublicInfo info)
 	{
-		var accessToken = Configs.Paseto.Encode(info, Config.TOKEN.SECRET);
-		var accessExp = DateTime.Now.AddHours(Config.TOKEN.TOKEN_EXPIRE_HOURS);
+		var accessToken = _paseto.Encode(info, _config.TOKEN.SECRET);
+		var accessExp = DateTime.Now.AddHours(_config.TOKEN.TOKEN_EXPIRE_HOURS);
 		await _redis.StringSetAsync("ac_" + info.Id, true, accessExp.TimeOfDay);
 		accessToken = _protector.Protect(accessToken);
 		return (accessToken, accessExp);
@@ -52,8 +60,8 @@ public class UserService
 
 	public async Task<(string, DateTime)> PrepareRefreshToken(PublicInfo info)
 	{
-		var refreshToken = Configs.Paseto.Encode(info, Config.TOKEN.REFRESH_SECRET);
-		var refreshExp = DateTime.Now.AddDays(Config.TOKEN.REFRESH_TOKEN_EXPIRE_WEEKS * 7);
+		var refreshToken = _paseto.Encode(info, _config.TOKEN.REFRESH_SECRET);
+		var refreshExp = DateTime.Now.AddDays(_config.TOKEN.REFRESH_TOKEN_EXPIRE_WEEKS * 7);
 		await _redis.StringSetAsync("rf_" + info.Id, true, refreshExp.TimeOfDay);
 		refreshToken = _protector.Protect(refreshToken);
 		return (refreshToken, refreshExp);

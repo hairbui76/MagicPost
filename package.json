@@ -4,12 +4,17 @@
 	"description": "## Backend",
 	"main": "index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"prepare": "husky install"
+		"dev": "concurrently -n frontend,backend -c blue,green \"npm run dev:frontend\" \"npm run dev:backend\"",
+		"dev:frontend": "cd frontend && npm run dev",
+		"dev:backend": "cd backend && dotnet watch run",
+		"pre:backend": "cd backend && dotnet restore",
+		"pre:frontend": "cd frontend && npm i",
+		"prepare": "husky install && npm run pre:backend && npm run pre:frontend"
 	},
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
+		"concurrently": "^8.2.2",
 		"husky": "^8.0.0"
 	}
 }

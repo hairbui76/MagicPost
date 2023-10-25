@@ -1,13 +1,13 @@
 using MagicPostApi.Services;
 using MagicPostApi.Configs;
 using MagicPostApi.Middlewares;
-using StackExchange.Redis;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.HttpLogging;
 
-// Load ENV
+// Load environments from .env file
 DotNetEnv.Env.Load();
 // Create builder
 var builder = WebApplication.CreateBuilder(args);
-
 // Serialize JSON response
 // Set PropertyNamingPolicy to null for remaining properties naming policy
 // Can be set to CamelCase instead of null
@@ -17,14 +17,18 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // Dependency injection
+// Add global configurations
+builder.Services.AddSingleton<Config>();
+// Add paseto encoding support
+builder.Services.AddSingleton<MyPaseto>();
 // Add postgresql db context
 builder.Services.AddDbContext<WebAPIDataContext>();
 // Add redis
-builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
-builder.Services.AddHttpClient();
+builder.Services.AddSingleton<MyRedis>();
+// Add data protection
+builder.Services.AddDataProtection();
 // Add user services
 builder.Services.AddScoped<UserService>();
-builder.Services.AddDataProtection();
 
 var app = builder.Build();
 
@@ -37,6 +41,8 @@ if (app.Environment.IsDevelopment())
 	var db = scope.ServiceProvider.GetRequiredService<WebAPIDataContext>();
 	db.Database.EnsureCreated();
 }
+
+app.UseHttpLogging();
 
 app.UseHttpsRedirection();
 

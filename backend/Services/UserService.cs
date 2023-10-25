@@ -1,11 +1,11 @@
-using CSBackend.Configs;
-using CSBackend.Models;
+using MagicPostApi.Configs;
+using MagicPostApi.Models;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using StackExchange.Redis;
 
-namespace CSBackend.Services;
+namespace MagicPostApi.Services;
 
 public class UserService
 {

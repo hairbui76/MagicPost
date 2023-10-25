@@ -2,7 +2,7 @@ using _Paseto = Paseto;
 using Paseto.Builder;
 using System.Text;
 
-namespace CSBackend.Configs;
+namespace MagicPostApi.Configs;
 
 public class Paseto
 {

@@ -1,11 +1,11 @@
 using System.Net;
-using CSBackend.Configs;
-using CSBackend.Models;
+using MagicPostApi.Configs;
+using MagicPostApi.Models;
 using Microsoft.AspNetCore.DataProtection;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
-namespace CSBackend.Middlewares;
+namespace MagicPostApi.Middlewares;
 public class VerifyToken
 {
 	private readonly RequestDelegate _next;

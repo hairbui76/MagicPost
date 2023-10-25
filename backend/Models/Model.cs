@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace CSBackend.Models;
+namespace MagicPostApi.Models;
 
 public class Model
 {

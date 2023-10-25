@@ -1,4 +1,4 @@
-namespace CSBackend.Configs;
+namespace MagicPostApi.Configs;
 
 public class Config
 {

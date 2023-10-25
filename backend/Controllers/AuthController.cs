@@ -1,13 +1,13 @@
 using System.Text.Json.Serialization;
-using CSBackend.Configs;
-using CSBackend.Models;
-using CSBackend.Services;
+using MagicPostApi.Configs;
+using MagicPostApi.Models;
+using MagicPostApi.Services;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson.Serialization.Attributes;
 using StackExchange.Redis;
 
-namespace CSBackend.Controllers;
+namespace MagicPostApi.Controllers;
 
 [ApiController]
 [Route("[controller]/[action]")]

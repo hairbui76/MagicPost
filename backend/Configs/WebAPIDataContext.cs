@@ -1,6 +1,6 @@
-namespace CSBackend.Configs;
+namespace MagicPostApi.Configs;
 
-using CSBackend.Models;
+using MagicPostApi.Models;
 using Microsoft.EntityFrameworkCore;
 
 public class WebAPIDataContext : DbContext

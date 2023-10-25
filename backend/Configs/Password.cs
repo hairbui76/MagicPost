@@ -1,6 +1,6 @@
 using Isopoh.Cryptography.Argon2;
 
-namespace CSBackend.Configs;
+namespace MagicPostApi.Configs;
 
 public class Password
 {

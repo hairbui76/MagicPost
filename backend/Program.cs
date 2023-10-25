@@ -1,6 +1,6 @@
-using CSBackend.Services;
-using CSBackend.Configs;
-using CSBackend.Middlewares;
+using MagicPostApi.Services;
+using MagicPostApi.Configs;
+using MagicPostApi.Middlewares;
 using StackExchange.Redis;
 
 // Load ENV

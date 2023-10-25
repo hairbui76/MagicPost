@@ -4,7 +4,7 @@
 
 ### Prerequisites
 
-1. Postgres installed in local
+1. PostgreSQL installed in local
 2. Redis installed in local
 3. Edit .env configuration file
 

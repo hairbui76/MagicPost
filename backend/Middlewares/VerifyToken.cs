@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using StackExchange.Redis;
 
 namespace MagicPostApi.Middlewares;
-public class VerifyToken
+class VerifyToken
 {
 	private readonly Config _config;
 	private readonly MyPaseto _paseto;
@@ -97,5 +97,13 @@ public class VerifyToken
 		context.Response.ContentType = "application/json";
 		context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
 		await context.Response.WriteAsync("Unauthorized");
+	}
+}
+
+public class VerifyTokenMiddleware
+{
+	public void Configure(IApplicationBuilder app)
+	{
+		app.UseMiddleware<VerifyToken>();
 	}
 }

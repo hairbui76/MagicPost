@@ -1,4 +1,5 @@
 using MagicPostApi.Configs;
+using MagicPostApi.Middlewares;
 using MagicPostApi.Models;
 using MagicPostApi.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,7 @@ public class AuthController : ControllerBase
 
 	[HttpGet]
 	[Route("/auth")]
+	[MiddlewareFilter(typeof(VerifyTokenMiddleware))]
 	public async Task<IActionResult> Index()
 	{
 		User? user = (User?)HttpContext.Items["user"];

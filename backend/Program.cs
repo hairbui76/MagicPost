@@ -52,11 +52,6 @@ app.MapGet("/", () => "Hello, world!");
 
 app.UsePathBase(new PathString("/api"));
 
-app.UseWhen(context => context.Request.Path == "/auth", appBuilder =>
-{
-	appBuilder.UseMiddleware<VerifyToken>();
-});
-
 app.MapControllers();
 
 app.Run();

@@ -1,7 +1,11 @@
+using System.ComponentModel.DataAnnotations;
+using System.Net;
+using AutoMapper;
 using MagicPostApi.Configs;
 using MagicPostApi.Middlewares;
 using MagicPostApi.Models;
 using MagicPostApi.Services;
+using MagicPostApi.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagicPostApi.Controllers;
@@ -10,10 +14,12 @@ namespace MagicPostApi.Controllers;
 [Route("[controller]/[action]")]
 public class AuthController : ControllerBase
 {
+	private readonly IMapper _mapper;
 	private readonly Config _config;
-	private readonly UserService _userService;
-	public AuthController(Config config, UserService userService)
+	private readonly IUserService _userService;
+	public AuthController(IMapper mapper, Config config, IUserService userService)
 	{
+		_mapper = mapper;
 		_config = config;
 		_userService = userService;
 	}
@@ -23,25 +29,21 @@ public class AuthController : ControllerBase
 	[MiddlewareFilter(typeof(VerifyTokenMiddleware))]
 	public async Task<IActionResult> Index()
 	{
-		User? user = (User?)HttpContext.Items["user"];
-		if (user != null)
+		User? user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized");
+		var info = user.GetPublicInfo();
+		bool? resetAccess = (bool?)HttpContext.Items["reset_access"];
+		if (resetAccess == true)
 		{
-			var info = user.GetPublicInfo();
-			bool? resetAccess = (bool?)HttpContext.Items["reset_access"];
-			if (resetAccess == true)
+			var access = await _userService.PrepareAccessToken(info);
+			Response.Cookies.Append("access_token", access.Item1, new CookieOptions
 			{
-				var access = await _userService.PrepareAccessToken(info);
-				Response.Cookies.Append("access_token", access.Item1, new CookieOptions
-				{
-					Secure = _config.ENV == "production",
-					HttpOnly = true,
-					Path = "/",
-					Expires = access.Item2,
-				});
-			}
-			return Ok(new { message = "Authenticated!!", user = info });
+				Secure = _config.ENV == "production",
+				HttpOnly = true,
+				Path = "/",
+				Expires = access.Item2,
+			});
 		}
-		return Unauthorized(new { message = "Unauthorized" });
+		return Ok(new { message = "Authenticated!!", user = info });
 	}
 
 	[HttpGet]
@@ -57,18 +59,16 @@ public class AuthController : ControllerBase
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> Login([FromBody] LoginModel model)
+	public async Task<IActionResult> Login(LoginModel model)
 	{
 		if (model.Username == null)
-			return Unauthorized(new { message = "Username is required" });
+			throw new AppException("Username is required");
 		if (model.Password == null)
-			return Unauthorized(new { message = "Password is required" });
-		User? user = await _userService.GetAsyncByUsername(model.Username);
-		if (user == null)
-			return NotFound(new { message = "User not found" });
+			throw new AppException("Password is required");
+		User? user = await _userService.GetAsyncByUsername(model.Username) ?? throw new AppException(HttpStatusCode.NotFound, "User not found");
 		bool isPasswordMatch = Password.Verify(user.Password, model.Password);
 		if (!isPasswordMatch)
-			return Unauthorized(new { message = "Username or password incorrect" });
+			throw new AppException("Username or password incorrect");
 		var info = user.GetPublicInfo();
 		var tasks = await Task.WhenAll(_userService.PrepareAccessToken(info), _userService.PrepareRefreshToken(info));
 		Response.Cookies.Append("access_token", tasks[0].Item1, new CookieOptions
@@ -89,8 +89,9 @@ public class AuthController : ControllerBase
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> Register(User newUser)
+	public async Task<IActionResult> Register(RegisterModel model)
 	{
+		User newUser = _mapper.Map<User>(model);
 		newUser.Password = Password.Hash(newUser.Password);
 		await _userService.CreateAsync(newUser);
 		var info = newUser.GetPublicInfo();
@@ -119,10 +120,4 @@ public class AuthController : ControllerBase
 		Response.Cookies.Delete("refresh_token");
 		return Ok(new { message = "Logout successfully" });
 	}
-}
-
-public class LoginModel
-{
-	public string? Username { get; set; }
-	public string? Password { get; set; }
 }

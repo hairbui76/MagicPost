@@ -8,10 +8,15 @@ namespace MagicPostApi.Services;
 
 public interface IUserService
 {
-
+	Task<List<User>> GetAsync();
+	Task<User?> GetAsyncById(Guid id);
+	Task<User?> GetAsyncByUsername(string username);
+	Task CreateAsync(User newUser);
+	Task<(string, DateTime)> PrepareAccessToken(PublicInfo info);
+	Task<(string, DateTime)> PrepareRefreshToken(PublicInfo info);
 }
 
-public class UserService
+public class UserService : IUserService
 {
 	private readonly Config _config;
 	private readonly MyPaseto _paseto;

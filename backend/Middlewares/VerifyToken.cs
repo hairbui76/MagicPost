@@ -1,6 +1,7 @@
 using System.Net;
 using MagicPostApi.Configs;
 using MagicPostApi.Models;
+using MagicPostApi.Utils;
 using Microsoft.AspNetCore.DataProtection;
 using Newtonsoft.Json;
 using StackExchange.Redis;
@@ -25,20 +26,18 @@ class VerifyToken
 		_next = next;
 	}
 
-	public async Task InvokeAsync(HttpContext context)
+	public async Task Invoke(HttpContext context)
 	{
 		string? accessToken = context.Request.Cookies["access_token"];
 		string? refreshToken = context.Request.Cookies["refresh_token"];
 		if (accessToken == null && refreshToken == null)
-		{
-			await Unauthorized(context);
-		}
+			throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized");
 		else if (accessToken == null && refreshToken != null)
 		{
 			refreshToken = _protector.Unprotect(refreshToken);
 			var payload = _paseto.Decode(refreshToken, _config.TOKEN.REFRESH_SECRET).Paseto.Payload["value"];
 			if (payload == null)
-				await Unauthorized(context);
+				throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized");
 			else
 			{
 				var str = payload.ToString();
@@ -49,9 +48,7 @@ class VerifyToken
 					{
 						var isExist = _redis.StringGet("rf_" + user.Id);
 						if (isExist == RedisValue.Null || isExist == false)
-						{
-							await Unauthorized(context);
-						}
+							throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized");
 						else
 						{
 							context.Items["user"] = user;
@@ -67,7 +64,7 @@ class VerifyToken
 			accessToken = _protector.Unprotect(accessToken);
 			var payload = _paseto.Decode(accessToken, _config.TOKEN.SECRET).Paseto.Payload["value"];
 			if (payload == null)
-				await Unauthorized(context);
+				throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized");
 			else
 			{
 				var str = payload.ToString();
@@ -78,9 +75,7 @@ class VerifyToken
 					{
 						var isExist = _redis.StringGet("ac_" + user.Id);
 						if (isExist == RedisValue.Null || isExist == false)
-						{
-							await Unauthorized(context);
-						}
+							throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized");
 						else
 						{
 							context.Items["user"] = user;
@@ -90,13 +85,6 @@ class VerifyToken
 				}
 			}
 		}
-	}
-
-	public async Task Unauthorized(HttpContext context)
-	{
-		context.Response.ContentType = "application/json";
-		context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-		await context.Response.WriteAsync("Unauthorized");
 	}
 }
 

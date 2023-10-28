@@ -1,34 +1,35 @@
 using MagicPostApi.Services;
 using MagicPostApi.Configs;
 using MagicPostApi.Middlewares;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.HttpLogging;
 
 // Load environments from .env file
 DotNetEnv.Env.Load();
 // Create builder
 var builder = WebApplication.CreateBuilder(args);
-// Serialize JSON response
-// Set PropertyNamingPolicy to null for remaining properties naming policy
-// Can be set to CamelCase instead of null
-builder.Services.AddControllers()
-		.AddJsonOptions(
-				options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-// Dependency injection
-// Add global configurations
-builder.Services.AddSingleton<Config>();
-// Add paseto encoding support
-builder.Services.AddSingleton<MyPaseto>();
-// Add postgresql db context
-builder.Services.AddDbContext<WebAPIDataContext>();
-// Add redis
-builder.Services.AddSingleton<MyRedis>();
-// Add data protection
-builder.Services.AddDataProtection();
-// Add user services
-builder.Services.AddScoped<UserService>();
+{
+	// Serialize JSON response
+	// Set PropertyNamingPolicy to null for remaining properties naming policy
+	// Can be set to CamelCase instead of null
+	builder.Services.AddControllers()
+			.AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
+	builder.Services.AddEndpointsApiExplorer();
+	builder.Services.AddSwaggerGen();
+	// Dependency injection
+	// Add global configurations
+	builder.Services.AddSingleton<Config>();
+	// Add paseto encoding support
+	builder.Services.AddSingleton<MyPaseto>();
+	// Add postgresql db context
+	builder.Services.AddDbContext<WebAPIDataContext>();
+	// Add redis
+	builder.Services.AddSingleton<MyRedis>();
+	// Add data protection
+	builder.Services.AddDataProtection();
+	// Add auto mapper support for model
+	builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+	// Add user services
+	builder.Services.AddScoped<IUserService, UserService>();
+}
 
 var app = builder.Build();
 
@@ -42,16 +43,28 @@ if (app.Environment.IsDevelopment())
 	db.Database.EnsureCreated();
 }
 
-app.UseHttpLogging();
+{
+	// HTTP logging
+	app.UseHttpLogging();
 
-app.UseHttpsRedirection();
+	// HTTPS support
+	app.UseHttpsRedirection();
 
-app.UseRouting();
+	// Add route maching to middleware pipeline
+	// Ensure that middlewares can access route data
+	app.UseRouting();
 
-app.MapGet("/", () => "Hello, world!");
+	// Initial Hello GET request
+	app.MapGet("/", () => "Hello, world!");
 
-app.UsePathBase(new PathString("/api"));
+	// Prefix all request with /api
+	app.UsePathBase(new PathString("/api"));
 
-app.MapControllers();
+	// Use global error handler middleware
+	app.UseMiddleware<ErrorHandlerMiddleware>();
+
+	// Auto map routes defined in Controllers folder
+	app.MapControllers();
+}
 
 app.Run();

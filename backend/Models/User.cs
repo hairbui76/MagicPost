@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MagicPostApi.Models;
 
@@ -11,7 +12,10 @@ public class User : Model
 	public required string Password { get; set; }
 	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 	public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-	public PublicInfo GetPublicInfo()
+	public Guid? PointId {get; set;}
+	public Point? Point {get; set;} 
+	public ICollection<Delivery>? Deliveries {get; set;}
+ 	public PublicInfo GetPublicInfo()
 	{
 		return new PublicInfo { Id = Id, Name = Name, Username = Username };
 	}

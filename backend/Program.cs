@@ -1,6 +1,8 @@
 using MagicPostApi.Services;
 using MagicPostApi.Configs;
 using MagicPostApi.Middlewares;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 
 // Load environments from .env file
 DotNetEnv.Env.Load();
@@ -39,7 +41,11 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 	var scope = app.Services.CreateScope();
+	// Get db context for development initialization
 	var db = scope.ServiceProvider.GetRequiredService<WebAPIDataContext>();
+	// Delete database
+	db.Database.EnsureDeleted();
+	// Create database again to sync schemas update
 	db.Database.EnsureCreated();
 }
 

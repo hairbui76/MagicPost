@@ -3,6 +3,7 @@ using MagicPostApi.Configs;
 using MagicPostApi.Models;
 using MagicPostApi.Utils;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
@@ -94,4 +95,10 @@ public class VerifyTokenMiddleware
 	{
 		app.UseMiddleware<VerifyToken>();
 	}
+}
+
+public class VerifyTokenAttribute : MiddlewareFilterAttribute
+{
+	public VerifyTokenAttribute() : base(typeof(VerifyTokenMiddleware))
+	{ }
 }

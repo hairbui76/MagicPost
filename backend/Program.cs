@@ -29,8 +29,9 @@ var builder = WebApplication.CreateBuilder(args);
 	builder.Services.AddDataProtection();
 	// Add auto mapper support for model
 	builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-	// Add user services
+	// Add services
 	builder.Services.AddScoped<IUserService, UserService>();
+	builder.Services.AddScoped<IPointService, PointService>();
 }
 
 var app = builder.Build();

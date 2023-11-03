@@ -50,7 +50,6 @@ public class UserService : IUserService
 		await _webAPIDataContext.SaveChangesAsync();
 	}
 
-
 	public async Task RemoveAsync(Guid id) =>
 			await _webAPIDataContext.Users.Where(c => c.Id == id).ExecuteDeleteAsync();
 

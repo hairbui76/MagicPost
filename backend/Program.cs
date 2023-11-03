@@ -3,6 +3,7 @@ using MagicPostApi.Configs;
 using MagicPostApi.Middlewares;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.AspNetCore.Mvc;
 
 // Load environments from .env file
 DotNetEnv.Env.Load();
@@ -14,6 +15,18 @@ var builder = WebApplication.CreateBuilder(args);
 	// Can be set to CamelCase instead of null
 	builder.Services.AddControllers()
 			.AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
+	// Add custom Validation error handler for Models
+	builder.Services.Configure<ApiBehaviorOptions>(o =>
+			{
+				o.InvalidModelStateResponseFactory = (actionContext)
+			=>
+				{
+					var message = string.Join(" | ", actionContext.ModelState.Values
+															.SelectMany(v => v.Errors)
+															.Select(e => e.ErrorMessage));
+					return new BadRequestObjectResult(new { message });
+				};
+			});
 	builder.Services.AddEndpointsApiExplorer();
 	builder.Services.AddSwaggerGen();
 	// Dependency injection
@@ -51,6 +64,12 @@ if (app.Environment.IsDevelopment())
 }
 
 {
+	// Add cors support
+	app.UseCors(x => x
+			.AllowAnyOrigin()
+			.AllowAnyMethod()
+			.AllowAnyHeader());
+
 	// HTTP logging
 	app.UseHttpLogging();
 

@@ -29,15 +29,18 @@ public class PublicInfo
 	public required string Username { get; set; }
 }
 
-public class LoginModel
+public class LoginModel : Model
 {
 	public string? Username { get; set; }
 	public string? Password { get; set; }
 }
 
-public class RegisterModel
+public class RegisterModel : Model
 {
+	[Required]
 	public string? Name { get; set; }
+	[Required]
 	public string? Username { get; set; }
+	[Required]
 	public string? Password { get; set; }
 }

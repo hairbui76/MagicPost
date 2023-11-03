@@ -48,7 +48,7 @@ public class AuthController : ControllerBase
 	[HttpGet]
 	public async Task<List<User>> Get() => await _userService.GetAsync();
 
-	[HttpGet("{id:length(24)}")]
+	[HttpGet("{id}")]
 	public async Task<ActionResult<User>> Get(Guid id)
 	{
 		var user = await _userService.GetAsyncById(id);
@@ -60,12 +60,9 @@ public class AuthController : ControllerBase
 	[HttpPost]
 	public async Task<IActionResult> Login(LoginModel model)
 	{
-		if (model.Username == null)
-			throw new AppException("Username is required");
-		if (model.Password == null)
-			throw new AppException("Password is required");
-		User? user = await _userService.GetAsyncByUsername(model.Username) ?? throw new AppException(HttpStatusCode.NotFound, "User not found");
-		bool isPasswordMatch = Password.Verify(user.Password, model.Password);
+		User user = _mapper.Map<User>(model);
+		user = await _userService.GetAsyncByUsername(user.Username) ?? throw new AppException(HttpStatusCode.NotFound, "User not found");
+		bool isPasswordMatch = Password.Verify(user.Password, user.Password);
 		if (!isPasswordMatch)
 			throw new AppException("Username or password incorrect");
 		var info = user.GetPublicInfo();
@@ -109,7 +106,7 @@ public class AuthController : ControllerBase
 			Path = "/",
 			Expires = tasks[1].Item2,
 		});
-		return CreatedAtAction(nameof(Get), new { id = newUser.Id }, newUser);
+		return Ok(new { message = "Register successfully!", user = info });
 	}
 
 	[HttpPost]

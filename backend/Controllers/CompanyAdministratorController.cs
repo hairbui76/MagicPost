@@ -56,6 +56,10 @@ public class CompanyAdmisistratorController : ControllerBase
 		return Ok(new { message = "Create transaction point successfully!", point = transactionPoint });
 	}
 
-	// [HttpPut]
-	// public async Task<IActionResult> UpdateTransactionPoint(UpdatePointModel model)
+	[HttpPut("{id}")]
+	public async Task<IActionResult> UpdateTransactionPoint(Guid id, UpdatePointModel model)
+	{
+		await _pointService.UpdateAsync(id, model);
+		return Ok(new { message = "Update point successfully!" });
+	}
 }

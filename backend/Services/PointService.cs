@@ -2,6 +2,9 @@ using MagicPostApi.Configs;
 using MagicPostApi.Models;
 using MagicPostApi.Enums;
 using Microsoft.EntityFrameworkCore;
+using MagicPostApi.Utils;
+using System.Net;
+using AutoMapper;
 
 namespace MagicPostApi.Services;
 
@@ -13,15 +16,18 @@ public interface IPointService
 	Task<List<User>> GetAllTransactionPointManagersAsync();
 	Task<List<User>> GetAllGatheringPointManagersAsync();
 	Task CreateAsync(Point newPoint);
+	Task UpdateAsync(Guid id, UpdatePointModel model);
 }
 
 public class PointService : IPointService
 {
 	private readonly Config _config;
+	private readonly IMapper _mapper;
 	private readonly WebAPIDataContext _webAPIDataContext;
-	public PointService(Config config, WebAPIDataContext webAPIDataContext)
+	public PointService(Config config, IMapper mapper, WebAPIDataContext webAPIDataContext)
 	{
 		_config = config;
+		_mapper = mapper;
 		_webAPIDataContext = webAPIDataContext;
 	}
 	public async Task<List<Point>> GetAllTransactionPointsAsync()
@@ -43,5 +49,13 @@ public class PointService : IPointService
 	{
 		await _webAPIDataContext.Points.AddAsync(newPoint);
 		await _webAPIDataContext.SaveChangesAsync();
+	}
+
+	public async Task UpdateAsync(Guid id, UpdatePointModel model)
+	{
+		Point point = await GetPointByIdAsync(id) ?? throw new AppException(HttpStatusCode.NotFound, "Point not found");
+		_mapper.Map(model, point);
+		_webAPIDataContext.Points.Update(point);
+		_webAPIDataContext.SaveChanges();
 	}
 }

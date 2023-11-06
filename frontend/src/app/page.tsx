@@ -21,6 +21,9 @@ const MyContent = () => {
 	);
 };
 
-export default function Home() {
+export default async function Home() {
+	let data = await fetch("http://localhost:3000/api");
+	data = await data.json();
+	console.log(data);
 	return <h1>Hello</h1>;
 }

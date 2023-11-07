@@ -45,18 +45,6 @@ public class AuthController : ControllerBase
 		return Ok(new { message = "Authenticated!!", user = info });
 	}
 
-	[HttpGet]
-	public async Task<List<User>> Get() => await _userService.GetAsync();
-
-	[HttpGet("{id}")]
-	public async Task<ActionResult<User>> Get(Guid id)
-	{
-		var user = await _userService.GetAsyncById(id);
-		if (user == null)
-			return NotFound(new { message = "User not found" });
-		return user;
-	}
-
 	[HttpPost]
 	public async Task<IActionResult> Login(LoginModel model)
 	{
@@ -106,7 +94,7 @@ public class AuthController : ControllerBase
 			Path = "/",
 			Expires = tasks[1].Item2,
 		});
-		return Ok(new { message = "Register successfully!", user = info });
+		return CreatedAtAction(nameof(UserController.GetAsync), new { id = newUser.Id }, new { message = "Register successfully!", user = info });
 	}
 
 	[HttpPost]

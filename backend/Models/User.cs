@@ -12,14 +12,13 @@ public class User : Model
 	public required string Password { get; set; }
 	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 	public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-	public Guid? PointId { get; set; }
-	public Point? Point { get; set; }
-	public ICollection<Delivery>? Deliveries { get; set; }
 	public Role Role { get; set; }
+	// If user is staff or manager, associate with a point
+	public Guid? PointId { get; set; }
+
+	// Get public user information
 	public PublicInfo GetPublicInfo()
-	{
-		return new PublicInfo { Id = Id, Name = Name, Username = Username };
-	}
+			=> new() { Id = Id, Name = Name, Username = Username };
 }
 
 public class PublicInfo
@@ -43,4 +42,13 @@ public class RegisterModel : Model
 	public string? Username { get; set; }
 	[Required]
 	public string? Password { get; set; }
+}
+
+public class UpdateUserModel : Model
+{
+	public string? Name { get; set; }
+	public string? Username { get; set; }
+	public string? Password { get; set; }
+	// If user is staff or manager, associate with a point
+	public Guid? PointId { get; set; }
 }

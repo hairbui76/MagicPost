@@ -10,15 +10,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace MagicPostApi.Controllers;
 
 [ApiController]
-[Route("admin/[action]")]
+[Route("[controller]/[action]")]
 [VerifyToken]
 [VerifyRole(Role.COMPANY_ADMINISTRATOR)]
-public class CompanyAdmisistratorController : ControllerBase
+public class PointController : ControllerBase
 {
 
 	private readonly IMapper _mapper;
 	private readonly IPointService _pointService;
-	public CompanyAdmisistratorController(IMapper mapper, IPointService pointService)
+	public PointController(IMapper mapper, IPointService pointService)
 	{
 		_mapper = mapper;
 		_pointService = pointService;
@@ -56,8 +56,17 @@ public class CompanyAdmisistratorController : ControllerBase
 		return Ok(new { message = "Create transaction point successfully!", point = transactionPoint });
 	}
 
+	[HttpPost]
+	public async Task<IActionResult> CreateGatheringPoint(CreatePointModel model)
+	{
+		Point transactionPoint = _mapper.Map<Point>(model);
+		transactionPoint.Type = PointType.GatheringPoint;
+		await _pointService.CreateAsync(transactionPoint);
+		return Ok(new { message = "Create transaction point successfully!", point = transactionPoint });
+	}
+
 	[HttpPut("{id}")]
-	public async Task<IActionResult> UpdateTransactionPoint(Guid id, UpdatePointModel model)
+	public async Task<IActionResult> UpdatePointAsync(Guid id, UpdatePointModel model)
 	{
 		await _pointService.UpdateAsync(id, model);
 		return Ok(new { message = "Update point successfully!" });

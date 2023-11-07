@@ -24,5 +24,10 @@ public class AutoMapperProfile : Profile
 		// UpdatePointModel -> Point
 		CreateMap<UpdatePointModel, Point>()
 				.ForAllMembers(x => x.Condition(IgnoreNullAndEmptyString));
+		// CreateOrderModel -> Order
+		CreateMap<CreateOrderModel, Order>();
+		// UpdateOrderModel -> Order
+		CreateMap<UpdateOrderModel, Order>()
+				.ForAllMembers(x => x.Condition(IgnoreNullAndEmptyString));
 	}
 }

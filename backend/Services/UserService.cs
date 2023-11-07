@@ -1,5 +1,8 @@
+using System.Net;
+using AutoMapper;
 using MagicPostApi.Configs;
 using MagicPostApi.Models;
+using MagicPostApi.Utils;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
@@ -12,24 +15,29 @@ public interface IUserService
 	Task<User?> GetAsyncById(Guid id);
 	Task<User?> GetAsyncByUsername(string username);
 	Task CreateAsync(User newUser);
+	Task UpdateAsync(Guid id, UpdateUserModel model);
 	Task<(string, DateTime)> PrepareAccessToken(PublicInfo info);
 	Task<(string, DateTime)> PrepareRefreshToken(PublicInfo info);
 }
 
 public class UserService : IUserService
 {
+	private readonly IMapper _mapper;
 	private readonly Config _config;
 	private readonly MyPaseto _paseto;
 	private readonly WebAPIDataContext _webAPIDataContext;
+	private readonly DbSet<User> _userRepository;
 	private readonly IDatabase _redis;
 	private readonly IDataProtectionProvider _dataProtectionProvider;
 	private readonly IDataProtector _protector;
 
-	public UserService(Config config, MyPaseto paseto, MyRedis redis, WebAPIDataContext webAPIDataContext, IDataProtectionProvider dataProtectionProvider)
+	public UserService(IMapper mapper, Config config, MyPaseto paseto, MyRedis redis, WebAPIDataContext webAPIDataContext, IDataProtectionProvider dataProtectionProvider)
 	{
+		_mapper = mapper;
 		_config = config;
 		_paseto = paseto;
 		_webAPIDataContext = webAPIDataContext;
+		_userRepository = _webAPIDataContext.Users;
 		_dataProtectionProvider = dataProtectionProvider;
 		_protector = _dataProtectionProvider.CreateProtector("auth");
 		_redis = redis.GetDatabase();
@@ -48,6 +56,14 @@ public class UserService : IUserService
 	{
 		await _webAPIDataContext.Users.AddAsync(newUser);
 		await _webAPIDataContext.SaveChangesAsync();
+	}
+
+	public async Task UpdateAsync(Guid id, UpdateUserModel model)
+	{
+		User user = await GetAsyncById(id) ?? throw new AppException(HttpStatusCode.NotFound, "User not found");
+		_mapper.Map(model, user);
+		_userRepository.Update(user);
+		_webAPIDataContext.SaveChanges();
 	}
 
 	public async Task RemoveAsync(Guid id) =>

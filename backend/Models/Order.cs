@@ -7,23 +7,46 @@ public class Order : Model
 {
 	[Key]
 	public Guid? Id { get; set; }
-	public OrderState State { get; set; }
-	public DateTime CreateAt { get; set; } = DateTime.Now;
+	public required OrderState State { get; set; } = OrderState.PENDING;
+	public required DateTime CreateAt { get; set; } = DateTime.Now;
 	public DateTime? CancelAt { get; set; }
-	public string? Sender { get; set; }
-	public string? SendAddress { get; set; }
+	public required string SenderName { get; set; }
+	public required string SenderAddress { get; set; }
+	[Phone]
+	public required string SenderPhone { get; set; }
+	public required string Receiver { get; set; }
+	public required string ReceiverAddress { get; set; }
+	[Phone]
+	public required string ReceiverPhone { get; set; }
+}
+
+public class CreateOrderModel : Model
+{
+	[Required]
+	public string? SenderName { get; set; }
+	[Required]
+	public string? SenderAddress { get; set; }
+	[Required]
+	[Phone]
+	public string? SenderPhone { get; set; }
+	[Required]
+	public string? Receiver { get; set; }
+	[Required]
+	public string? ReceiverAddress { get; set; }
+	[Required]
+	[Phone]
+	public string? ReceiverPhone { get; set; }
+}
+
+public class UpdateOrderModel
+{
+	public OrderState State { get; set; }
+	public string? SenderName { get; set; }
+	public string? SenderAddress { get; set; }
 	[Phone]
 	public string? SenderPhone { get; set; }
 	public string? Receiver { get; set; }
-	public string? ReceiveAddress { get; set; }
+	public string? ReceiverAddress { get; set; }
 	[Phone]
 	public string? ReceiverPhone { get; set; }
-	public Guid? Delivery1Id { get; set; }
-	public Delivery? Delivery1 { get; set; }
-	public Guid? Delivery2Id { get; set; }
-	public Delivery? Delivery2 { get; set; }
-	public Guid? Delivery3Id { get; set; }
-	public Delivery? Delivery3 { get; set; }
-	public Guid? Delivery4Id { get; set; }
-	public Delivery? Delivery4 { get; set; }
 }

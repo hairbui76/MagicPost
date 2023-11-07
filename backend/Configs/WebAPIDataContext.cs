@@ -10,73 +10,59 @@ public class WebAPIDataContext : DbContext
 	{
 		_config = config;
 	}
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
+	{
+		base.OnModelCreating(modelBuilder);
+
+		// Point can have multiple staffs
 		modelBuilder.Entity<Point>()
-		.HasMany(p => p.Staffs)
-		.WithOne(u => u.Point)
-		.HasForeignKey(u => u.PointId);
+			.HasMany<User>()
+			.WithOne()
+			.HasForeignKey(e => e.PointId);
 
+		// Point has only one manager
 		modelBuilder.Entity<Point>()
-		.HasOne(p => p.Manager)
-		.WithOne()
-		.HasForeignKey<Point>(p => p.ManagerId);
-		
-		modelBuilder.Entity<Order>() 
-		.HasOne(o => o.Delivery1)
-		.WithOne()
-		.HasForeignKey<Order>(o => o.Delivery1Id);
-		
-		modelBuilder.Entity<Order>() 
-		.HasOne(o => o.Delivery2)
-		.WithOne()
-		.HasForeignKey<Order>(o => o.Delivery2Id);
-		
-		modelBuilder.Entity<Order>() 
-		.HasOne(o => o.Delivery3)
-		.WithOne()
-		.HasForeignKey<Order>(o => o.Delivery3Id);
-		
-		modelBuilder.Entity<Order>() 
-		.HasOne(o => o.Delivery4)
-		.WithOne()
-		.HasForeignKey<Order>(o => o.Delivery4Id);
-		
-		modelBuilder.Entity<Order>() 
-		.HasOne(o => o.Delivery4)
-		.WithOne()
-		.HasForeignKey<Order>(o => o.Delivery4Id);
+			.HasOne<User>()
+			.WithOne()
+			.HasForeignKey<Point>(e => e.ManagerId);
 
-		modelBuilder.Entity<Delivery>() 
-		.HasOne(d => d.Sender)
-		.WithMany()
-		.HasForeignKey(d => d.SenderId);
+		// Delivery is associated with an order
+		modelBuilder.Entity<Delivery>()
+			.HasOne<Order>()
+			.WithOne()
+			.HasForeignKey<Delivery>(e => e.OrderId);
 
-		modelBuilder.Entity<Delivery>() 
-		.HasOne(d => d.Receiver)
-		.WithMany()
-		.HasForeignKey(d => d.ReceiverId);
+		// Delivery has been sent from a point
+		modelBuilder.Entity<Delivery>()
+			.HasOne<Point>()
+			.WithOne()
+			.HasForeignKey<Delivery>(e => e.FromPointId);
+
+		// Deliver has been sent to a point
+		modelBuilder.Entity<Delivery>()
+			.HasOne<Point>()
+			.WithOne()
+			.HasForeignKey<Delivery>(e => e.ToPointId);
 
 		modelBuilder.Entity<Trans_Gather>()
-		.HasOne(tg => tg.GatheringPoint)
-		.WithMany()
-		.HasForeignKey(tg => tg.GatheringPointId);
+			.HasOne(tg => tg.GatheringPoint)
+			.WithMany()
+			.HasForeignKey(tg => tg.GatheringPointId);
 
 		modelBuilder.Entity<Trans_Gather>()
-		.HasOne(tg => tg.TransactionPoint)
-		.WithMany()
-		.HasForeignKey(tg => tg.TransacionPointId);
-    }
-    protected override void OnConfiguring(DbContextOptionsBuilder options)
+			.HasOne(tg => tg.TransactionPoint)
+			.WithMany()
+			.HasForeignKey(tg => tg.TransacionPointId);
+	}
+	protected override void OnConfiguring(DbContextOptionsBuilder options)
 	{
 		// connect to postgres
 		options.UseNpgsql(_config.DB.URL);
 	}
 
 	public DbSet<User> Users { get; set; }
-	public DbSet<Point> Points {get; set;}
-	public DbSet<Trans_Gather> Trans_Gathers {get; set;}
-	public DbSet<Order> Orders {get; set;}
-	public DbSet<Delivery> Deliveries {get; set;}
+	public DbSet<Point> Points { get; set; }
+	public DbSet<Trans_Gather> Trans_Gathers { get; set; }
+	public DbSet<Order> Orders { get; set; }
+	public DbSet<Delivery> Deliveries { get; set; }
 }

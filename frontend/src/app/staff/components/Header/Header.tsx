@@ -1,5 +1,4 @@
-import { AppContext } from "@/contexts";
-import { AppContextProps } from "@/contexts/AppContext";
+import AppContext, { AppContextProps } from "@/contexts/AppContext";
 import {
 	BellFilled,
 	MailFilled,
@@ -15,7 +14,10 @@ function AppHeader() {
 		AppContext
 	) as AppContextProps;
 	return (
-		<Row gutter={16} style={{ width: "100%", padding: "0 1rem" }}>
+		<Row
+			gutter={{ xs: 8, sm: 16, md: 24 }}
+			style={{ width: "100%", padding: "0 1rem" }}
+		>
 			<Col>
 				<Button
 					type="text"
@@ -25,7 +27,7 @@ function AppHeader() {
 					{collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
 				</Button>
 			</Col>
-			<Col style={{ flex: 1 }}>
+			<Col className="flex-1">
 				<Input
 					size="large"
 					placeholder="Search for anything..."
@@ -50,38 +52,31 @@ function AppHeader() {
 						</Typography.Title>
 					</Col>
 					<Col>
-						<Button
-							className="button"
-							type="primary"
-							size="large"
-							danger
+						<button
+							className="btn btn-outline btn-error btn-xs sm:btn-sm md:btn-md"
 							onClick={() => setUser(null)}
 						>
-							Logout
-						</Button>
+							SIGN OUT
+						</button>
 					</Col>
 				</>
 			) : (
 				<>
 					<Col>
-						<Button
-							className="button"
-							type="primary"
-							size="large"
+						<button
+							className="btn btn-active btn-primary btn-xs sm:btn-sm "
 							onClick={() => setUser({ fullName: "MrYasuo" })}
 						>
 							Login
-						</Button>
+						</button>
 					</Col>
 					<Col>
-						<Button
-							className="button"
-							type="primary"
-							size="large"
+						<button
+							className="btn btn-outline btn-primary btn-xs sm:btn-sm "
 							onClick={() => setUser({ fullName: "MrYasuo" })}
 						>
 							Sign Up
-						</Button>
+						</button>
 					</Col>
 				</>
 			)}

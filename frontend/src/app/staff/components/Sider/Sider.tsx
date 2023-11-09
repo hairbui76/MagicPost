@@ -1,5 +1,4 @@
-import { AppContext } from "@/contexts";
-import { AppContextProps } from "@/contexts/AppContext";
+import AppContext, { AppContextProps } from "@/contexts/AppContext";
 import { Layout, Menu } from "antd";
 import { useContext } from "react";
 import {
@@ -18,6 +17,7 @@ import {
 	faBoxArchive,
 	faBuilding,
 } from "@fortawesome/free-solid-svg-icons";
+import Image from "next/image";
 
 const { Sider } = Layout;
 
@@ -121,8 +121,26 @@ const AppSider = () => {
 		),
 	];
 	return (
-		<Sider collapsible trigger={null} collapsed={collapsed}>
-			<h1 className="text-white">Magic Post</h1>
+		<Sider collapsible trigger={null} collapsed={collapsed} breakpoint="lg">
+			{collapsed ? (
+				<Image
+					src="/logo_magicpost_trans.png"
+					alt=""
+					width="0"
+					height="0"
+					className="w-full h-auto p-3 pt-6"
+					quality={100}
+				/>
+			) : (
+				<Image
+					src="/logo_magicpost_horizon.png"
+					alt=""
+					width="0"
+					height="0"
+					className="w-full h-auto p-6"
+					quality={100}
+				/>
+			)}
 			<Menu
 				theme="dark"
 				defaultSelectedKeys={[menuKey]}

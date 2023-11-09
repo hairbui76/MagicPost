@@ -12,7 +12,6 @@ const MyContent = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<ConfigProvider
 			theme={{
-				token: { colorPrimary: "#00b96b" },
 				components: {
 					Layout: {
 						headerBg: "#ffffff",

@@ -3,7 +3,7 @@ import {
 	Footer as AppFooter,
 	Header as AppHeader,
 	Sider as AppSider,
-} from "@/components";
+} from "..";
 import { ConfigProvider, Layout } from "antd";
 
 const { Header, Footer, Content } = Layout;

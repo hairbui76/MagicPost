@@ -1,5 +1,5 @@
-function AppFooter() {
+function Footer() {
 	return <p>Developed By Hai and Son Tung MTP</p>;
 }
 
-export default AppFooter;
+export default Footer;

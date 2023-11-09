@@ -24,7 +24,7 @@ public class AuthController : ControllerBase
 	}
 
 	[HttpGet]
-	[Route("/auth")]
+	[Route("/Auth")]
 	[MiddlewareFilter(typeof(VerifyTokenMiddleware))]
 	public async Task<IActionResult> Index()
 	{
@@ -94,7 +94,7 @@ public class AuthController : ControllerBase
 			Path = "/",
 			Expires = tasks[1].Item2,
 		});
-		return CreatedAtAction(nameof(UserController.GetAsync), new { id = newUser.Id }, new { message = "Register successfully!", user = info });
+		return Ok(new { message = "Register successfully!", user = info });
 	}
 
 	[HttpPost]

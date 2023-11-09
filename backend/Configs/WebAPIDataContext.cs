@@ -16,33 +16,51 @@ public class WebAPIDataContext : DbContext
 
 		// Point can have multiple staffs
 		modelBuilder.Entity<Point>()
-			.HasMany<User>()
+			.HasMany(p => p.Staffs)
 			.WithOne()
-			.HasForeignKey(e => e.PointId);
+			.HasForeignKey(e => e.StaffPointId);
 
 		// Point has only one manager
 		modelBuilder.Entity<Point>()
-			.HasOne<User>()
+			.HasOne(p => p.Manager)
 			.WithOne()
-			.HasForeignKey<Point>(e => e.ManagerId);
+			.HasForeignKey<User>(e => e.ManagerPointId);
+
+		// User is manager of a point
+		modelBuilder.Entity<User>()
+			.HasOne(p => p.ManagerPoint)
+			.WithOne()
+			.HasForeignKey<User>(e => e.ManagerPointId);
+
+		// User is staff of a point
+		modelBuilder.Entity<User>()
+			.HasOne(p => p.StaffPoint)
+			.WithOne()
+			.HasForeignKey<User>(e => e.StaffPointId);
 
 		// Delivery is associated with an order
 		modelBuilder.Entity<Delivery>()
-			.HasOne<Order>()
+			.HasOne(d => d.Order)
 			.WithOne()
 			.HasForeignKey<Delivery>(e => e.OrderId);
 
 		// Delivery has been sent from a point
 		modelBuilder.Entity<Delivery>()
-			.HasOne<Point>()
+			.HasOne(d => d.FromPoint)
 			.WithOne()
 			.HasForeignKey<Delivery>(e => e.FromPointId);
 
 		// Deliver has been sent to a point
 		modelBuilder.Entity<Delivery>()
-			.HasOne<Point>()
+			.HasOne(d => d.ToPoint)
 			.WithOne()
 			.HasForeignKey<Delivery>(e => e.ToPointId);
+
+		// Order has many deliveries
+		modelBuilder.Entity<Order>()
+			.HasMany(d => d.Deliveries)
+			.WithOne()
+			.HasForeignKey(e => e.OrderId);
 
 		modelBuilder.Entity<Trans_Gather>()
 			.HasOne(tg => tg.GatheringPoint)

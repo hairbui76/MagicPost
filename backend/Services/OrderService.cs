@@ -30,7 +30,10 @@ public class OrderService : IOrderService
 			=> await _ordersRepository.ToListAsync();
 
 	public async Task<Order?> GetAsync(Guid id)
-			=> await _ordersRepository.Where(o => o.Id == id).FirstOrDefaultAsync();
+			=> await _ordersRepository
+						.Where(o => o.Id == id)
+						.Include(o => o.Deliveries.OrderBy(d => d.CreatedAt))
+						.FirstOrDefaultAsync();
 
 	public async Task UpdateAsync(Guid id, UpdateOrderModel model)
 	{

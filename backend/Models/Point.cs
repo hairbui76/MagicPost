@@ -15,8 +15,8 @@ public class Point : Model
 	public string? Email { get; set; }
 	[Phone]
 	public string? Phone { get; set; }
-	// Associate point with a manager
-	public Guid? ManagerId { get; set; }
+	public List<User> Staffs { get; } = new List<User>();
+	public User? Manager { get; }
 }
 
 public class CreatePointModel : Model

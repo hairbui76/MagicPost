@@ -13,8 +13,14 @@ public class User : Model
 	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 	public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 	public Role Role { get; set; }
-	// If user is staff or manager, associate with a point
-	public Guid? PointId { get; set; }
+	// If user is staff, associate with a point
+	public Guid? StaffPointId { get; set; }
+	// Reference to the point that user is staff
+	public Point? StaffPoint { get; }
+	// If user is manager, associate with a point
+	public Guid? ManagerPointId { get; set; }
+	// Reference to the point that user is manager
+	public Point? ManagerPoint { get; }
 
 	// Get public user information
 	public PublicInfo GetPublicInfo()
@@ -49,6 +55,6 @@ public class UpdateUserModel : Model
 	public string? Name { get; set; }
 	public string? Username { get; set; }
 	public string? Password { get; set; }
-	// If user is staff or manager, associate with a point
-	public Guid? PointId { get; set; }
+	public Guid? StaffPointId { get; set; }
+	public Guid? ManagerPointId { get; set; }
 }

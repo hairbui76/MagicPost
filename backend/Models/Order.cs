@@ -8,7 +8,7 @@ public class Order : Model
 	[Key]
 	public Guid? Id { get; set; }
 	public required OrderState State { get; set; } = OrderState.PENDING;
-	public required DateTime CreateAt { get; set; } = DateTime.Now;
+	public required DateTime CreateAt { get; set; } = DateTime.UtcNow;
 	public DateTime? CancelAt { get; set; }
 	public required string SenderName { get; set; }
 	public required string SenderAddress { get; set; }
@@ -18,6 +18,8 @@ public class Order : Model
 	public required string ReceiverAddress { get; set; }
 	[Phone]
 	public required string ReceiverPhone { get; set; }
+	// Reference to list of delivery
+	public List<Delivery> Deliveries { get; } = new List<Delivery>();
 }
 
 public class CreateOrderModel : Model

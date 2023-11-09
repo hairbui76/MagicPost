@@ -12,7 +12,7 @@ namespace MagicPostApi.Controllers;
 [ApiController]
 [Route("[controller]/[action]")]
 [VerifyToken]
-[VerifyRole(Role.COMPANY_ADMINISTRATOR)]
+[VerifyRole(new Role[] { Role.COMPANY_ADMINISTRATOR, Role.TRANSACTION_POINT_MANAGER, Role.TRANSACION_STAFF })]
 public class PointController : ControllerBase
 {
 
@@ -59,10 +59,10 @@ public class PointController : ControllerBase
 	[HttpPost]
 	public async Task<IActionResult> CreateGatheringPoint(CreatePointModel model)
 	{
-		Point transactionPoint = _mapper.Map<Point>(model);
-		transactionPoint.Type = PointType.GatheringPoint;
-		await _pointService.CreateAsync(transactionPoint);
-		return Ok(new { message = "Create transaction point successfully!", point = transactionPoint });
+		Point gatheringPoint = _mapper.Map<Point>(model);
+		gatheringPoint.Type = PointType.GatheringPoint;
+		await _pointService.CreateAsync(gatheringPoint);
+		return Ok(new { message = "Create gathering point successfully!", point = gatheringPoint });
 	}
 
 	[HttpPut("{id}")]

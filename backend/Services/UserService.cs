@@ -26,7 +26,7 @@ public class UserService : IUserService
 	private readonly Config _config;
 	private readonly MyPaseto _paseto;
 	private readonly WebAPIDataContext _webAPIDataContext;
-	private readonly DbSet<User> _userRepository;
+	private readonly DbSet<User> _usersRepository;
 	private readonly IDatabase _redis;
 	private readonly IDataProtectionProvider _dataProtectionProvider;
 	private readonly IDataProtector _protector;
@@ -37,24 +37,34 @@ public class UserService : IUserService
 		_config = config;
 		_paseto = paseto;
 		_webAPIDataContext = webAPIDataContext;
-		_userRepository = _webAPIDataContext.Users;
+		_usersRepository = _webAPIDataContext.Users;
 		_dataProtectionProvider = dataProtectionProvider;
 		_protector = _dataProtectionProvider.CreateProtector("auth");
 		_redis = redis.GetDatabase();
 	}
 
-	public async Task<List<User>> GetAsync() =>
-			 await _webAPIDataContext.Users.ToListAsync();
+	public async Task<List<User>> GetAsync()
+			=> await _usersRepository.ToListAsync();
 
-	public async Task<User?> GetAsyncById(Guid id) =>
-			await _webAPIDataContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+	public async Task<User?> GetAsyncById(Guid id)
+			=> await _usersRepository
+						.Where(u => u.Id == id)
+						.Include(u => u.StaffPoint)
+							.ThenInclude(p => p != null ? p.Staffs : null)
+						.Include(u => u.StaffPoint)
+							.ThenInclude(p => p != null ? p.Manager : null)
+						.Include(u => u.ManagerPoint)
+							.ThenInclude(p => p != null ? p.Staffs : null)
+						.Include(u => u.ManagerPoint)
+							.ThenInclude(p => p != null ? p.Manager : null)
+						.FirstOrDefaultAsync();
 
 	public async Task<User?> GetAsyncByUsername(string username) =>
-			await _webAPIDataContext.Users.FirstOrDefaultAsync(x => x.Username == username);
+			await _usersRepository.FirstOrDefaultAsync(x => x.Username == username);
 
 	public async Task CreateAsync(User newUser)
 	{
-		await _webAPIDataContext.Users.AddAsync(newUser);
+		await _usersRepository.AddAsync(newUser);
 		await _webAPIDataContext.SaveChangesAsync();
 	}
 
@@ -62,12 +72,12 @@ public class UserService : IUserService
 	{
 		User user = await GetAsyncById(id) ?? throw new AppException(HttpStatusCode.NotFound, "User not found");
 		_mapper.Map(model, user);
-		_userRepository.Update(user);
+		_usersRepository.Update(user);
 		_webAPIDataContext.SaveChanges();
 	}
 
 	public async Task RemoveAsync(Guid id) =>
-			await _webAPIDataContext.Users.Where(c => c.Id == id).ExecuteDeleteAsync();
+			await _usersRepository.Where(c => c.Id == id).ExecuteDeleteAsync();
 
 	public async Task<(string, DateTime)> PrepareAccessToken(PublicInfo info)
 	{

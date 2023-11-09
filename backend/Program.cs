@@ -45,6 +45,8 @@ var builder = WebApplication.CreateBuilder(args);
 	// Add services
 	builder.Services.AddScoped<IUserService, UserService>();
 	builder.Services.AddScoped<IPointService, PointService>();
+	builder.Services.AddScoped<IOrderService, OrderService>();
+	builder.Services.AddScoped<IDeliveryService, DeliveryServce>();
 }
 
 var app = builder.Build();
@@ -71,7 +73,7 @@ if (app.Environment.IsDevelopment())
 			.AllowAnyHeader());
 
 	// HTTP logging
-	app.UseHttpLogging();
+	// app.UseHttpLogging();
 
 	// HTTPS support
 	app.UseHttpsRedirection();

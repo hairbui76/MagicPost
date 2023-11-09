@@ -19,6 +19,9 @@ public class AutoMapperProfile : Profile
 		CreateMap<RegisterModel, User>();
 		// LoginModel -> User
 		CreateMap<LoginModel, User>();
+		// UpdateUserModel -> User
+		CreateMap<UpdateUserModel, User>()
+				.ForAllMembers(x => x.Condition(IgnoreNullAndEmptyString));
 		// CreatePointModel -> Point
 		CreateMap<CreatePointModel, Point>();
 		// UpdatePointModel -> Point
@@ -29,5 +32,7 @@ public class AutoMapperProfile : Profile
 		// UpdateOrderModel -> Order
 		CreateMap<UpdateOrderModel, Order>()
 				.ForAllMembers(x => x.Condition(IgnoreNullAndEmptyString));
+		// CreateDeliveryModel -> Delivery
+		CreateMap<CreateDeliveryModel, Delivery>();
 	}
 }

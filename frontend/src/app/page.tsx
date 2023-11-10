@@ -1,16 +1,13 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 export default function Page(): React.ReactNode {
 	return (
 		<div className="hero min-h-screen bg-base-200 max-w-full p-4 md:p-12">
 			<div className="hero-content flex-col md:flex-row lg:gap-10">
 				<picture className="lg:max-w-sm md:max-w-xs w-full">
-					<source
-						media="(max-width: 767px)"
-						srcSet="/logo_magicpost_horizon.png"
-					/>
+					<source media="(max-width: 767px)" srcSet="/logo_no_char.png" />
 					<Image
-						src="/logo_magicpost_trans.png"
+						src="/logo_no_char.png"
 						width="0"
 						height="0"
 						className="w-full"

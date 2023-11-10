@@ -1,23 +1,23 @@
 import AppContext, { AppContextProps } from "@/contexts/AppContext";
-import { Layout, Menu } from "antd";
-import { useContext } from "react";
 import {
-	FormOutlined,
-	LineChartOutlined,
-	FileDoneOutlined,
-	ImportOutlined,
-	ExportOutlined,
-	TeamOutlined,
 	ApartmentOutlined,
+	ExportOutlined,
+	FileDoneOutlined,
+	FormOutlined,
+	ImportOutlined,
+	LineChartOutlined,
+	TeamOutlined,
 } from "@ant-design/icons";
-import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-	faTruckFast,
 	faBoxArchive,
 	faBuilding,
+	faTruckFast,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Layout, Menu } from "antd";
 import Image from "next/image";
+import Link from "next/link";
+import { useContext } from "react";
 
 const { Sider } = Layout;
 
@@ -124,19 +124,19 @@ const AppSider = () => {
 		<Sider collapsible trigger={null} collapsed={collapsed} breakpoint="lg">
 			{collapsed ? (
 				<Image
-					src="/logo_magicpost_trans.png"
+					src="/logo_no_char.png"
 					alt=""
 					width="0"
-					height="0"
+					height={50}
 					className="w-full h-auto p-3 pt-6"
 					quality={100}
 				/>
 			) : (
 				<Image
-					src="/logo_magicpost_horizon.png"
+					src="/logo_white_char.png"
 					alt=""
 					width="0"
-					height="0"
+					height={50}
 					className="w-full h-auto p-6"
 					quality={100}
 				/>
@@ -144,6 +144,7 @@ const AppSider = () => {
 			<Menu
 				theme="dark"
 				defaultSelectedKeys={[menuKey]}
+				// @ts-ignore
 				onClick={(e) => setMenuKey(e.key)}
 				items={items}
 				inlineCollapsed={collapsed}

@@ -1,11 +1,11 @@
+import { faBell } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Avatar from "./Avatar";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
 
 export default function Header() {
 	return (
-		<header className="md:h-16 md:px-6 flex flex-row items-center gap-6">
+		<header className="md:h-16 md:px-6 flex flex-row items-center gap-6 bg-[#272935] text-[#363635] z-[9999] fixed w-full">
 			<Image
 				src="/logo_horizon.png"
 				alt=""

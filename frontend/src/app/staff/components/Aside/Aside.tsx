@@ -1,7 +1,7 @@
 import Menu from "./Menu";
 export default function Aside() {
 	return (
-		<aside className="md:col-span-1">
+		<aside className="bg-[#272935]">
 			<Menu />
 		</aside>
 	);

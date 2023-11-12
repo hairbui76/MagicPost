@@ -9,7 +9,7 @@ export default function Layout({
 		<>
 			<div className="flex flex-col h-screen fixed">
 				<Header />
-				<div className="grid md:grid-cols-6 flex-grow">
+				<div className="flex flex-row flex-grow">
 					<Aside />
 					<Content>{children}</Content>
 				</div>

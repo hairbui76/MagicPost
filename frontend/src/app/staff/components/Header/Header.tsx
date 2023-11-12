@@ -2,10 +2,12 @@ import Image from "next/image";
 import Avatar from "./Avatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
+import Toggle from "./Toggle";
 
 export default function Header() {
 	return (
-		<header className="md:h-16 md:px-6 flex flex-row items-center gap-6">
+		<header className="md:h-16 flex flex-row items-center gap-6">
+			<Toggle />
 			<Image
 				src="/logo_horizon.png"
 				alt=""

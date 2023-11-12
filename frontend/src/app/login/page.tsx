@@ -9,7 +9,7 @@ export default function Page() {
 						<Image
 							width="0"
 							height="0"
-							src="/logo_white_char.png"
+							src="/logo_horizon.png"
 							alt="MagicPost logo"
 							className="w-3/4"
 						/>

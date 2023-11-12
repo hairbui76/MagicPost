@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en" suppressHydrationWarning={true} data-theme="business">
+		<html lang="en" suppressHydrationWarning={true} data-theme="dracula">
 			<body suppressHydrationWarning={true}>
 				<AppContextProvider>{children}</AppContextProvider>
 			</body>

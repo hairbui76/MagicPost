@@ -1,5 +1,5 @@
 function Footer() {
-	return <p>Developed By Hai and Son Tung MTP</p>;
+	return <footer>Developed By Hai and Son Tung MTP</footer>;
 }
 
 export default Footer;

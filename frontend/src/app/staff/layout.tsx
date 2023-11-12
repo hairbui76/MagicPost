@@ -1,4 +1,4 @@
-import { Aside, Content, Header } from "./components";
+import { Nav, Content, Header } from "./components";
 
 export default function Layout({
 	children,
@@ -9,8 +9,8 @@ export default function Layout({
 		<>
 			<div className="h-screen">
 				<Header />
-				<div className="flex h-screen pt-16">
-					<Aside />
+				<div className="flex h-screen pt-16 relative">
+					<Nav />
 					<Content>{children}</Content>
 				</div>
 			</div>

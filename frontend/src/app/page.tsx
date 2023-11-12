@@ -38,7 +38,7 @@ export default function Page(): React.ReactNode {
 							An employee?
 							<Link href="/login">
 								<button className="btn btn-outline btn-primary btn-xs sm:btn-sm md:btn-md">
-									Sign in{" "}
+									Sign in
 								</button>
 							</Link>
 						</div>

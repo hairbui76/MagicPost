@@ -1,6 +1,6 @@
 import Footer from "./Footer/Footer";
 import Header from "./Header/Header";
-import Aside from "./Aside/Aside";
+import Nav from "./Nav/Nav";
 import Content from "./Content/Content";
 
-export { Footer, Header, Aside, Content };
+export { Footer, Header, Nav, Content };

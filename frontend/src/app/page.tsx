@@ -4,8 +4,8 @@ export default function Page(): React.ReactNode {
 	return (
 		<div className="hero min-h-screen bg-base-200 max-w-full p-4 md:p-12">
 			<div className="hero-content flex-col md:flex-row lg:gap-10">
-				<picture className="max-w-[10rem] md:max-w-xs w-full">
-					<source media="(max-width: 767px)" srcSet="/logo_no_char.png" />
+				<picture className="md:max-w-xs w-2/3">
+					<source media="(max-width: 767px)" srcSet="/logo_horizon.png" />
 					<Image
 						src="/logo_no_char.png"
 						width="0"

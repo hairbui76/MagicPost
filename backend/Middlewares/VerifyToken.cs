@@ -1,5 +1,6 @@
 using System.Net;
 using MagicPostApi.Configs;
+using MagicPostApi.Enums;
 using MagicPostApi.Models;
 using MagicPostApi.Utils;
 using Microsoft.AspNetCore.DataProtection;
@@ -100,5 +101,7 @@ public class VerifyTokenMiddleware
 public class VerifyTokenAttribute : MiddlewareFilterAttribute
 {
 	public VerifyTokenAttribute() : base(typeof(VerifyTokenMiddleware))
-	{ }
+	{
+		Order = (int)MiddlewareOrder.VERIFY_TOKEN;
+	}
 }

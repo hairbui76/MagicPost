@@ -24,8 +24,8 @@ public class AuthController : ControllerBase
 	}
 
 	[HttpGet]
-	[Route("/Auth")]
-	[MiddlewareFilter(typeof(VerifyTokenMiddleware))]
+	[Route("/auth")]
+	[VerifyToken]
 	public async Task<IActionResult> Index()
 	{
 		User? user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized");
@@ -48,9 +48,9 @@ public class AuthController : ControllerBase
 	[HttpPost]
 	public async Task<IActionResult> Login(LoginModel model)
 	{
-		User user = _mapper.Map<User>(model);
-		user = await _userService.GetAsyncByUsername(user.Username) ?? throw new AppException(HttpStatusCode.NotFound, "User not found");
-		bool isPasswordMatch = Password.Verify(user.Password, user.Password);
+		User _user = _mapper.Map<User>(model);
+		User user = await _userService.GetAsyncByUsername(_user.Username) ?? throw new AppException(HttpStatusCode.NotFound, "User not found");
+		bool isPasswordMatch = Password.Verify(user.Password, _user.Password);
 		if (!isPasswordMatch)
 			throw new AppException("Username or password incorrect");
 		var info = user.GetPublicInfo();

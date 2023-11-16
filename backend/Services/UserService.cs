@@ -49,14 +49,14 @@ public class UserService : IUserService
 	public async Task<User?> GetAsyncById(Guid id)
 			=> await _usersRepository
 						.Where(u => u.Id == id)
-						.Include(u => u.StaffPoint)
-							.ThenInclude(p => p != null ? p.Staffs : null)
-						.Include(u => u.StaffPoint)
-							.ThenInclude(p => p != null ? p.Manager : null)
-						.Include(u => u.ManagerPoint)
-							.ThenInclude(p => p != null ? p.Staffs : null)
-						.Include(u => u.ManagerPoint)
-							.ThenInclude(p => p != null ? p.Manager : null)
+						// .Include(u => u.StaffPoint)
+						// 	.ThenInclude(p => p != null ? p.Staffs : null)
+						// .Include(u => u.StaffPoint)
+						// 	.ThenInclude(p => p != null ? p.Manager : null)
+						// .Include(u => u.ManagerPoint)
+						// 	.ThenInclude(p => p != null ? p.Staffs : null)
+						// .Include(u => u.ManagerPoint)
+						// 	.ThenInclude(p => p != null ? p.Manager : null)
 						.FirstOrDefaultAsync();
 
 	public async Task<User?> GetAsyncByUsername(string username) =>

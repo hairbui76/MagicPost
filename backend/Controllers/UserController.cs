@@ -1,6 +1,7 @@
 using AutoMapper;
 using MagicPostApi.Configs;
 using MagicPostApi.Enums;
+using MagicPostApi.Middlewares;
 using MagicPostApi.Models;
 using MagicPostApi.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +26,8 @@ public class UserController : ControllerBase
 	public async Task<List<User>> GetAsync() => await _userService.GetAsync();
 
 	[HttpGet("{id}")]
+	[VerifyOwner]
+	[VerifyToken]
 	public async Task<ActionResult<User>> GetAsync(Guid id)
 	{
 		var user = await _userService.GetAsyncById(id);

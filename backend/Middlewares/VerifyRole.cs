@@ -11,18 +11,19 @@ public class VerifyRoleAttribute : TypeFilterAttribute
 	public VerifyRoleAttribute(Role role) : base(typeof(VerifyRoleFilter))
 	{
 		Arguments = new object[] { new Role[] { role } };
+		Order = (int)MiddlewareOrder.VERIFY_ROLE;
 	}
 
 	public VerifyRoleAttribute(Role[] roles) : base(typeof(VerifyRoleFilter))
 	{
 		Arguments = new object[] { roles };
+		Order = (int)MiddlewareOrder.VERIFY_ROLE;
 	}
 }
 
 public class VerifyRoleFilter : ActionFilterAttribute
 {
 	private readonly Role[] _roles;
-
 
 	public VerifyRoleFilter(Role[] roles)
 	{

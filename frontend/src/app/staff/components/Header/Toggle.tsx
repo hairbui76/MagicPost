@@ -1,17 +1,8 @@
 "use client";
-import AppContext from "@/contexts/AppContext";
-import { useContext } from "react";
-import { AppContextProps } from "@/contexts/AppContext";
-
-export default function Toggle() {
-	const { collapsed, setCollapsed } = useContext(AppContext) as AppContextProps;
-	console.log(collapsed);
+export default function Toggle({ onToggle }: { onToggle: () => void }) {
 	return (
 		<div className="flex-none">
-			<button
-				className="btn btn-square btn-ghost"
-				onClick={() => setCollapsed(!collapsed)}
-			>
+			<button className="btn btn-square btn-ghost" onClick={onToggle}>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"

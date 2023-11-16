@@ -1,3 +1,4 @@
+"use client";
 import { faBell, faDoorOpen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
@@ -5,10 +6,10 @@ import Image from "next/image";
 import Avatar from "./Avatar";
 import Toggle from "./Toggle";
 
-export default function Header() {
+export default function Header({ onToggle }: { onToggle: () => void }) {
 	return (
 		<header className="h-16 pr-6 md:gap-6 gap-4 flex flex-row items-center z-[9999] fixed w-full">
-			<Toggle />
+			<Toggle onToggle={onToggle} />
 			<picture>
 				<source media="(max-width: 767px)" srcSet="/logo_no_char.png" />
 				<Image

@@ -1,10 +1,5 @@
-"use client";
 import Menu from "./Menu";
-import AppContext from "@/contexts/AppContext";
-import { AppContextProps } from "@/contexts/AppContext";
-import { useContext } from "react";
-export default function Nav() {
-	const { collapsed } = useContext(AppContext) as AppContextProps;
+export default function Nav({ collapsed }: { collapsed: boolean }) {
 	return (
 		<nav
 			className={`${

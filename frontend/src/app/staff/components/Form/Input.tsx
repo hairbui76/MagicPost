@@ -20,12 +20,12 @@ export default function Input({
 }) {
 	const [focused, setFocused] = useState(false);
 	return (
-		<label className="text-left flex flex-col gap-1 relative">
+		<label className="text-left flex flex-1 flex-col gap-1 relative">
 			<span className="font-medium">{label}</span>
 			<input
 				type={type}
 				placeholder={placeholder}
-				className={`input w-36 md:w-48 lg:w-60 input-xs bg-transparent text-inherit focus:border-base-100 relative overflow-ellipsis border-slate-300 ${
+				className={`input input-sm bg-transparent text-inherit focus:border-base-100 relative overflow-ellipsis border-slate-300 ${
 					focused ? "invalid:border-[#FF5154] invalid:text-[#FF5154]" : ""
 				} ${className}`}
 				name={name}

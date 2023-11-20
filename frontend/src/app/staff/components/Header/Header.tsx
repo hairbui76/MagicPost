@@ -1,14 +1,14 @@
 "use client";
 import { faBell, faDoorOpen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import Avatar from "./Avatar";
 import Toggle from "./Toggle";
 
 export default function Header({ onToggle }: { onToggle: () => void }) {
 	return (
-		<header className="h-16 pr-6 md:gap-6 gap-4 flex flex-row items-center z-[9999] fixed w-full">
+		<header className="p-4 h-16 pr-6 md:gap-6 gap-4 flex flex-row items-center z-[9999] fixed w-full">
 			<Toggle onToggle={onToggle} />
 			<picture>
 				<source media="(max-width: 767px)" srcSet="/logo_no_char.png" />
@@ -24,7 +24,7 @@ export default function Header({ onToggle }: { onToggle: () => void }) {
 			<input
 				type="text"
 				placeholder="Search"
-				className="input input-bordered input-sm w-1/2 md:max-w-sm ml-auto mr-auto"
+				className="input input-bordered input-sm flex-1"
 			/>
 			<FontAwesomeIcon icon={faBell} className=" ml-auto h-4" />
 			<Avatar src="/default_avatar.png" />

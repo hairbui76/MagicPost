@@ -6,6 +6,7 @@ import {
 	faPenToSquare,
 	faPodcast,
 	faUser,
+	faTruckFast,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -33,6 +34,10 @@ const AccountEditCustomIcon = () => (
 	<CustomIcon component={() => <FontAwesomeIcon icon={faPenToSquare} />} />
 );
 
+const DeliveryCustomIcon = () => (
+	<CustomIcon component={() => <FontAwesomeIcon icon={faTruckFast} />} />
+);
+
 export {
 	AccountEditCustomIcon,
 	DocumentCustomIcon,
@@ -40,4 +45,5 @@ export {
 	NewspaperCustomIcon,
 	PodcastCustomIcon,
 	UserCustomIcon,
+	DeliveryCustomIcon,
 };

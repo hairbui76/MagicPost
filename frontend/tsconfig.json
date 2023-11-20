@@ -16,7 +16,13 @@
 		"plugins": [{ "name": "next" }],
 		"paths": {
 			"@/*": ["./src/*"]
-		}
+		},
+		"noEmitOnError": true,
+		"sourceMap": true,
+		"noImplicitAny": true,
+		"noUnusedParameters": true,
+		"noUnusedLocals": true,
+		"noImplicitReturns": true
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
 	"exclude": ["node_modules"]

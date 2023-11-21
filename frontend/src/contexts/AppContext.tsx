@@ -12,8 +12,6 @@ import {
 type MenuKey = "home" | "forum" | "resources" | "account";
 
 export type AppContextProps = {
-	collapsed: boolean;
-	setCollapsed: Dispatch<SetStateAction<boolean>>;
 	menuKey: MenuKey;
 	setMenuKey: Dispatch<SetStateAction<MenuKey>>;
 	user: any;
@@ -23,7 +21,6 @@ export type AppContextProps = {
 const AppContext = createContext<AppContextProps | null>(null);
 
 const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
-	const [collapsed, setCollapsed] = useState(false);
 	const pathname = usePathname();
 	const [menuKey, setMenuKey] = useState<MenuKey>("home");
 	const [user, setUser] = useState(null);
@@ -41,9 +38,7 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
 	}, []);
 
 	return (
-		<AppContext.Provider
-			value={{ collapsed, setCollapsed, menuKey, setMenuKey, user, setUser }}
-		>
+		<AppContext.Provider value={{ menuKey, setMenuKey, user, setUser }}>
 			{children}
 		</AppContext.Provider>
 	);

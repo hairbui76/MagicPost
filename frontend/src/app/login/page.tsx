@@ -1,6 +1,36 @@
+"use client";
+import { AppContext } from "@/contexts";
+import { AppContextProps } from "@/contexts/AppContext";
 import Image from "next/image";
-import Link from "next/link";
+import { MouseEventHandler, useContext, useState } from "react";
+import { toast } from "react-toastify";
+
 export default function Page() {
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const { setUser } = useContext(AppContext) as AppContextProps;
+	const handleLogin: MouseEventHandler<HTMLButtonElement> = async (e) => {
+		e.preventDefault();
+		const res = await fetch(`${process.env.NEXT_PUBLIC_AUTH_ENDPOINT}/login`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: "include",
+			body: JSON.stringify({ email, password }),
+		});
+		const response = await res.json();
+		if (res.status === 200) {
+			setUser(response.user);
+			toast(response.message, {
+				type: "success",
+			});
+		} else {
+			toast(response.message, {
+				type: "error",
+			});
+		}
+	};
 	return (
 		<div className="hero min-h-screen bg-base-200 p-4 md:p-12">
 			<div className="hero-content flex-col lg:flex-row lg:gap-6">
@@ -31,6 +61,8 @@ export default function Page() {
 								type="email"
 								placeholder="email"
 								className="input input-bordered"
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
 								required
 							/>
 						</div>
@@ -42,6 +74,8 @@ export default function Page() {
 								type="password"
 								placeholder="password"
 								className="input input-bordered"
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
 								required
 							/>
 							<label className="label">
@@ -51,9 +85,9 @@ export default function Page() {
 							</label>
 						</div>
 						<div className="form-control mt-6">
-							<Link href="/staff">
-								<button className="btn btn-primary ">Login</button>
-							</Link>
+							<button className="btn btn-primary" onClick={handleLogin}>
+								Login
+							</button>
 						</div>
 					</form>
 				</div>

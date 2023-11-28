@@ -17,7 +17,7 @@ export default function Layout({
 		<CollapsedContext.Provider value={{ collapsed, setCollapsed }}>
 			<div className="h-screen">
 				<Header onToggle={() => setCollapsed(!collapsed)} />
-				<div className="flex h-screen pt-16 relative">
+				<div className="flex h-screen relative">
 					<Nav />
 					<Content>{children}</Content>
 				</div>

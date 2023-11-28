@@ -6,8 +6,8 @@ export default function Nav() {
 	return (
 		<nav
 			className={`${
-				collapsed ? "hidden" : "absolute sm:relative w-full sm:w-56"
-			} z-[9998] bg-base-100 h-full`}
+				collapsed ? "hidden" : "fixed sm:relative w-full sm:w-56"
+			} z-[9998] bg-base-100 h-screen pt-16`}
 		>
 			<Menu />
 		</nav>

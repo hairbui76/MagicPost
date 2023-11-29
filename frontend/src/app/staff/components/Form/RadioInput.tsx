@@ -1,5 +1,3 @@
-import InputContainer from "./InputContainer";
-
 export default function RadioInput({
 	label,
 	name,
@@ -23,7 +21,7 @@ export default function RadioInput({
 				onChange={onChange}
 				className="mr-3 "
 			/>
-			<span>{label}</span>
+			<span className="text-sm">{label}</span>
 		</label>
 	);
 }

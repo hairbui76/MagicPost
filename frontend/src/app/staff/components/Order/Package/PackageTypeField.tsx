@@ -1,14 +1,22 @@
+import { Dispatch, SetStateAction } from "react";
 import RadioInput from "../../Form/RadioInput";
-import { PackageTypeProps } from "./PackageFieldset";
 
-export default function PackageType({ value, handleChange }: PackageTypeProps) {
+export type PackageTypeProps = {
+	value: "parcel" | "document";
+	handleChange: Dispatch<SetStateAction<"parcel" | "document">>;
+};
+
+export default function PackageTypeField({
+	value,
+	handleChange,
+}: PackageTypeProps) {
 	const types = [
 		{ label: "Parcel", value: "parcel" },
 		{ label: "Document", value: "document" },
 	];
 	return (
 		<div>
-			<div className="text-lg font-medium mb-4">Package Type</div>
+			<div className="text-md font-medium mb-2">Package Type</div>
 			<div className="flex flex-row gap-44">
 				{types.map((type) => (
 					<RadioInput

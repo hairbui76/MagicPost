@@ -31,6 +31,7 @@ export default function CustomerFieldset({
 		<Fieldset
 			legend={legend}
 			icon={type === "sender" ? faUserPen : faUserCheck}
+			className="sm:flex-row"
 		>
 			<TextInput
 				label="Full name"

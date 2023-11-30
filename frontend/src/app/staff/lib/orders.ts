@@ -2,11 +2,8 @@
 
 import { useReducer, useState } from "react";
 import uniqid from "uniqid";
-import {
-	ItemProps,
-	PackageOrderProps,
-	PackageProperties,
-} from "../types/orders";
+import { OrderProps } from "../types/Order/orders";
+import { ItemProps, PackageProperties } from "../types/Order/package";
 
 const emptyOrder = {
 	sender: { name: "", address: "", phone: "" },
@@ -16,9 +13,14 @@ const emptyOrder = {
 		items: [] as Array<ItemProps>,
 		properties: [] as Array<PackageProperties>,
 	},
+	extraData: {
+		cod: 0,
+		payer: "sender" as "sender" | "receiver",
+		note: "",
+	},
 };
 
-export function useOrderState(order: PackageOrderProps = emptyOrder) {
+export function useOrderState(order: OrderProps = emptyOrder) {
 	const [sender, setSender] = useState(order.sender);
 	const [receiver, setReceiver] = useState(order.receiver);
 	const [type, setType] = useState(order.packageInfo.type);
@@ -29,6 +31,19 @@ export function useOrderState(order: PackageOrderProps = emptyOrder) {
 	const [packageProperties, setPackageProperties] = useState(
 		order.packageInfo.properties as Array<PackageProperties>
 	);
+	const [cod, setCod] = useState(order.extraData.cod);
+	const [payer, setPayer] = useState(order.extraData.payer);
+	const [note, setNote] = useState(order.extraData.note);
+
+	function resetOrder() {
+		setSender(emptyOrder.sender);
+		setReceiver(emptyOrder.receiver);
+		setType(emptyOrder.packageInfo.type);
+		itemsDispatch({ type: "items_reset" });
+		setCod(emptyOrder.extraData.cod);
+		setPayer(emptyOrder.extraData.payer);
+		setNote(emptyOrder.extraData.note);
+	}
 
 	return {
 		sender: {
@@ -53,6 +68,21 @@ export function useOrderState(order: PackageOrderProps = emptyOrder) {
 				handleChange: setPackageProperties,
 			},
 		},
+		extraData: {
+			cod: {
+				value: cod,
+				handleChange: setCod,
+			},
+			payer: {
+				value: payer,
+				handleChange: setPayer,
+			},
+			note: {
+				value: note,
+				handleChange: setNote,
+			},
+		},
+		resetOrder,
 	};
 }
 
@@ -78,6 +108,9 @@ function itemsReducer(
 		}
 		case "item_removed": {
 			return items.filter((curItem) => item && curItem.id !== item.id);
+		}
+		case "items_reset": {
+			return [];
 		}
 	}
 	return [];

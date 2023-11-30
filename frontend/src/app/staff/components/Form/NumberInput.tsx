@@ -12,6 +12,7 @@ export default function NumberInput({
 	handleChange,
 	numberType = "int",
 	minValue = 0,
+	disabled = false,
 }: {
 	label: string;
 	placeholder: string;
@@ -22,6 +23,7 @@ export default function NumberInput({
 	handleChange: (value: number) => void;
 	numberType?: "int" | "float";
 	minValue?: number;
+	disabled?: boolean;
 }) {
 	const [focused, setFocused] = useState(false);
 	return (
@@ -38,13 +40,14 @@ export default function NumberInput({
 				value={value}
 				onChange={(e) =>
 					handleChange(
-						numberType === "int"
+						(numberType === "int"
 							? parseInt(e.currentTarget.value)
-							: parseFloat(e.currentTarget.value)
+							: parseFloat(e.currentTarget.value)) | 0
 					)
 				}
 				min={minValue}
 				step={numberType === "int" ? 1 : 0.1}
+				disabled={disabled}
 			/>
 		</InputContainer>
 	);

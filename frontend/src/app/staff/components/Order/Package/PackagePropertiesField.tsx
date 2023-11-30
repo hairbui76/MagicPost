@@ -1,8 +1,8 @@
-import Checkbox from "../../Form/Checkbox";
 import {
-	PackagePropertiesProps,
 	PACKAGE_PROPERTIES,
-} from "@/app/staff/types/orders";
+	PackagePropertiesProps,
+} from "@/app/staff/types/Order/package";
+import Checkbox from "../../Form/Checkbox";
 
 export default function PackagePropertiesField({
 	value,

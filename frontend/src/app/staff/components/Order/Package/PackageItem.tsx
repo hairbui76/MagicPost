@@ -3,7 +3,7 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import NumberInput from "../../Form/NumberInput";
 import TextInput from "../../Form/TextInput";
 import { Dispatch } from "react";
-import { ItemProps } from "@/app/staff/types/orders";
+import { ItemProps } from "@/app/staff/types/Order/package";
 
 export default function PackageItem({
 	index,

@@ -1,21 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
 
-export type CustomerProps = {
-	name: string;
-	address: string;
-	phone: string;
-};
-
-export type PackageOrderProps = {
-	sender: CustomerProps;
-	receiver: CustomerProps;
-	packageInfo: {
-		type: "parcel" | "document";
-		items: Array<ItemProps>;
-		properties: Array<PackageProperties>;
-	};
-};
-
 export type PackageProps = {
 	type: PackageTypeProps;
 	items: PackageItemsProps;

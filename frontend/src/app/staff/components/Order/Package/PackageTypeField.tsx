@@ -1,5 +1,5 @@
+import { PackageTypeProps } from "@/app/staff/types/Order/package";
 import RadioInput from "../../Form/RadioInput";
-import { PackageTypeProps } from "@/app/staff/types/orders";
 
 export default function PackageTypeField({
 	value,
@@ -20,7 +20,7 @@ export default function PackageTypeField({
 						value={type.value}
 						name="package-type"
 						checked={value === type.value}
-						onChange={() => {
+						handleChange={() => {
 							if (value !== type.value)
 								handleChange(type.value as "parcel" | "document");
 						}}

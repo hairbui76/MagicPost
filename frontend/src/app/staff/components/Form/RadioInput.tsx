@@ -3,13 +3,13 @@ export default function RadioInput({
 	name,
 	value,
 	checked = false,
-	onChange,
+	handleChange,
 }: {
 	label: string;
 	value: string;
 	name: string;
 	checked?: boolean;
-	onChange: () => void;
+	handleChange: (value: string) => void;
 }) {
 	return (
 		<label>
@@ -18,7 +18,7 @@ export default function RadioInput({
 				value={value}
 				name={name}
 				checked={checked}
-				onChange={onChange}
+				onChange={(e) => handleChange(e.currentTarget.value)}
 				className="mr-3 "
 			/>
 			<span className="text-sm">{label}</span>

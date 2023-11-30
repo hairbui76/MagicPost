@@ -3,14 +3,7 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import NumberInput from "../../Form/NumberInput";
 import TextInput from "../../Form/TextInput";
 import { Dispatch } from "react";
-
-export type ItemProps = {
-	id: string;
-	name: string;
-	quantity: number;
-	weight: number;
-	value: number;
-};
+import { ItemProps } from "@/app/staff/types/orders";
 
 export default function PackageItem({
 	index,
@@ -28,11 +21,11 @@ export default function PackageItem({
 	}>;
 }) {
 	return (
-		<div key={id} className="border-2 p-4 rounded-lg mb-4 relative">
+		<div className="border-2 p-4 rounded-lg relative">
 			<div className="font-medium mb-2">#{index + 1}</div>
 			<div className="sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-2 flex flex-col">
 				<TextInput
-					name="name"
+					name="item-name"
 					label={`Name`}
 					placeholder="Item name"
 					required={true}
@@ -45,7 +38,7 @@ export default function PackageItem({
 					}
 				/>
 				<NumberInput
-					name="quantity"
+					name="item-quantity"
 					label="Quantity"
 					placeholder="Quantity"
 					required={true}
@@ -59,7 +52,7 @@ export default function PackageItem({
 					minValue={1}
 				/>
 				<NumberInput
-					name="weight"
+					name="item-weight"
 					label="Weight"
 					placeholder="Weight"
 					required={true}
@@ -73,7 +66,7 @@ export default function PackageItem({
 					numberType="float"
 				/>
 				<NumberInput
-					name="value"
+					name="item-value"
 					label="Value"
 					placeholder="Value"
 					value={value}

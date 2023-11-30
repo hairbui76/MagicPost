@@ -1,10 +1,5 @@
-import { Dispatch, SetStateAction } from "react";
 import RadioInput from "../../Form/RadioInput";
-
-export type PackageTypeProps = {
-	value: "parcel" | "document";
-	handleChange: Dispatch<SetStateAction<"parcel" | "document">>;
-};
+import { PackageTypeProps } from "@/app/staff/types/orders";
 
 export default function PackageTypeField({
 	value,

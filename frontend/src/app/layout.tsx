@@ -1,5 +1,4 @@
 import { AppContextProvider } from "@/contexts/AppContext";
-import withAuth from "@/utils/withAuth";
 import { Metadata } from "next/types";
 import "./globals.css";
 
@@ -8,7 +7,7 @@ export const metadata: Metadata = {
 	description: "Developed by Hai and Son Tung MTP",
 };
 
-function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="en" suppressHydrationWarning={true} data-theme="dracula">
 			<body suppressHydrationWarning={true}>
@@ -17,5 +16,3 @@ function Layout({ children }: { children: React.ReactNode }) {
 		</html>
 	);
 }
-
-export default withAuth(Layout);

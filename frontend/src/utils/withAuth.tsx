@@ -4,29 +4,41 @@ import {
 	QueryClientProvider,
 	useQuery,
 } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { getUser } from ".";
 
 const queryClient = new QueryClient();
 
+// Receive a component as parameter
 function withAuth(Component: (props: any) => JSX.Element) {
 	function AuthComponent(props: any) {
+		const router = useRouter();
 		const { isPending, error, data } = useQuery({
 			queryKey: ["data"],
 			queryFn: getUser,
 		});
 
-		if (isPending) return "Loading...";
+		useEffect(() => {
+			if (!data || !data.user) {
+				router.push("/login");
+				return;
+			}
+		}, [data, router]);
 
-		if (error) return "An error has occurred: " + error.message;
+		if (isPending) return <div>Loading...</div>;
 
-		console.log(data);
+		if (error) return <div>{"An error has occurred: " + error.message}</div>;
+
+		if (!data || !data.user) return <></>;
 
 		return <Component {...props} />;
 	}
-	return function AuthProvider() {
+	// If don't have props here, the Component passed in will not have props too
+	return function AuthProvider(props: any) {
 		return (
 			<QueryClientProvider client={queryClient}>
-				<AuthComponent />
+				<AuthComponent {...props} />
 			</QueryClientProvider>
 		);
 	};

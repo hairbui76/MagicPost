@@ -24,3 +24,11 @@ body {
 		font-size: 20px;
 	}
 }
+
+.custom-input {
+	@apply input input-sm bg-transparent text-inherit focus:border-base-100 relative overflow-ellipsis border-slate-300 disabled:opacity-40;
+}
+
+.custom-input-invalid {
+	@apply border-custom-red;
+}

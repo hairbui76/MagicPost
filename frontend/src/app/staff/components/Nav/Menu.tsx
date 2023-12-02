@@ -44,6 +44,7 @@ export default function Menu() {
 
 	return (
 		<ul className="menu w-full rounded-box">
+			<MenuItem label="Home" path="/staff" />
 			<SubMenu label="Orders">{orderItems}</SubMenu>
 			<SubMenu label="Deliveries">{deliveryItems}</SubMenu>
 			<SubMenu label="Management">{managementItems}</SubMenu>

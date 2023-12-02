@@ -4,8 +4,8 @@ export default function Content({
 	children: Array<React.ReactNode>;
 }) {
 	return (
-		<div className="bg-[#FCFCFC] text-[#363635] w-full overflow-auto p-4 text-justify md:px-12">
+		<main className="bg-[#E8EEF2] text-[#363635] w-full overflow-auto p-4 text-justify md:px-12 mt-16">
 			{children}
-		</div>
+		</main>
 	);
 }

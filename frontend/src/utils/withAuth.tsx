@@ -4,7 +4,7 @@ import {
 	QueryClientProvider,
 	useQuery,
 } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { getUser } from ".";
 
@@ -18,13 +18,14 @@ function withAuth(Component: (props: any) => JSX.Element) {
 			queryKey: ["data"],
 			queryFn: getUser,
 		});
+		const pathname = usePathname();
 
 		useEffect(() => {
-			if (!data || !data.user) {
+			if (!isPending && (!data || !data.user)) {
 				router.push("/login");
 				return;
 			}
-		}, [data, router]);
+		}, [isPending, data, router, pathname]);
 
 		if (isPending) return <div>Loading...</div>;
 

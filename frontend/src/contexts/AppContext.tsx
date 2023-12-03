@@ -8,6 +8,7 @@ import {
 } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { getUser } from "../utils/index";
 
 type MenuKey = "home" | "forum" | "resources" | "account";
 
@@ -25,13 +26,12 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
 	const [user, setUser] = useState(null);
 	useEffect(() => {
 		(async () => {
-			const res = await fetch(`${process.env.NEXT_PUBLIC_AUTH_ENDPOINT}`, {
-				credentials: "include",
-			});
-			const response = await res.json();
-			if (res.status === 200) {
+			try {
+				const res = await getUser();
+				setUser(res.user);
 				console.log("Authenticated!!!");
-				setUser(response.user);
+			} catch (e) {
+				console.log(e);
 			}
 		})();
 	}, []);

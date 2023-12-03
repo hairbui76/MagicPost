@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
 import { ItemProps, PackageProperties } from "./package";
 
 export type CustomerProps = {
@@ -8,6 +7,7 @@ export type CustomerProps = {
 };
 
 export type OrderProps = {
+	id: string;
 	sender: CustomerProps;
 	receiver: CustomerProps;
 	packageInfo: {
@@ -20,4 +20,6 @@ export type OrderProps = {
 		payer: "sender" | "receiver";
 		note: string;
 	};
+	createdAt: Date | null;
+	status: string;
 };

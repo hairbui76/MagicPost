@@ -6,6 +6,8 @@ module.exports = {
 			colors: {
 				"custom-red": "#FF5154",
 				"custom-grey": "#EBECEF",
+				"custom-text-color": "#363635",
+				"custom-white": "#FFFFFC",
 			},
 		},
 	},

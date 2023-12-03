@@ -4,11 +4,13 @@ import { AppContextProps } from "@/contexts/AppContext";
 import Image from "next/image";
 import { MouseEventHandler, useContext, useState } from "react";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const { setUser } = useContext(AppContext) as AppContextProps;
+	const router = useRouter();
 	const handleLogin: MouseEventHandler<HTMLButtonElement> = async (e) => {
 		e.preventDefault();
 		const res = await fetch(`${process.env.NEXT_PUBLIC_AUTH_ENDPOINT}/login`, {
@@ -22,9 +24,7 @@ export default function Page() {
 		const response = await res.json();
 		if (res.status === 200) {
 			setUser(response.user);
-			toast(response.message, {
-				type: "success",
-			});
+			router.push("/staff");
 		} else {
 			toast(response.message, {
 				type: "error",

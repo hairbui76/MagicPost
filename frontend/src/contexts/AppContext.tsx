@@ -1,6 +1,4 @@
 "use client";
-import config from "@/configs/config";
-import { usePathname } from "next/navigation";
 import {
 	Dispatch,
 	SetStateAction,
@@ -8,6 +6,8 @@ import {
 	useEffect,
 	useState,
 } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 type MenuKey = "home" | "forum" | "resources" | "account";
 
@@ -21,12 +21,11 @@ export type AppContextProps = {
 const AppContext = createContext<AppContextProps | null>(null);
 
 const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
-	const pathname = usePathname();
 	const [menuKey, setMenuKey] = useState<MenuKey>("home");
 	const [user, setUser] = useState(null);
 	useEffect(() => {
 		(async () => {
-			const res = await fetch(`${config.API_ENDPOINT}/auth`, {
+			const res = await fetch(`${process.env.NEXT_PUBLIC_AUTH_ENDPOINT}`, {
 				credentials: "include",
 			});
 			const response = await res.json();
@@ -40,6 +39,7 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<AppContext.Provider value={{ menuKey, setMenuKey, user, setUser }}>
 			{children}
+			<ToastContainer />
 		</AppContext.Provider>
 	);
 };

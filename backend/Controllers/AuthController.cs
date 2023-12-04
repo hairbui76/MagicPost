@@ -48,9 +48,14 @@ public class AuthController : ControllerBase
 	[HttpPost]
 	public async Task<IActionResult> Login(LoginModel model)
 	{
-		User _user = _mapper.Map<User>(model);
-		User user = await _userService.GetAsyncByUsername(_user.Username) ?? throw new AppException(HttpStatusCode.NotFound, "User not found");
-		bool isPasswordMatch = Password.Verify(user.Password, _user.Password);
+		if (model.Username == null && model.Email == null) throw new AppException("Please provide username or email to login");
+		User loginUser = _mapper.Map<User>(model);
+		User user;
+		if (model.Username != null)
+			user = await _userService.GetAsyncByUsername(loginUser.Username) ?? throw new AppException(HttpStatusCode.NotFound, "User not found");
+		else
+			user = await _userService.GetAsyncByEmail(loginUser.Email) ?? throw new AppException(HttpStatusCode.NotFound, "User not found");
+		bool isPasswordMatch = Password.Verify(user.Password, loginUser.Password);
 		if (!isPasswordMatch)
 			throw new AppException("Username or password incorrect");
 		var info = user.GetPublicInfo();

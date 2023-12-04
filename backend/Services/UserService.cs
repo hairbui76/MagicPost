@@ -14,6 +14,7 @@ public interface IUserService
 	Task<List<User>> GetAsync();
 	Task<User?> GetAsyncById(Guid id);
 	Task<User?> GetAsyncByUsername(string username);
+	Task<User?> GetAsyncByEmail(string email);
 	Task CreateAsync(User newUser);
 	Task UpdateAsync(Guid id, UpdateUserModel model);
 	Task<(string, DateTime)> PrepareAccessToken(PublicInfo info);
@@ -61,6 +62,9 @@ public class UserService : IUserService
 
 	public async Task<User?> GetAsyncByUsername(string username) =>
 			await _usersRepository.FirstOrDefaultAsync(x => x.Username == username);
+
+	public async Task<User?> GetAsyncByEmail(string email) =>
+			await _usersRepository.FirstOrDefaultAsync(x => x.Email == email);
 
 	public async Task CreateAsync(User newUser)
 	{

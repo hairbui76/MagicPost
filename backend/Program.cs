@@ -66,11 +66,11 @@ if (app.Environment.IsDevelopment())
 }
 
 {
-	// Add cors support
 	app.UseCors(x => x
-			.AllowAnyOrigin()
+			.WithOrigins("http://localhost:3000")
 			.AllowAnyMethod()
-			.AllowAnyHeader());
+			.AllowAnyHeader()
+			.AllowCredentials());
 
 	// HTTP logging
 	// app.UseHttpLogging();

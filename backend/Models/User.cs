@@ -9,6 +9,7 @@ public class User : Model
 	public Guid? Id { get; set; }
 	public required string Name { get; set; }
 	public required string Username { get; set; }
+	public required string Email { get; set; }
 	public required string Password { get; set; }
 	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 	public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
@@ -24,7 +25,7 @@ public class User : Model
 
 	// Get public user information
 	public PublicInfo GetPublicInfo()
-			=> new() { Id = Id, Name = Name, Username = Username };
+			=> new() { Id = Id, Name = Name, Username = Username, Email = Email };
 }
 
 public class PublicInfo
@@ -32,11 +33,12 @@ public class PublicInfo
 	public Guid? Id { get; set; }
 	public required string Name { get; set; }
 	public required string Username { get; set; }
+	public required string Email { get; set; }
 }
 
 public class LoginModel : Model
 {
-	[Required]
+	public string? Email { get; set; }
 	public string? Username { get; set; }
 	[Required]
 	public string? Password { get; set; }
@@ -47,6 +49,8 @@ public class RegisterModel : Model
 	[Required]
 	public string? Name { get; set; }
 	[Required]
+	public string? Email { get; set; }
+	[Required]
 	public string? Username { get; set; }
 	[Required]
 	public string? Password { get; set; }
@@ -56,6 +60,7 @@ public class UpdateUserModel : Model
 {
 	public string? Name { get; set; }
 	public string? Username { get; set; }
+	public string? Email { get; set; }
 	public string? Password { get; set; }
 	public Guid? StaffPointId { get; set; }
 	public Guid? ManagerPointId { get; set; }

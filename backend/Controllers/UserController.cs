@@ -28,6 +28,7 @@ public class UserController : ControllerBase
 	[HttpGet("{id}")]
 	[VerifyOwner]
 	[VerifyToken]
+	[VerifyRole(new Role[] {Role.COMPANY_ADMINISTRATOR})]
 	public async Task<ActionResult<User>> GetAsync(Guid id)
 	{
 		var user = await _userService.GetAsyncById(id);
@@ -37,6 +38,8 @@ public class UserController : ControllerBase
 	}
 
 	[HttpPut("{id}")]
+	[VerifyOwner]
+	[VerifyToken]
 	public async Task<ActionResult> UpdateUserAsync(Guid id, UpdateUserModel model)
 	{
 		await _userService.UpdateAsync(id, model);

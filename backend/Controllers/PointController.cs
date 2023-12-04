@@ -11,8 +11,6 @@ namespace MagicPostApi.Controllers;
 
 [ApiController]
 [Route("[controller]/[action]")]
-[VerifyToken]
-[VerifyRole(new Role[] { Role.COMPANY_ADMINISTRATOR, Role.TRANSACTION_POINT_MANAGER, Role.TRANSACION_STAFF })]
 public class PointController : ControllerBase
 {
 
@@ -57,6 +55,8 @@ public class PointController : ControllerBase
 	}
 
 	[HttpPost]
+	[VerifyToken]
+	[VerifyRole(Role.COMPANY_ADMINISTRATOR)]
 	public async Task<IActionResult> CreateGatheringPoint(CreatePointModel model)
 	{
 		Point gatheringPoint = _mapper.Map<Point>(model);
@@ -66,6 +66,9 @@ public class PointController : ControllerBase
 	}
 
 	[HttpPut("{id}")]
+	[VerifyToken]
+	[VerifyOwner]
+	[VerifyRole(new Role[] {Role.COMPANY_ADMINISTRATOR, Role.TRANSACTION_POINT_MANAGER, Role.GATHERING_POINT_MANAGER})]
 	public async Task<IActionResult> UpdatePointAsync(Guid id, UpdatePointModel model)
 	{
 		await _pointService.UpdateAsync(id, model);

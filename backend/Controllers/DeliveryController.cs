@@ -22,14 +22,18 @@ public class DeliveryController : ControllerBase
 	}
 
 	[HttpGet]
+	[VerifyToken]
 	public async Task<List<Delivery>> GetAsync()
 			=> await _deliveryService.GetAsync();
 
 	[HttpGet("{id}")]
+	[VerifyOwner]
+	[VerifyToken]
 	public async Task<Delivery?> GetAsync(Guid id)
 			=> await _deliveryService.GetAsync(id);
 
 	[HttpPost]
+	[VerifyToken]
 	public async Task<IActionResult> CreateAsync(CreateDeliveryModel model)
 	{
 		Delivery delivery = _mapper.Map<Delivery>(model);

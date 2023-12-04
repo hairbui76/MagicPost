@@ -9,8 +9,6 @@ namespace MagicPostApi.Controllers;
 
 [ApiController]
 [Route("[controller]/[action]")]
-[VerifyToken]
-[VerifyRole(new Role[] { Role.COMPANY_ADMINISTRATOR, Role.TRANSACTION_POINT_MANAGER, Role.TRANSACION_STAFF })]
 public class OrderController : ControllerBase
 {
 	private readonly IMapper _mapper;
@@ -22,6 +20,7 @@ public class OrderController : ControllerBase
 	}
 
 	[HttpGet]
+	[VerifyToken]
 	public async Task<List<Order>> GetAsync()
 			=> await _orderService.GetAsync();
 
@@ -30,6 +29,9 @@ public class OrderController : ControllerBase
 			=> await _orderService.GetAsync(id);
 
 	[HttpPut("{id}")]
+	[VerifyToken]
+	[VerifyOwner]
+	[VerifyRole(new Role[] {Role.TRANSACION_STAFF, Role.GATHERING_STAFF})]
 	public async Task<IActionResult> UpdateAsync(Guid id, UpdateOrderModel model)
 	{
 		await _orderService.UpdateAsync(id, model);
@@ -37,6 +39,8 @@ public class OrderController : ControllerBase
 	}
 
 	[HttpPost]
+	[VerifyToken]
+	[VerifyRole(new Role[] {Role.TRANSACION_STAFF, Role.GATHERING_STAFF})]
 	public async Task<IActionResult> CreateAsync(CreateOrderModel model)
 	{
 		Order order = _mapper.Map<Order>(model);

@@ -40,6 +40,7 @@ export default function CustomerFieldset({
 				name={`${type}-name`}
 				value={name}
 				handleChange={(name) => handleChange({ ...info, name })}
+				className="sm:w-1/3"
 			/>
 			<Select
 				label="Address"
@@ -48,6 +49,7 @@ export default function CustomerFieldset({
 				value={address}
 				handleChange={(address) => handleChange({ ...info, address })}
 				options={fakeAddressOptions}
+				className="sm:w-1/3"
 			/>
 			<TextInput
 				label="Phone"
@@ -55,6 +57,7 @@ export default function CustomerFieldset({
 				name={`${type}-phone`}
 				value={phone}
 				handleChange={(phone) => handleChange({ ...info, phone })}
+				className="sm:w-1/3"
 			/>
 		</Fieldset>
 	);

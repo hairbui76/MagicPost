@@ -1,9 +1,15 @@
 import { OrderProps } from "@/app/staff/types/Order/orders";
 import { format } from "date-fns";
 
-export default function OrderSummary({ order }: { order: OrderProps }) {
+export default function OrderSummary({
+	order,
+	visible = false,
+}: {
+	order: OrderProps;
+	visible?: boolean;
+}) {
 	return (
-		<tr>
+		<tr className={`${visible ? "" : "hidden"}`}>
 			{[
 				"actions",
 				order.id,

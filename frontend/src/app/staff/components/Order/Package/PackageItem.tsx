@@ -21,9 +21,9 @@ export default function PackageItem({
 	}>;
 }) {
 	return (
-		<div className="border-2 p-4 rounded-lg relative">
+		<div className="border-2 px-4 py-2 rounded-lg relative">
 			<div className="font-medium mb-2">#{index + 1}</div>
-			<div className="sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-2 flex flex-col">
+			<div className="sm:grid sm:grid-cols-2 sm:gap-2 flex flex-col">
 				<TextInput
 					name="item-name"
 					label={`Name`}
@@ -36,6 +36,7 @@ export default function PackageItem({
 							item: { id, name, quantity, weight, value },
 						})
 					}
+					className="text-xs"
 				/>
 				<NumberInput
 					name="item-quantity"
@@ -50,6 +51,7 @@ export default function PackageItem({
 						})
 					}
 					minValue={1}
+					className="text-xs"
 				/>
 				<NumberInput
 					name="item-weight"
@@ -64,6 +66,7 @@ export default function PackageItem({
 						})
 					}
 					numberType="float"
+					className="text-xs"
 				/>
 				<NumberInput
 					name="item-value"
@@ -76,6 +79,7 @@ export default function PackageItem({
 							item: { id, name, quantity, weight, value },
 						})
 					}
+					className="text-xs"
 				/>
 			</div>
 			<button

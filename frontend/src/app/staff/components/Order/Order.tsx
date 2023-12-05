@@ -42,25 +42,31 @@ export default function Order({
 	};
 
 	return (
-		<Form handleSubmit={() => handleSubmit(newOrder)}>
-			<CustomerFieldset
-				type="sender"
-				info={sender.value}
-				handleChange={sender.handleChange}
-			/>
-			<CustomerFieldset
-				type="receiver"
-				info={receiver.value}
-				handleChange={receiver.handleChange}
-			/>
-			<PackageFieldset {...packageInfo} />
-			<ExtraDataFieldset {...{ ...extraData, packageValue }} />
-			<div className="flex flex-row gap-4">
-				<PrimaryButton type="submit">Confirm</PrimaryButton>
-				<SecondaryButton type="reset" handleClick={() => resetOrder()}>
-					Reset
-				</SecondaryButton>
-			</div>
-		</Form>
+		<div>
+			<div className="text-2xl font-medium mb-4">New Order</div>
+			<Form
+				handleSubmit={() => handleSubmit(newOrder)}
+				className="w-full gap-4 lg:grid lg:grid-cols-2 flex flex-col"
+			>
+				<CustomerFieldset
+					type="sender"
+					info={sender.value}
+					handleChange={sender.handleChange}
+				/>
+				<CustomerFieldset
+					type="receiver"
+					info={receiver.value}
+					handleChange={receiver.handleChange}
+				/>
+				<PackageFieldset {...packageInfo} />
+				<ExtraDataFieldset {...{ ...extraData, packageValue }} />
+				<div className="flex flex-row gap-4">
+					<PrimaryButton type="submit">Confirm</PrimaryButton>
+					<SecondaryButton type="reset" handleClick={() => resetOrder()}>
+						Reset
+					</SecondaryButton>
+				</div>
+			</Form>
+		</div>
 	);
 }

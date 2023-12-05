@@ -5,7 +5,7 @@ export function PayerField({ value, handleChange }: PayerProps) {
 	return (
 		<div className="flex flex-col gap-2">
 			<div className="font-medium">Payer</div>
-			<div className="flex flex-row gap-24">
+			<div className="flex flex-row justify-between">
 				<RadioInput
 					label="Sender"
 					name="payer"

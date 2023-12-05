@@ -1,11 +1,13 @@
 "use client";
+import { AppContext } from "@/contexts";
+import { AppContextProps } from "@/contexts/AppContext";
 import {
 	QueryClient,
 	QueryClientProvider,
 	useQuery,
 } from "@tanstack/react-query";
-import { useRouter, usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useContext, useEffect } from "react";
 import { getUser } from ".";
 
 const queryClient = new QueryClient();
@@ -19,13 +21,15 @@ function withAuth(Component: (props: any) => JSX.Element) {
 			queryFn: getUser,
 		});
 		const pathname = usePathname();
+		const { setUser } = useContext(AppContext) as AppContextProps;
 
 		useEffect(() => {
 			if (!isPending && (!data || !data.user)) {
 				router.push("/login");
-				return;
+			} else if (data && data.user) {
+				setUser(data.user);
 			}
-		}, [isPending, data, router, pathname]);
+		}, [isPending, data, router, pathname, setUser]);
 
 		if (isPending) return <div>Loading...</div>;
 

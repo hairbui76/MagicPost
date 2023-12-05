@@ -8,25 +8,27 @@ import {
 } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect } from "react";
+import { toast } from "react-toastify";
 import { getUser } from ".";
 
 const queryClient = new QueryClient();
 
-// Receive a component as parameter
 function withAuth(Component: (props: any) => JSX.Element) {
 	function AuthComponent(props: any) {
+		const { setUser } = useContext(AppContext) as AppContextProps;
 		const router = useRouter();
 		const { isPending, error, data } = useQuery({
 			queryKey: ["data"],
 			queryFn: getUser,
 		});
 		const pathname = usePathname();
-		const { setUser } = useContext(AppContext) as AppContextProps;
 
 		useEffect(() => {
 			if (!isPending && (!data || !data.user)) {
+				toast.error("You must login first before performing this action");
 				router.push("/login");
 			} else if (data && data.user) {
+				toast.success(data.message);
 				setUser(data.user);
 			}
 		}, [isPending, data, router, pathname, setUser]);

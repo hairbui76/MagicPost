@@ -17,12 +17,11 @@ const AppContext = createContext<AppContextProps | null>(null);
 const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
 	const [menuKey, setMenuKey] = useState<MenuKey>("home");
 	const [user, setUser] = useState(null);
-	console.log(user);
 
 	return (
 		<AppContext.Provider value={{ menuKey, setMenuKey, user, setUser }}>
 			{children}
-			<ToastContainer />
+			<ToastContainer style={{ fontSize: "0.8rem" }} />
 		</AppContext.Provider>
 	);
 };

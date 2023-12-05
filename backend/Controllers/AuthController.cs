@@ -102,7 +102,7 @@ public class AuthController : ControllerBase
 		return Ok(new { message = "Register successfully!", user = info });
 	}
 
-	[HttpPost]
+	[HttpGet]
 	public IActionResult Logout()
 	{
 		Response.Cookies.Delete("access_token");

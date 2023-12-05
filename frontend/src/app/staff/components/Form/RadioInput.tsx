@@ -12,14 +12,14 @@ export default function RadioInput({
 	handleChange: (value: string) => void;
 }) {
 	return (
-		<label>
+		<label className="flex items-center">
 			<input
 				type="radio"
 				value={value}
 				name={name}
 				checked={checked}
 				onChange={(e) => handleChange(e.currentTarget.value)}
-				className="mr-3 "
+				className="radio radio-xs mr-3 border-gray-500"
 			/>
 			<span className="text-sm">{label}</span>
 		</label>

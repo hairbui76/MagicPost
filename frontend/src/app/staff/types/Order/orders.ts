@@ -7,6 +7,9 @@ export type CustomerProps = {
 };
 
 export type OrderProps = {
+	status?: string;
+	createdAt?: string | null;
+	id?: string;
 	sender: CustomerProps;
 	receiver: CustomerProps;
 	packageInfo: {

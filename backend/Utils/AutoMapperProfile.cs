@@ -47,7 +47,5 @@ public class AutoMapperProfile : Profile
 				.ForAllMembers(x => x.Condition(IgnoreNullAndEmptyString));
 		// CreateDeliveryModel -> Delivery
 		CreateMap<CreateDeliveryModel, Delivery>();
-		// ItemProps -> Item
-		CreateMap<ItemProps, Item>();
 	}
 }

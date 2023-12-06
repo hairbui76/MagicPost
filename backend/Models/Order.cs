@@ -17,7 +17,7 @@ public class Order : Model
 	public required string ReceiverPhone { get; set; }
 	public IList<Delivery> Deliveries { get; } = new List<Delivery>();
 	public List<Item> Items { get; set; } = new List<Item>();
-	public string? Properties { get; set; }
+	public required string Properties { get; set; }
 	public string? Type { get; set; }
 	public int Cod { get; set; }
 	public required string Payer { get; set; }
@@ -26,6 +26,17 @@ public class Order : Model
 	public DateTime CreatedAt = DateTime.UtcNow;
 	public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 	public OrderState Status { get; set; } = OrderState.PENDING;
+	public PublicOrderInfo GetPublicOrderInfo()
+			=> new()
+			{
+				Id = Id,
+				CreatedAt = CreatedAt,
+				Status = Status,
+				Sender = new() { Name = SenderName, Address = SenderAddress, Phone = SenderPhone },
+				Receiver = new() { Name = ReceiverName, Address = ReceiverAddress, Phone = ReceiverPhone },
+				PackageInfo = new() { Type = Type, Items = Items, Properties = Properties.Split("-").ToList() },
+				ExtraData = new() { Cod = Cod, Payer = Payer, Note = Note },
+			};
 }
 
 public class CreateOrderModel : Model
@@ -40,20 +51,22 @@ public class CreateOrderModel : Model
 	public required ExtraData ExtraData { get; set; }
 }
 
-public class ItemProps
+public class PublicOrderInfo : Model
 {
 	public Guid? Id { get; set; }
-	public string? Name { get; set; }
-	public int Quantity { get; set; }
-	public double Value { get; set; }
-	public double Weight { get; set; }
+	public DateTime? CreatedAt { get; set; }
+	public OrderState? Status { get; set; }
+	public required CustomerProps Sender { get; set; }
+	public required CustomerProps Receiver { get; set; }
+	public required PackageInfo PackageInfo { get; set; }
+	public required ExtraData ExtraData { get; set; }
 }
 
 public class PackageInfo
 {
 	public string? Type { get; set; }
-	public IList<ItemProps> Items { get; set; } = new List<ItemProps>();
-	public IList<string> Properties { get; set; } = new List<string>();
+	public List<Item> Items { get; set; } = new List<Item>();
+	public List<string> Properties { get; set; } = new List<string>();
 }
 
 public class ExtraData

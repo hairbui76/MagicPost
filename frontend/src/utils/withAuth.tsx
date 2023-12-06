@@ -35,7 +35,10 @@ function Error({ message }: { message: string }) {
 	);
 }
 
-function withAuth(Component: (props: any) => JSX.Element) {
+function withAuth(
+	Component: (props: any) => JSX.Element,
+	shouldOverride: boolean = false
+) {
 	function CheckAuthComponent(props: any) {
 		const { setUser } = useContext(AppContext) as AppContextProps;
 		const router = useRouter();
@@ -64,8 +67,9 @@ function withAuth(Component: (props: any) => JSX.Element) {
 
 		return <Component {...props} />;
 	}
-	function AuthComponent(props: any) {
+	function AuthComponent({ withAuth, ...props }: { withAuth: boolean }) {
 		const { user } = useContext(AppContext) as AppContextProps;
+		if (shouldOverride && withAuth) return <Component {...props} />;
 		if (user) return <Component {...props} />;
 		return <CheckAuthComponent {...props} />;
 	}
@@ -73,7 +77,7 @@ function withAuth(Component: (props: any) => JSX.Element) {
 	return function AuthProvider(props: any) {
 		return (
 			<QueryClientProvider client={queryClient}>
-				<AuthComponent {...props} />
+				<AuthComponent {...props} withAuth={true} />
 			</QueryClientProvider>
 		);
 	};

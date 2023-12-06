@@ -21,8 +21,11 @@ public class OrderController : ControllerBase
 
 	[HttpGet]
 	[VerifyToken]
-	public async Task<List<Order>> GetAsync()
-			=> await _orderService.GetAsync();
+	public async Task<IActionResult> GetAsync()
+	{
+		List<PublicOrderInfo> orders = await _orderService.GetAsync();
+		return Ok(new { message = "Get orders successfully", orders });
+	}
 
 	[HttpGet("{id}")]
 	public async Task<Order?> GetAsync(Guid id)

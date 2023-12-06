@@ -5,7 +5,8 @@ import uniqid from "uniqid";
 import { OrderProps } from "../types/Order/orders";
 import { ItemProps, PackageProperties } from "../types/Order/package";
 
-const emptyOrder = {
+export const emptyOrder = {
+	id: "",
 	sender: { name: "", address: "", phone: "" },
 	receiver: { name: "", address: "", phone: "" },
 	packageInfo: {
@@ -18,9 +19,11 @@ const emptyOrder = {
 		payer: "sender" as "sender" | "receiver",
 		note: "",
 	},
+	createdAt: null,
+	status: "",
 };
 
-export function useOrderState(order: OrderProps = emptyOrder) {
+export function useOrderState(order: OrderProps) {
 	const [sender, setSender] = useState(order.sender);
 	const [receiver, setReceiver] = useState(order.receiver);
 	const [type, setType] = useState(order.packageInfo.type);
@@ -46,6 +49,7 @@ export function useOrderState(order: OrderProps = emptyOrder) {
 	}
 
 	return {
+		id: order.id,
 		sender: {
 			value: sender,
 			handleChange: setSender,
@@ -83,6 +87,7 @@ export function useOrderState(order: OrderProps = emptyOrder) {
 			},
 		},
 		resetOrder,
+		createdAt: order.createdAt,
 	};
 }
 

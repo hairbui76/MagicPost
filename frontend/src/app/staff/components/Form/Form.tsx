@@ -1,12 +1,20 @@
+"use client";
+
 export default function Form({
 	children,
-	action,
+	handleSubmit,
 }: {
-	children: React.ReactNode;
-	action: (formData: FormData) => void;
+	children: React.ReactNode | Array<React.ReactNode>;
+	handleSubmit: () => void;
 }) {
 	return (
-		<form className="w-full flex flex-col gap-4" action={action}>
+		<form
+			className="w-full flex flex-col gap-4"
+			onSubmit={(e) => {
+				e.preventDefault();
+				handleSubmit();
+			}}
+		>
 			{children}
 		</form>
 	);

@@ -103,8 +103,6 @@ public class AuthController : ControllerBase
 	}
 
 	[HttpPost]
-	[VerifyOwner]
-	[VerifyToken]
 	public IActionResult Logout()
 	{
 		Response.Cookies.Delete("access_token");

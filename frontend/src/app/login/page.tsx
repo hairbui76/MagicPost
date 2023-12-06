@@ -3,13 +3,13 @@ import { AppContext } from "@/contexts";
 import { AppContextProps } from "@/contexts/AppContext";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { MouseEventHandler, useContext, useEffect, useState } from "react";
+import { MouseEventHandler, useContext, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function Page() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const { user, setUser } = useContext(AppContext) as AppContextProps;
+	const { setUser } = useContext(AppContext) as AppContextProps;
 	const router = useRouter();
 	const handleLogin: MouseEventHandler<HTMLButtonElement> = async (e) => {
 		e.preventDefault();
@@ -24,6 +24,7 @@ export default function Page() {
 		const response = await res.json();
 		if (res.status === 200) {
 			setUser(response.user);
+			router.push("/staff");
 			toast.success(response.message);
 		} else {
 			toast(response.message, {
@@ -31,9 +32,6 @@ export default function Page() {
 			});
 		}
 	};
-	useEffect(() => {
-		if (user) router.replace("/staff");
-	}, [user, router]);
 	return (
 		<div className="hero min-h-screen bg-base-200 p-4 md:p-12">
 			<div className="hero-content flex-col lg:flex-row lg:gap-6">

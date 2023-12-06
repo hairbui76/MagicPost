@@ -6,6 +6,7 @@ import {
 	QueryClientProvider,
 	useQuery,
 } from "@tanstack/react-query";
+import { Skeleton } from "antd";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect } from "react";
 import { toast } from "react-toastify";
@@ -14,7 +15,7 @@ import { getUser } from ".";
 const queryClient = new QueryClient();
 
 function withAuth(Component: (props: any) => JSX.Element) {
-	function AuthComponent(props: any) {
+	function CheckAuthComponent(props: any) {
 		const { setUser } = useContext(AppContext) as AppContextProps;
 		const router = useRouter();
 		const { isPending, error, data } = useQuery({
@@ -33,13 +34,36 @@ function withAuth(Component: (props: any) => JSX.Element) {
 			}
 		}, [isPending, data, router, pathname, setUser]);
 
-		if (isPending) return <div>Loading...</div>;
+		if (isPending) return <Skeleton active />;
 
-		if (error) return <div>{"An error has occurred: " + error.message}</div>;
+		if (error)
+			return (
+				<div role="alert" className="alert alert-error">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						className="stroke-current shrink-0 h-6 w-6"
+						fill="none"
+						viewBox="0 0 24 24"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth="2"
+							d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+						/>
+					</svg>
+					<span>{`An error has occurred: ${error.message}`}</span>
+				</div>
+			);
 
 		if (!data || !data.user) return <></>;
 
 		return <Component {...props} />;
+	}
+	function AuthComponent(props: any) {
+		const { user } = useContext(AppContext) as AppContextProps;
+		if (user) return <Component {...props} />;
+		return <CheckAuthComponent {...props} />;
 	}
 	// If don't have props here, the Component passed in will not have props too
 	return function AuthProvider(props: any) {

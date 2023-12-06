@@ -12,6 +12,7 @@ export default function Header({ onToggle }: { onToggle: () => void }) {
 	const handleLogout = async () => {
 		const res = await fetch(`${process.env.NEXT_PUBLIC_AUTH_ENDPOINT}/logout`, {
 			credentials: "include",
+			method: "POST",
 		});
 		const response = await res.json();
 		if (res.status === 200) {

@@ -71,6 +71,11 @@ public class WebAPIDataContext : DbContext
 			.HasOne(tg => tg.TransactionPoint)
 			.WithMany()
 			.HasForeignKey(tg => tg.TransacionPointId);
+
+		modelBuilder.Entity<Item>()
+			.HasOne(i => i.Order)
+			.WithMany(o => o.Items)
+			.HasForeignKey(i => i.OrderId);
 	}
 	protected override void OnConfiguring(DbContextOptionsBuilder options)
 	{
@@ -83,4 +88,5 @@ public class WebAPIDataContext : DbContext
 	public DbSet<Trans_Gather> Trans_Gathers { get; set; }
 	public DbSet<Order> Orders { get; set; }
 	public DbSet<Delivery> Deliveries { get; set; }
+	public DbSet<Item> Items {get; set;}
 }

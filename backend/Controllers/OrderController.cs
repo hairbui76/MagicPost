@@ -40,7 +40,7 @@ public class OrderController : ControllerBase
 
 	[HttpPost]
 	[VerifyToken]
-	[VerifyRole(new Role[] {Role.TRANSACION_STAFF, Role.GATHERING_STAFF})]
+	//[VerifyRole(new Role[] {Role.TRANSACION_STAFF, Role.GATHERING_STAFF})]
 	public async Task<IActionResult> CreateAsync(CreateOrderModel model)
 	{
 		Order order = _mapper.Map<Order>(model);

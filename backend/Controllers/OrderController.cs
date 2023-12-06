@@ -31,7 +31,7 @@ public class OrderController : ControllerBase
 	[HttpPut("{id}")]
 	[VerifyToken]
 	[VerifyOwner]
-	[VerifyRole(new Role[] {Role.TRANSACION_STAFF, Role.GATHERING_STAFF})]
+	[VerifyRole(new Role[] { Role.TRANSACION_STAFF, Role.GATHERING_STAFF })]
 	public async Task<IActionResult> UpdateAsync(Guid id, UpdateOrderModel model)
 	{
 		await _orderService.UpdateAsync(id, model);

@@ -58,7 +58,12 @@ public class WebAPIDataContext : DbContext
 
 		// Order has many deliveries
 		modelBuilder.Entity<Order>()
-			.HasMany(d => d.Deliveries)
+			.HasMany(o => o.Deliveries)
+			.WithOne()
+			.HasForeignKey(e => e.OrderId);
+
+		modelBuilder.Entity<Order>()
+			.HasMany(o => o.Items)
 			.WithOne()
 			.HasForeignKey(e => e.OrderId);
 
@@ -71,11 +76,6 @@ public class WebAPIDataContext : DbContext
 			.HasOne(tg => tg.TransactionPoint)
 			.WithMany()
 			.HasForeignKey(tg => tg.TransacionPointId);
-
-		modelBuilder.Entity<Item>()
-			.HasOne(i => i.Order)
-			.WithMany(o => o.Items)
-			.HasForeignKey(i => i.OrderId);
 	}
 	protected override void OnConfiguring(DbContextOptionsBuilder options)
 	{
@@ -88,5 +88,5 @@ public class WebAPIDataContext : DbContext
 	public DbSet<Trans_Gather> Trans_Gathers { get; set; }
 	public DbSet<Order> Orders { get; set; }
 	public DbSet<Delivery> Deliveries { get; set; }
-	public DbSet<Item> Items {get; set;}
+	public DbSet<Item> Items { get; set; }
 }

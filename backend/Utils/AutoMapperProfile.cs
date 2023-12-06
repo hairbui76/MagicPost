@@ -2,6 +2,7 @@ namespace MagicPostApi.Utils;
 
 using AutoMapper;
 using MagicPostApi.Models;
+using MagicPostApi.Enums;
 
 public class AutoMapperProfile : Profile
 {
@@ -39,9 +40,8 @@ public class AutoMapperProfile : Profile
 				.ForMember(order => order.Type, opt => opt.MapFrom(createModel => createModel.PackageInfo.Type))
 				.ForMember(order => order.Properties, opt => opt.MapFrom(createModel => string.Join("-", createModel.PackageInfo.Properties)))
 				.ForMember(order => order.Cod, opt => opt.MapFrom(createModel => createModel.ExtraData.Cod))
-				.ForMember(order => order.Payer, opt => opt.MapFrom(createModel => createModel.ExtraData.Payer))
-				.ForMember(order => order.Note, opt => opt.MapFrom(createModel => createModel.ExtraData.Note))
-				.ForMember(order => order.CreateAt, opt => opt.MapFrom(createModel => createModel.CreateAt));
+				.ForMember(order => order.Payer, opt => opt.MapFrom(createModel => createModel.ExtraData.Payer == "sender" ? PayType.SENDER : PayType.RECEIVER))
+				.ForMember(order => order.Note, opt => opt.MapFrom(createModel => createModel.ExtraData.Note));
 		// UpdateOrderModel -> Order
 		CreateMap<UpdateOrderModel, Order>()
 				.ForAllMembers(x => x.Condition(IgnoreNullAndEmptyString));

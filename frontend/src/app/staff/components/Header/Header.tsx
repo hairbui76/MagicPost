@@ -2,11 +2,25 @@
 import { faBell, faDoorOpen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 import Avatar from "./Avatar";
 import Toggle from "./Toggle";
 
 export default function Header({ onToggle }: { onToggle: () => void }) {
+	const router = useRouter();
+	const handleLogout = async () => {
+		const res = await fetch(`${process.env.NEXT_PUBLIC_AUTH_ENDPOINT}/logout`, {
+			credentials: "include",
+		});
+		const response = await res.json();
+		if (res.status === 200) {
+			toast.success(response.message);
+			router.replace("/login");
+		} else {
+			toast.error(response.message);
+		}
+	};
 	return (
 		<header className="p-4 h-16 pr-6 md:gap-6 gap-4 flex flex-row items-center z-[9999] fixed w-full">
 			<Toggle onToggle={onToggle} />
@@ -28,10 +42,8 @@ export default function Header({ onToggle }: { onToggle: () => void }) {
 			/>
 			<FontAwesomeIcon icon={faBell} className=" ml-auto h-4" />
 			<Avatar src="/default_avatar.png" />
-			<button>
-				<Link href="/login">
-					<FontAwesomeIcon icon={faDoorOpen} className="h-4" />
-				</Link>
+			<button onClick={handleLogout}>
+				<FontAwesomeIcon icon={faDoorOpen} className="h-4" />
 			</button>
 		</header>
 	);

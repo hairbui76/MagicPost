@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using MagicPostApi.Enums;
 
 namespace MagicPostApi.Models;
@@ -30,9 +31,13 @@ public class User : Model
 
 public class PublicInfo
 {
+	[JsonPropertyName("id")]
 	public Guid? Id { get; set; }
+	[JsonPropertyName("name")]
 	public required string Name { get; set; }
+	[JsonPropertyName("username")]
 	public required string Username { get; set; }
+	[JsonPropertyName("email")]
 	public required string Email { get; set; }
 }
 

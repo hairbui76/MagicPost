@@ -1,18 +1,21 @@
 "use client";
+import { AppContext } from "@/contexts";
+import { AppContextProps } from "@/contexts/AppContext";
 import {
 	QueryClient,
 	QueryClientProvider,
 	useQuery,
 } from "@tanstack/react-query";
-import { useRouter, usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useContext, useEffect } from "react";
+import { toast } from "react-toastify";
 import { getUser } from ".";
 
 const queryClient = new QueryClient();
 
-// Receive a component as parameter
 function withAuth(Component: (props: any) => JSX.Element) {
 	function AuthComponent(props: any) {
+		const { setUser } = useContext(AppContext) as AppContextProps;
 		const router = useRouter();
 		const { isPending, error, data } = useQuery({
 			queryKey: ["data"],
@@ -22,10 +25,13 @@ function withAuth(Component: (props: any) => JSX.Element) {
 
 		useEffect(() => {
 			if (!isPending && (!data || !data.user)) {
+				toast.error("You must login first before performing this action");
 				router.push("/login");
-				return;
+			} else if (data && data.user) {
+				toast.success(data.message);
+				setUser(data.user);
 			}
-		}, [isPending, data, router, pathname]);
+		}, [isPending, data, router, pathname, setUser]);
 
 		if (isPending) return <div>Loading...</div>;
 

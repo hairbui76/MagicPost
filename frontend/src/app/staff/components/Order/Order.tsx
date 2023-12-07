@@ -8,6 +8,7 @@ import Form from "../Form/Form";
 import CustomerFieldset from "./Customer/CustomerFieldset";
 import ExtraDataFieldset from "./ExtraData/ExtraDataFieldset";
 import PackageFieldset from "./Package/PackageFieldset";
+import Title from "../Title/Title";
 
 export default function Order({
 	order = null,
@@ -43,7 +44,7 @@ export default function Order({
 
 	return (
 		<div>
-			<div className="text-2xl font-medium mb-4">New Order</div>
+			<Title>New Order</Title>
 			<Form
 				handleSubmit={() => handleSubmit(newOrder)}
 				className="w-full gap-4 lg:grid lg:grid-cols-2 flex flex-col"

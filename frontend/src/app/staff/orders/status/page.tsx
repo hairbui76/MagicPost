@@ -1,10 +1,10 @@
 "use client";
 
-import withAuth from "@/utils/withAuth";
 import { useEffect, useState } from "react";
 import OrdersSummaryTable from "./components/OrdersSummaryTable";
 import { OrderProps } from "../../types/Order/orders";
 import { emptyOrder } from "../../utils/orders";
+import Title from "../../components/Title/Title";
 
 const sampleOrders = (() => {
 	const res = [];
@@ -45,7 +45,12 @@ function Page() {
 
 		setOrders(sampleOrders);
 	}, []);
-	return <OrdersSummaryTable orders={orders} />;
+	return (
+		<div>
+			<Title>Order Status</Title>
+			<OrdersSummaryTable orders={orders} />
+		</div>
+	);
 }
 
-export default withAuth(Page);
+export default Page;

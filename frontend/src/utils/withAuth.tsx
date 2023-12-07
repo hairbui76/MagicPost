@@ -1,18 +1,12 @@
 "use client";
 import { AppContext } from "@/contexts";
 import { AppContextProps } from "@/contexts/AppContext";
-import {
-	QueryClient,
-	QueryClientProvider,
-	useQuery,
-} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "antd";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 import { getUser } from ".";
-
-const queryClient = new QueryClient();
 
 function Error({ message }: { message: string }) {
 	return (
@@ -75,11 +69,7 @@ function withAuth(
 	}
 	// If don't have props here, the Component passed in will not have props too
 	return function AuthProvider(props: any) {
-		return (
-			<QueryClientProvider client={queryClient}>
-				<AuthComponent {...props} withAuth={true} />
-			</QueryClientProvider>
-		);
+		return <AuthComponent {...props} withAuth={true} />;
 	};
 }
 

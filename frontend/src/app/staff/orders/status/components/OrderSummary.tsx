@@ -1,9 +1,11 @@
 import { OrderProps } from "@/app/staff/types/Order/orders";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 
 export default function OrderSummary({ order }: { order: OrderProps }) {
+	const router = useRouter();
 	return (
-		<tr>
+		<tr onClick={() => router.push(`/view/${order.id}`)}>
 			{[
 				"actions",
 				order.id,

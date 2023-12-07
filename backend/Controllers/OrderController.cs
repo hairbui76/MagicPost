@@ -3,7 +3,9 @@ using MagicPostApi.Enums;
 using MagicPostApi.Middlewares;
 using MagicPostApi.Models;
 using MagicPostApi.Services;
+using MagicPostApi.Utils;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace MagicPostApi.Controllers;
 
@@ -28,8 +30,11 @@ public class OrderController : ControllerBase
 	}
 
 	[HttpGet("{id}")]
-	public async Task<Order?> GetAsync(Guid id)
-			=> await _orderService.GetAsync(id);
+	public async Task<IActionResult> GetAsync(Guid id)
+	{
+		PublicOrderInfo? order = await _orderService.GetAsync(id) ?? throw new AppException(HttpStatusCode.NotFound, "Order not found");
+		return Ok(new { message = "Get order successfully", order });
+	}
 
 	[HttpPut("{id}")]
 	[VerifyToken]

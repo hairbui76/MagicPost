@@ -32,3 +32,12 @@ body {
 .custom-input-invalid {
 	@apply border-custom-red;
 }
+
+.border-cl {
+	box-shadow:
+		2px 0 0 0 #000,
+		0 2px 0 0 #000,
+		2px 2px 0 0 #000,
+		2px 0 0 0 #000 inset,
+		0 2px 0 0 #000 inset;
+}

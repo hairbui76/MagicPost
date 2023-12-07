@@ -58,7 +58,12 @@ public class WebAPIDataContext : DbContext
 
 		// Order has many deliveries
 		modelBuilder.Entity<Order>()
-			.HasMany(d => d.Deliveries)
+			.HasMany(o => o.Deliveries)
+			.WithOne()
+			.HasForeignKey(e => e.OrderId);
+
+		modelBuilder.Entity<Order>()
+			.HasMany(o => o.Items)
 			.WithOne()
 			.HasForeignKey(e => e.OrderId);
 
@@ -83,4 +88,5 @@ public class WebAPIDataContext : DbContext
 	public DbSet<Trans_Gather> Trans_Gathers { get; set; }
 	public DbSet<Order> Orders { get; set; }
 	public DbSet<Delivery> Deliveries { get; set; }
+	public DbSet<Item> Items { get; set; }
 }

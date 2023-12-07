@@ -7,7 +7,9 @@ export type CustomerProps = {
 };
 
 export type OrderProps = {
-	id: string;
+	status?: string;
+	createdAt?: string | null;
+	id?: string;
 	sender: CustomerProps;
 	receiver: CustomerProps;
 	packageInfo: {
@@ -20,6 +22,4 @@ export type OrderProps = {
 		payer: "sender" | "receiver";
 		note: string;
 	};
-	createdAt: Date | null;
-	status: string;
 };

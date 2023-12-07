@@ -6,44 +6,78 @@ import {
 	QueryClientProvider,
 	useQuery,
 } from "@tanstack/react-query";
+import { Skeleton } from "antd";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect } from "react";
+import { toast } from "react-toastify";
 import { getUser } from ".";
 
 const queryClient = new QueryClient();
 
-// Receive a component as parameter
-function withAuth(Component: (props: any) => JSX.Element) {
-	function AuthComponent(props: any) {
+function Error({ message }: { message: string }) {
+	return (
+		<div role="alert" className="alert alert-error">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				className="stroke-current shrink-0 h-6 w-6"
+				fill="none"
+				viewBox="0 0 24 24"
+			>
+				<path
+					strokeLinecap="round"
+					strokeLinejoin="round"
+					strokeWidth="2"
+					d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+				/>
+			</svg>
+			<span>{message}</span>
+		</div>
+	);
+}
+
+function withAuth(
+	Component: (props: any) => JSX.Element,
+	shouldOverride: boolean = false
+) {
+	function CheckAuthComponent(props: any) {
+		const { setUser } = useContext(AppContext) as AppContextProps;
 		const router = useRouter();
 		const { isPending, error, data } = useQuery({
 			queryKey: ["data"],
 			queryFn: getUser,
 		});
 		const pathname = usePathname();
-		const { setUser } = useContext(AppContext) as AppContextProps;
 
 		useEffect(() => {
 			if (!isPending && (!data || !data.user)) {
+				toast.error("You must login first before performing this action");
 				router.push("/login");
 			} else if (data && data.user) {
+				toast.success(data.message);
 				setUser(data.user);
 			}
 		}, [isPending, data, router, pathname, setUser]);
 
-		if (isPending) return <div>Loading...</div>;
+		if (isPending) return <Skeleton active />;
 
-		if (error) return <div>{"An error has occurred: " + error.message}</div>;
+		if (error)
+			return <Error message={`An error has occurred: ${error.message}`} />;
 
 		if (!data || !data.user) return <></>;
 
 		return <Component {...props} />;
 	}
+	function AuthComponent({ withAuth, ...props }: { withAuth: boolean }) {
+		const { user } = useContext(AppContext) as AppContextProps;
+		if (shouldOverride && withAuth) return <Component {...props} />;
+		if (user) return <Component {...props} />;
+		return <CheckAuthComponent {...props} />;
+	}
 	// If don't have props here, the Component passed in will not have props too
 	return function AuthProvider(props: any) {
 		return (
 			<QueryClientProvider client={queryClient}>
-				<AuthComponent {...props} />
+				<AuthComponent {...props} withAuth={true} />
 			</QueryClientProvider>
 		);
 	};

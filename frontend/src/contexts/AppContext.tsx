@@ -21,7 +21,7 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<AppContext.Provider value={{ menuKey, setMenuKey, user, setUser }}>
 			{children}
-			<ToastContainer />
+			<ToastContainer style={{ fontSize: "0.8rem" }} />
 		</AppContext.Provider>
 	);
 };

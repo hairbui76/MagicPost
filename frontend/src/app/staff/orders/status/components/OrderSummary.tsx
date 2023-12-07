@@ -13,7 +13,7 @@ export default function OrderSummary({
 			{[
 				"actions",
 				order.id,
-				format(order.createdAt as Date, "yyyy/MM/dd HH:mm:ss"),
+				format(new Date(order.createdAt!), "yyyy/MM/dd HH:mm:ss"),
 				order.packageInfo.type,
 				order.sender.name,
 				order.receiver.name,

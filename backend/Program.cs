@@ -1,20 +1,24 @@
 using MagicPostApi.Services;
 using MagicPostApi.Configs;
 using MagicPostApi.Middlewares;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json.Serialization;
 
 // Load environments from .env file
 DotNetEnv.Env.Load();
 // Create builder
 var builder = WebApplication.CreateBuilder(args);
 {
-	// Serialize JSON response
-	// Set PropertyNamingPolicy to null for remaining properties naming policy
-	// Can be set to CamelCase instead of null
 	builder.Services.AddControllers()
-			.AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
+			// Serialize JSON response
+			// Set PropertyNamingPolicy to null for remaining properties naming policy
+			// Can be set to CamelCase instead of null
+			.AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null)
+			// Then Ignore cycle during Serialization
+			.AddJsonOptions(option => option.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
+			// Response json serialization always lowercase the first character
+			.AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
 	// Add custom Validation error handler for Models
 	builder.Services.Configure<ApiBehaviorOptions>(o =>
 			{

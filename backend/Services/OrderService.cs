@@ -9,7 +9,7 @@ namespace MagicPostApi.Services;
 
 public interface IOrderService
 {
-	Task<List<Order>> GetAsync();
+	Task<List<PublicOrderInfo>> GetAsync();
 	Task<Order?> GetAsync(Guid id);
 	Task UpdateAsync(Guid id, UpdateOrderModel model);
 	Task CreateAsync(Order newOrder);
@@ -20,14 +20,19 @@ public class OrderService : IOrderService
 	private readonly IMapper _mapper;
 	private readonly WebAPIDataContext _webAPIDataContext;
 	private readonly DbSet<Order> _ordersRepository;
+	private readonly DbSet<Item> _itemsRepository;
 	public OrderService(IMapper mapper, WebAPIDataContext webAPIDataContext)
 	{
 		_mapper = mapper;
 		_webAPIDataContext = webAPIDataContext;
 		_ordersRepository = webAPIDataContext.Orders;
+		_itemsRepository = webAPIDataContext.Items;
 	}
-	public async Task<List<Order>> GetAsync()
-			=> await _ordersRepository.ToListAsync();
+	public async Task<List<PublicOrderInfo>> GetAsync()
+			=> await _ordersRepository
+						.Include(o => o.Items)
+						.Select(o => o.GetPublicOrderInfo())
+						.ToListAsync();
 
 	public async Task<Order?> GetAsync(Guid id)
 			=> await _ordersRepository
@@ -45,6 +50,8 @@ public class OrderService : IOrderService
 
 	public async Task CreateAsync(Order newOrder)
 	{
+		List<Item> items = newOrder.Items;
+		await items.ForEachAsync(async item => await _itemsRepository.AddAsync(item));
 		await _ordersRepository.AddAsync(newOrder);
 		await _webAPIDataContext.SaveChangesAsync();
 	}

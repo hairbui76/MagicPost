@@ -1,7 +1,9 @@
 "use client";
 
+import { toast } from "react-toastify";
 import Order from "../../components/Order/Order";
 import { OrderProps } from "../../types/Order/orders";
+
 export default function Page() {
 	async function handleSubmit(order: OrderProps) {
 		const itemsWithoutID = order.packageInfo.items.map(
@@ -15,15 +17,13 @@ export default function Page() {
 		};
 		// TODO: Change DB schema to match OrderProps
 		const body = {
-			SenderName: processedOrders.sender.name,
-			SenderAddress: processedOrders.sender.address,
-			SenderPhone: processedOrders.sender.phone,
-			Receiver: processedOrders.receiver.name,
-			ReceiverAddress: processedOrders.receiver.address,
-			ReceiverPhone: processedOrders.receiver.phone,
+			sender: processedOrders.sender,
+			receiver: processedOrders.receiver,
+			packageInfo: processedOrders.packageInfo,
+			extraData: processedOrders.extraData,
 		};
-		const result = await fetch(
-			`${process.env.NEXT_PUBLIC_CREATE_ORDER_ENDPOINT}`,
+		const res = await fetch(
+			`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/create`,
 			{
 				method: "POST",
 				body: JSON.stringify(body),
@@ -32,8 +32,13 @@ export default function Page() {
 					"Content-Type": "application/json",
 				},
 			}
-		).then((response) => response.json());
-		console.log(result);
+		);
+		const response = await res.json();
+		if (res.status === 200) {
+			toast.success(response.message);
+		} else {
+			toast.error(response.message);
+		}
 	}
 	return <Order handleSubmit={handleSubmit} />;
 }

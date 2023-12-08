@@ -2,6 +2,10 @@
 import { OrderProps } from "@/app/staff/types/Order/orders";
 import OrderSummary from "./OrderSummary";
 import { useState } from "react";
+import Pagination from "@/app/staff/components/Pagination/Pagination";
+import OrderFilter from "./OrderFilter";
+import compareAsc from "date-fns/compareAsc";
+import moment, { Moment } from "moment";
 
 export default function OrdersSummaryTable({
 	orders,
@@ -9,11 +13,60 @@ export default function OrdersSummaryTable({
 	orders: Array<OrderProps>;
 }) {
 	const [pageNumber, setPageNumber] = useState(1);
+	const [statusFilter, setStatusFilter] = useState("all");
+	const [timeRange, setTimeRange] = useState<Array<Moment | null>>([
+		null,
+		null,
+	]);
+	const [categoryFilter, setCategoryFilter] = useState("all");
+
+	function filterOrders(orders: Array<OrderProps>) {
+		return orders.filter((order) => {
+			const { status, packageInfo, createdAt } = order;
+			if (statusFilter !== "all" && status !== statusFilter) {
+				console.log(1);
+				return false;
+			}
+			if (categoryFilter !== "all" && packageInfo.type !== categoryFilter) {
+				console.log(2);
+
+				return false;
+			}
+			if (
+				timeRange[0] &&
+				compareAsc(timeRange[0].toDate(), new Date(createdAt || "")) === 1
+			) {
+				console.log(3);
+
+				return false;
+			}
+			if (
+				timeRange[1] &&
+				compareAsc(timeRange[1].toDate(), new Date(createdAt || "")) === -1
+			) {
+				console.log(4);
+
+				return false;
+			}
+			return true;
+		});
+	}
+
 	return (
-		<div className="overflow-x-auto bg-custom-white">
-			<table className="table table-sm ">
-				<thead className="text-custom-text-color ">
-					<tr>
+		<div className="flex flex-col items-center gap-4">
+			<OrderFilter
+				{...{
+					statusFilter,
+					setStatusFilter,
+					timeRange,
+					setTimeRange,
+					categoryFilter,
+					setCategoryFilter,
+				}}
+			/>
+			<table className="table table-sm overflow-x-auto bg-custom-white rounded-md shadow-md">
+				<thead className="text-custom-text-color">
+					<tr className="border-b-2 border-custom-grey">
 						{[
 							"",
 							"ID",
@@ -30,7 +83,7 @@ export default function OrdersSummaryTable({
 					</tr>
 				</thead>
 				<tbody>
-					{orders.map((order, index) => (
+					{filterOrders(orders).map((order, index) => (
 						<OrderSummary
 							key={order.id}
 							order={order}
@@ -39,6 +92,11 @@ export default function OrdersSummaryTable({
 					))}
 				</tbody>
 			</table>
+			<Pagination
+				numberOfPages={Math.floor(orders.length / 20 + 1)}
+				pageNumber={pageNumber}
+				setPageNumber={setPageNumber}
+			/>
 		</div>
 	);
 }

@@ -37,6 +37,7 @@ export function useOrderState(order: OrderProps) {
 	const [cod, setCod] = useState(order.extraData.cod);
 	const [payer, setPayer] = useState(order.extraData.payer);
 	const [note, setNote] = useState(order.extraData.note);
+	const [status, setStatus] = useState(order.status);
 
 	function resetOrder() {
 		setSender(emptyOrder.sender);
@@ -46,6 +47,7 @@ export function useOrderState(order: OrderProps) {
 		setCod(emptyOrder.extraData.cod);
 		setPayer(emptyOrder.extraData.payer);
 		setNote(emptyOrder.extraData.note);
+		setStatus(emptyOrder.status);
 	}
 
 	return {
@@ -88,6 +90,10 @@ export function useOrderState(order: OrderProps) {
 		},
 		resetOrder,
 		createdAt: order.createdAt,
+		status: {
+			value: status,
+			handleChange: setStatus,
+		},
 	};
 }
 
@@ -119,4 +125,16 @@ function itemsReducer(
 		}
 	}
 	return [];
+}
+
+export async function getOrders() {
+	return fetch(`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/get`, {
+		credentials: "include",
+	}).then(async (res) => {
+		if (res.status !== 200) {
+			const json = await res.json();
+			throw new Error(json.message);
+		}
+		return res.json();
+	});
 }

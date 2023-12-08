@@ -9,6 +9,10 @@ import CustomerFieldset from "./Customer/CustomerFieldset";
 import ExtraDataFieldset from "./ExtraData/ExtraDataFieldset";
 import PackageFieldset from "./Package/PackageFieldset";
 import Title from "../Title/Title";
+import Link from "next/link";
+import { faReceipt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import TerminateButton from "../Button/TerminateButton";
 
 export default function Order({
 	order = null,
@@ -17,13 +21,20 @@ export default function Order({
 	order?: OrderProps | null;
 	handleSubmit: (order: OrderProps) => void;
 }) {
-	const { sender, receiver, packageInfo, extraData, resetOrder } =
-		useOrderState(order || emptyOrder);
+	const {
+		id,
+		createdAt,
+		status,
+		sender,
+		receiver,
+		packageInfo,
+		extraData,
+		resetOrder,
+	} = useOrderState(order || emptyOrder);
 	const packageValue = packageInfo.items.value.reduce(
 		(packageValue, item) => packageValue + item.value,
 		0
 	);
-
 	const newOrder = {
 		sender: sender.value,
 		receiver: receiver.value,
@@ -37,11 +48,23 @@ export default function Order({
 			payer: extraData.payer.value,
 			note: extraData.note.value,
 		},
+		id,
+		createdAt,
+		status: status.value,
 	};
 
 	return (
 		<div>
-			<Title>New Order</Title>
+			<Title>{order ? `Order ID: ${order.id}` : "New Order"}</Title>
+			{order ? (
+				<Link
+					className="w-fit link link-neutral mb-4 block"
+					href={`/staff/view/${order.id}`}
+				>
+					<FontAwesomeIcon icon={faReceipt} className="mr-2" />
+					View receipt
+				</Link>
+			) : null}
 			<Form
 				handleSubmit={() => handleSubmit(newOrder)}
 				className="w-full gap-4 lg:grid lg:grid-cols-2 flex flex-col"
@@ -59,10 +82,24 @@ export default function Order({
 				<PackageFieldset {...packageInfo} />
 				<ExtraDataFieldset {...{ ...extraData, packageValue }} />
 				<div className="flex flex-row gap-4">
-					<PrimaryButton type="submit">Confirm</PrimaryButton>
-					<SecondaryButton type="reset" handleClick={() => resetOrder()}>
-						Reset
-					</SecondaryButton>
+					{order ? (
+						<>
+							<PrimaryButton type="submit">Save</PrimaryButton>
+							<TerminateButton
+								type="submit"
+								handleClick={() => status.handleChange("cancelled")}
+							>
+								Cancel Order
+							</TerminateButton>
+						</>
+					) : (
+						<>
+							<PrimaryButton type="submit">Confirm</PrimaryButton>
+							<SecondaryButton type="reset" handleClick={() => resetOrder()}>
+								Reset
+							</SecondaryButton>
+						</>
+					)}
 				</div>
 			</Form>
 		</div>

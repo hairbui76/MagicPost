@@ -1,13 +1,13 @@
 export default function InputContainer({
 	label,
 	children,
-	required,
+	required = false,
 	className = "",
 	flexDirection = "col",
 }: {
 	label: string;
 	children: Array<React.ReactNode> | React.ReactNode;
-	required: boolean;
+	required?: boolean;
 	className?: string;
 	flexDirection?: "col" | "row";
 }) {

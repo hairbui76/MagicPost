@@ -1,5 +1,8 @@
 import { OrderProps } from "@/app/staff/types/Order/orders";
 import { format } from "date-fns";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 
 export default function OrderSummary({
 	order,
@@ -9,17 +12,28 @@ export default function OrderSummary({
 	visible?: boolean;
 }) {
 	return (
-		<tr className={`${visible ? "" : "hidden"}`}>
+		<tr className={`${visible ? "" : "hidden"} border-custom-grey`}>
+			<td>
+				<button type="button" className="mx-auto block">
+					<FontAwesomeIcon icon={faBars} />
+				</button>
+			</td>
+			<td>
+				<Link
+					className="mx-auto block w-fit link text-[#007FFF]"
+					href={`/staff/orders/status/${order.id}`}
+				>
+					{order.id}
+				</Link>
+			</td>
 			{[
-				"actions",
-				order.id,
-				format(new Date(order.createdAt!), "yyyy/MM/dd HH:mm:ss"),
+				format(new Date(order.createdAt!), "MMMM dd, yyyy, HH:mm"),
 				order.packageInfo.type,
 				order.sender.name,
 				order.receiver.name,
 				order.status,
 			].map((cell, index) => (
-				<td className="text-center" key={index}>
+				<td className="text-center text-xs" key={index}>
 					{cell}
 				</td>
 			))}

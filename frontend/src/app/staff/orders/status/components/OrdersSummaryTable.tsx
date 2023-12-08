@@ -1,4 +1,6 @@
+"use client";
 import { OrderProps } from "@/app/staff/types/Order/orders";
+import { useState } from "react";
 import OrderSummary from "./OrderSummary";
 
 export default function OrdersSummaryTable({
@@ -6,34 +8,37 @@ export default function OrdersSummaryTable({
 }: {
 	orders: Array<OrderProps>;
 }) {
+	const [pageNumber, setPageNumber] = useState(1);
 	return (
-		orders && (
-			<div className="overflow-x-auto bg-custom-white">
-				<table className="table table-xs ">
-					<thead className="text-custom-text-color ">
-						<tr>
-							{[
-								"",
-								"ID",
-								"Created At",
-								"Category",
-								"Sender",
-								"Receiver",
-								"Status",
-							].map((header, index) => (
-								<th className="text-center" key={index}>
-									{header}
-								</th>
-							))}
-						</tr>
-					</thead>
-					<tbody>
-						{orders.map((order) => (
-							<OrderSummary key={order.id} order={order} />
+		<div className="overflow-x-auto bg-custom-white">
+			<table className="table table-sm ">
+				<thead className="text-custom-text-color ">
+					<tr>
+						{[
+							"",
+							"ID",
+							"Created At",
+							"Category",
+							"Sender",
+							"Receiver",
+							"Status",
+						].map((header, index) => (
+							<th className="text-center text-sm" key={index}>
+								{header}
+							</th>
 						))}
-					</tbody>
-				</table>
-			</div>
-		)
+					</tr>
+				</thead>
+				<tbody>
+					{orders.map((order, index) => (
+						<OrderSummary
+							key={order.id}
+							order={order}
+							visible={Math.floor(index / 20 + 1) === pageNumber}
+						/>
+					))}
+				</tbody>
+			</table>
+		</div>
 	);
 }

@@ -27,7 +27,7 @@ export default function NumberInput({
 }) {
 	const [focused, setFocused] = useState(false);
 	return (
-		<InputContainer {...{ label, required }}>
+		<InputContainer {...{ label, required, className }}>
 			<input
 				type="number"
 				placeholder={placeholder}

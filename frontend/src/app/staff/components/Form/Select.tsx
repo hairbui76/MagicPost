@@ -22,12 +22,12 @@ export default function Select({
 }) {
 	const [focused, setFocused] = useState(false);
 	return (
-		<InputContainer {...{ label, required }}>
+		<InputContainer {...{ label, required, className }}>
 			<select
 				name={name}
 				className={`custom-input appearance-none ${
 					focused && value === "" ? "custom-input-invalid" : ""
-				} ${className}`}
+				} w-full`}
 				onChange={(e) => handleChange(e.currentTarget.value)}
 				onFocus={() => setFocused(true)}
 				value={value}

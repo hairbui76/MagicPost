@@ -1,11 +1,15 @@
 import { OrderProps } from "@/app/staff/types/Order/orders";
 import { format } from "date-fns";
-import { useRouter } from "next/navigation";
 
-export default function OrderSummary({ order }: { order: OrderProps }) {
-	const router = useRouter();
+export default function OrderSummary({
+	order,
+	visible = false,
+}: {
+	order: OrderProps;
+	visible?: boolean;
+}) {
 	return (
-		<tr onClick={() => router.push(`/view/${order.id}`)}>
+		<tr className={`${visible ? "" : "hidden"}`}>
 			{[
 				"actions",
 				order.id,

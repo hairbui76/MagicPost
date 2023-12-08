@@ -23,13 +23,13 @@ export default function TextInput({
 }) {
 	const [focused, setFocused] = useState(false);
 	return (
-		<InputContainer {...{ label, required }}>
+		<InputContainer {...{ label, required, className }}>
 			<input
 				type={type}
 				placeholder={placeholder}
 				className={`custom-input ${
 					focused && value === "" ? "custom-input-invalid" : ""
-				} ${className}`}
+				}`}
 				name={name}
 				onFocus={() => setFocused(true)}
 				required={required}

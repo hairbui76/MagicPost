@@ -3,13 +3,15 @@
 export default function Form({
 	children,
 	handleSubmit,
+	className = "",
 }: {
 	children: React.ReactNode | Array<React.ReactNode>;
 	handleSubmit: () => void;
+	className?: string;
 }) {
 	return (
 		<form
-			className="w-full flex flex-col gap-4"
+			className={`${className}`}
 			onSubmit={(e) => {
 				e.preventDefault();
 				handleSubmit();

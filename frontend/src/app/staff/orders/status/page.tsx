@@ -6,6 +6,17 @@ import { Skeleton } from "antd";
 import { useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 import OrdersSummaryTable from "./components/OrdersSummaryTable";
+import { OrderProps } from "../../types/Order/orders";
+import { emptyOrder } from "../../utils/orders";
+import Title from "../../components/Title/Title";
+
+const sampleOrders = (() => {
+	const res = [];
+	for (let i = 0; i < 5; i++) {
+		res.push({ ...emptyOrder, id: `${i}`, createdAt: new Date() });
+	}
+	return res;
+})();
 
 async function getOrders() {
 	return fetch(`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/get`, {
@@ -37,7 +48,12 @@ function Page() {
 
 	if (error) toast.error(error.message);
 
-	return <OrdersSummaryTable orders={orders} />;
+	return (
+		<div>
+			<Title>Order Status</Title>
+			<OrdersSummaryTable orders={orders} />
+		</div>
+	);
 }
 
 export default Page;

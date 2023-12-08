@@ -30,6 +30,7 @@ export default function CODField({
 				name="use-package-value"
 				checked={checked}
 				value=""
+				className="text-sm"
 			/>
 			<NumberInput
 				label=""

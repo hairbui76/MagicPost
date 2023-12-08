@@ -15,18 +15,18 @@ export default function PackageItemsField({
 						<PackageItem key={item.id} {...{ ...item, index, handleChange }} />
 					))
 				) : (
-					<span className="text-center italic">Nothing to show!</span>
+					<span className="text-center italic  text-sm">Nothing to show!</span>
 				)}
 			</div>
 			<PrimaryButton
 				type="button"
 				onClick={() => handleChange({ type: "item_added" })}
-				className="mx-auto block"
+				className="mx-auto block text-xs"
 			>
 				Add an item
 			</PrimaryButton>
 			<hr className="border" />
-			<div className="flex flex-col gap-4 sm:flex-row sm:w-full sm:gap-44">
+			<div className="flex flex-col gap-4 sm:flex-row sm:w-full sm:gap-44 text-sm">
 				<div className="flex flex-row w-full sm:w-1/2">
 					Total weight:{" "}
 					<span className="ml-auto font-medium">

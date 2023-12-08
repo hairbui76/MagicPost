@@ -11,7 +11,7 @@ export default function PackagePropertiesField({
 	return (
 		<div>
 			<div className="font-medium mb-4">Package Properties</div>
-			<div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-2">
+			<div className="grid sm:grid-cols-3 grid-cols-2 gap-2 text-xs">
 				{PACKAGE_PROPERTIES.map((property) => (
 					<Checkbox
 						key={property}

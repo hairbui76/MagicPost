@@ -1,8 +1,9 @@
+import AddressInput from "@/components/AddressInput";
+import { faUserCheck, faUserPen } from "@fortawesome/free-solid-svg-icons";
 import { Dispatch, SetStateAction } from "react";
 import Fieldset from "../../Form/Fieldset";
-import TextInput from "../../Form/TextInput";
 import Select from "../../Form/Select";
-import { faUserCheck, faUserPen } from "@fortawesome/free-solid-svg-icons";
+import TextInput from "../../Form/TextInput";
 export default function CustomerFieldset({
 	type,
 	info,
@@ -31,7 +32,7 @@ export default function CustomerFieldset({
 		<Fieldset
 			legend={legend}
 			icon={type === "sender" ? faUserPen : faUserCheck}
-			className="sm:flex-row"
+			className="sm:flex-col"
 		>
 			<TextInput
 				label="Full name"
@@ -56,6 +57,7 @@ export default function CustomerFieldset({
 				value={phone}
 				handleChange={(phone) => handleChange({ ...info, phone })}
 			/>
+			<AddressInput />
 		</Fieldset>
 	);
 }

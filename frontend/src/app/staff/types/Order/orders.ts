@@ -1,8 +1,9 @@
+import { Address } from "../../utils/orders";
 import { ItemProps, PackageProperties } from "./package";
 
 export type CustomerProps = {
 	name: string;
-	address: string;
+	address: Address;
 	phone: string;
 };
 

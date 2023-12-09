@@ -9,10 +9,14 @@ public class Order : Model
 	public Guid? Id { get; set; }
 	public required string SenderName { get; set; }
 	public required string SenderAddress { get; set; }
+	public required float SenderAddressLat { get; set; }
+	public required float SenderAddressLong { get; set; }
 	[Phone]
 	public required string SenderPhone { get; set; }
 	public required string ReceiverName { get; set; }
 	public required string ReceiverAddress { get; set; }
+	public required float ReceiverAddressLat { get; set; }
+	public required float ReceiverAddressLong { get; set; }
 	[Phone]
 	public required string ReceiverPhone { get; set; }
 	public IList<Delivery> Deliveries { get; } = new List<Delivery>();
@@ -32,8 +36,8 @@ public class Order : Model
 				Id = Id,
 				CreatedAt = CreatedAt,
 				Status = Status,
-				Sender = new() { Name = SenderName, Address = SenderAddress, Phone = SenderPhone },
-				Receiver = new() { Name = ReceiverName, Address = ReceiverAddress, Phone = ReceiverPhone },
+				Sender = new() { Name = SenderName, Address = new() { Name = SenderAddress, Lat = SenderAddressLat, Long = SenderAddressLong }, Phone = SenderPhone },
+				Receiver = new() { Name = ReceiverName, Address = new() { Name = ReceiverAddress, Lat = ReceiverAddressLat, Long = ReceiverAddressLong }, Phone = ReceiverPhone },
 				PackageInfo = new() { Type = Type, Items = Items, Properties = Properties.Split("-").ToList() },
 				ExtraData = new() { Cod = Cod, Payer = Payer, Note = Note },
 			};
@@ -76,10 +80,18 @@ public class ExtraData
 	public string? Note { get; set; }
 }
 
+public class Address
+{
+	public string? Id { get; set; }
+	public string? Name { get; set; }
+	public float? Lat { get; set; }
+	public float? Long { get; set; }
+}
+
 public class CustomerProps
 {
 	public string? Name { get; set; }
-	public string? Address { get; set; }
+	public required Address Address { get; set; }
 	public string? Phone { get; set; }
 }
 

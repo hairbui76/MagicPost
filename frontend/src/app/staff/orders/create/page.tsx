@@ -4,6 +4,14 @@ import { toast } from "react-toastify";
 import Order from "../../components/Order/Order";
 import { OrderProps } from "../../types/Order/orders";
 
+async function getPlaceDetail(placeId: string) {
+	const res = await fetch(`/api/address/${placeId}`);
+	const { data } = await res.json();
+	const lat = data.geometry.location.lat;
+	const long = data.geometry.location.lng;
+	return { lat, long };
+}
+
 export default function Page() {
 	async function handleSubmit(order: OrderProps) {
 		const itemsWithoutID = order.packageInfo.items.map(
@@ -11,8 +19,20 @@ export default function Page() {
 				return { name, quantity, weight, value };
 			}
 		);
+		const [senderPlaceDetail, receiverPlaceDetail] = await Promise.all([
+			getPlaceDetail(order.sender.address.id!),
+			getPlaceDetail(order.receiver.address.id!),
+		]);
 		const processedOrders = {
 			...order,
+			sender: {
+				...order.sender,
+				address: { ...order.sender.address, ...senderPlaceDetail },
+			},
+			receiver: {
+				...order.receiver,
+				address: { ...order.receiver.address, ...receiverPlaceDetail },
+			},
 			packageInfo: { ...order.packageInfo, items: itemsWithoutID },
 		};
 		// TODO: Change DB schema to match OrderProps

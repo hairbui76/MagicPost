@@ -16,7 +16,11 @@ import { KeyboardEventHandler, useState } from "react";
 
 const provinces = getProvinces();
 
-export default function AddressInput() {
+export default function AddressInput({
+	handleChange,
+}: {
+	handleChange: (value: string, name: string) => void;
+}) {
 	const [provinceCode, setProvinceCode] = useState("");
 	const [province, setProvince] = useState("");
 	const [districts, setDistricts] = useState<District[]>([]);
@@ -126,7 +130,10 @@ export default function AddressInput() {
 				disabled={!province || !district || !ward}
 				filterOption={filterOption}
 				onSearch={(value) => setSpecificAddress(value)}
-				onSelect={(value) => setSpecificAddress(value)}
+				onSelect={(value, option) => {
+					setSpecificAddress(value);
+					handleChange(option.placeId, value);
+				}}
 				onKeyDown={handleEnterSpecificAddress}
 			>
 				<Input

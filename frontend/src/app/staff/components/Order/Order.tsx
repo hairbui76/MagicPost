@@ -5,10 +5,10 @@ import { emptyOrder, useOrderState } from "../../utils/orders";
 import PrimaryButton from "../Button/PrimaryButton";
 import SecondaryButton from "../Button/SecondaryButton";
 import Form from "../Form/Form";
+import Title from "../Title/Title";
 import CustomerFieldset from "./Customer/CustomerFieldset";
 import ExtraDataFieldset from "./ExtraData/ExtraDataFieldset";
 import PackageFieldset from "./Package/PackageFieldset";
-import Title from "../Title/Title";
 
 export default function Order({
 	order = null,

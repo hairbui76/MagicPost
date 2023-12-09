@@ -16,7 +16,7 @@ interface AutoCompleteProps<T> {
 	onChange?: (value: string, option: any) => void;
 	onSearch?: ((value: string) => void) | undefined;
 	filterOption?: ((inputValue: string, option: any) => boolean) | undefined;
-	onSelect?: ((value: string) => void) | undefined;
+	onSelect?: ((value: string, option: any) => void) | undefined;
 	onKeyDown?: KeyboardEventHandler;
 	children?: React.ReactNode;
 }
@@ -34,7 +34,11 @@ const mapOptions = (
 ) =>
 	options.map((option) => {
 		if (isSpecificAddress(option))
-			return { value: option.description, label: option.description };
+			return {
+				value: option.description,
+				label: option.description,
+				placeId: option.place_id,
+			};
 		return {
 			value: option.name,
 			label: option.name,

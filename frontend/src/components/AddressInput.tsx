@@ -1,6 +1,8 @@
 "use client";
+import AddressAutoComplete from "@/app/staff/components/Form/AutoCompleteInput";
 import {
 	District,
+	SpecificAddress,
 	Ward,
 	getDistrictsByProvinceCode,
 	getProvinces,
@@ -9,30 +11,12 @@ import {
 import { removeVietnameseTones } from "@/utils/helper";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { AutoComplete, Input } from "antd";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Input } from "antd";
+import { KeyboardEventHandler, useState } from "react";
 
-type SpecificAddress = {
-	description: string;
-	place_id: string;
-	compound: {
-		district: string;
-		commune: string;
-		province: string;
-	};
-};
+const provinces = getProvinces();
 
-const PROVINCES = getProvinces().map((p) => ({
-	value: p.name,
-	code: p.code,
-}));
-
-export default function AddressInput({
-	handleChange,
-}: {
-	handleChange: Dispatch<SetStateAction<string>>;
-}) {
-	const [provinces, setProvinces] = useState(PROVINCES);
+export default function AddressInput() {
 	const [provinceCode, setProvinceCode] = useState("");
 	const [province, setProvince] = useState("");
 	const [districts, setDistricts] = useState<District[]>([]);
@@ -56,6 +40,7 @@ export default function AddressInput({
 		setSpecificAddresses([]);
 		setSpecificAddress("");
 	};
+
 	const handleChangeDistrict = (value: any, district: any) => {
 		setDistrictCode(district?.code);
 		setDistrict(value);
@@ -64,102 +49,96 @@ export default function AddressInput({
 		setSpecificAddresses([]);
 		setSpecificAddress("");
 	};
+
 	const handleChangeWard = (value: any) => {
 		setWard(value);
 		setSpecificAddresses([]);
 		setSpecificAddress("");
 	};
 
+	const handleEnterSpecificAddress: KeyboardEventHandler = async (e) => {
+		if (e.key === "Enter") {
+			e.preventDefault();
+			const res = await fetch(
+				"/api/address/search?" +
+					new URLSearchParams({
+						province,
+						district,
+						ward,
+						specificAddress,
+					})
+			);
+			const response = await res.json();
+			if (res.status === 200) {
+				setSpecificAddresses(response.data);
+			}
+		}
+	};
+
+	const filterOption = (
+		inputValue: string,
+		option: { value: string; label: string }
+	) => {
+		return (
+			removeVietnameseTones(option!.value)
+				.toUpperCase()
+				.indexOf(removeVietnameseTones(inputValue).toUpperCase()) !== -1
+		);
+	};
+
 	return (
 		<div className="flex flex-col gap-4">
-			<div className="flex gap-4">
-				<AutoComplete
-					value={province}
-					size="large"
+			<div className="flex flex-col sm:flex-row gap-4">
+				<AddressAutoComplete
+					label="Province"
 					placeholder="Province"
-					className="flex-1"
+					required={true}
+					value={province}
 					options={provinces}
-					filterOption={(inputValue, option) =>
-						removeVietnameseTones(option!.value)
-							.toUpperCase()
-							.indexOf(removeVietnameseTones(inputValue).toUpperCase()) !== -1
-					}
 					onChange={handleChangeProvince}
-					allowClear={{ clearIcon: <FontAwesomeIcon icon={faCircleXmark} /> }}
+					filterOption={filterOption}
 				/>
-				<AutoComplete
-					value={district}
-					size="large"
+				<AddressAutoComplete
+					label="District"
 					placeholder="District"
-					className="flex-1"
-					options={districts.map((d) => ({
-						value: d.name,
-						code: d.code,
-					}))}
-					filterOption={(inputValue, option) =>
-						removeVietnameseTones(option!.value)
-							.toUpperCase()
-							.indexOf(removeVietnameseTones(inputValue).toUpperCase()) !== -1
-					}
+					required={true}
+					value={district}
+					options={districts}
 					onChange={handleChangeDistrict}
-					allowClear={{ clearIcon: <FontAwesomeIcon icon={faCircleXmark} /> }}
+					filterOption={filterOption}
 				/>
-				<AutoComplete
-					value={ward}
-					size="large"
+				<AddressAutoComplete
+					label="Ward"
 					placeholder="Ward"
-					className="flex-1"
-					options={wards.map((d) => ({
-						value: d.name,
-						code: d.code,
-					}))}
-					filterOption={(inputValue, option) =>
-						removeVietnameseTones(option!.value)
-							.toUpperCase()
-							.indexOf(removeVietnameseTones(inputValue).toUpperCase()) !== -1
-					}
+					required={true}
+					value={ward}
+					options={wards}
 					onChange={handleChangeWard}
-					allowClear={{ clearIcon: <FontAwesomeIcon icon={faCircleXmark} /> }}
+					filterOption={filterOption}
 				/>
 			</div>
-			<AutoComplete
-				value={specificAddress}
-				size="large"
+			<AddressAutoComplete
+				label="Specific address"
 				placeholder="Specific address"
+				required={true}
+				value={specificAddress}
+				options={specificAddresses}
 				disabled={!province || !district || !ward}
+				filterOption={filterOption}
 				onSearch={(value) => setSpecificAddress(value)}
-				options={specificAddresses.map((address) => ({
-					value: address.description,
-				}))}
 				onSelect={(value) => setSpecificAddress(value)}
-				onKeyDown={async (e) => {
-					if (e.key === "Enter") {
-						const res = await fetch(
-							"/api/address/search?" +
-								new URLSearchParams({
-									province,
-									district,
-									ward,
-									specificAddress,
-								})
-						);
-						const response = await res.json();
-						if (res.status === 200) {
-							setSpecificAddresses(response.data);
-						}
-					}
-				}}
+				onKeyDown={handleEnterSpecificAddress}
 			>
 				<Input
-					size="large"
-					placeholder="input here"
 					suffix={
 						<small style={{ color: "grey" }}>
 							Press <b>Enter</b> to search
 						</small>
 					}
+					size="large"
+					allowClear={{ clearIcon: <FontAwesomeIcon icon={faCircleXmark} /> }}
 				/>
-			</AutoComplete>
+			</AddressAutoComplete>
 		</div>
 	);
 }

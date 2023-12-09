@@ -28,6 +28,11 @@ export type Ward = {
 	full_name: string;
 };
 
+export type SpecificAddress = {
+	description: string;
+	place_id: string;
+};
+
 const getProvinces = (): Province[] => provinces;
 
 const getDistrictsByProvinceCode = (provinceCode: string): District[] =>

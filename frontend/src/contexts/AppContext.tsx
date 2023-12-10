@@ -1,4 +1,5 @@
 "use client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, createContext, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,6 +13,8 @@ export type AppContextProps = {
 	setUser: Dispatch<SetStateAction<any>>;
 };
 
+const queryClient = new QueryClient();
+
 const AppContext = createContext<AppContextProps | null>(null);
 
 const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
@@ -20,8 +23,10 @@ const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
 
 	return (
 		<AppContext.Provider value={{ menuKey, setMenuKey, user, setUser }}>
-			{children}
-			<ToastContainer style={{ fontSize: "0.8rem" }} />
+			<QueryClientProvider client={queryClient}>
+				{children}
+				<ToastContainer style={{ fontSize: "0.8rem" }} />
+			</QueryClientProvider>
 		</AppContext.Provider>
 	);
 };

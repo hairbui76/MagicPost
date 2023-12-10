@@ -1,37 +1,28 @@
+import { Address } from "@/app/staff/utils/orders";
+import AddressInput from "@/components/AddressInput";
+import { faUserCheck, faUserPen } from "@fortawesome/free-solid-svg-icons";
 import { Dispatch, SetStateAction } from "react";
 import Fieldset from "../../Form/Fieldset";
 import TextInput from "../../Form/TextInput";
-import Select from "../../Form/Select";
-import { faUserCheck, faUserPen } from "@fortawesome/free-solid-svg-icons";
 export default function CustomerFieldset({
 	type,
 	info,
 	handleChange,
 }: {
 	type: "sender" | "receiver";
-	info: { name: string; address: string; phone: string };
+	info: { name: string; address: Address; phone: string };
 	handleChange: Dispatch<
-		SetStateAction<{ name: string; address: string; phone: string }>
+		SetStateAction<{ name: string; address: Address; phone: string }>
 	>;
 }) {
 	const pronounce = type === "sender" ? "Sender's" : "Receiver's";
 	const legend = pronounce + " Information";
 	const { name, address, phone } = info;
-	const fakeAddressOptions = [
-		{
-			value: "HN",
-			label: "Hanoi",
-		},
-		{
-			value: "HCM",
-			label: "TP Ho Chi Minh",
-		},
-	];
 	return (
 		<Fieldset
 			legend={legend}
 			icon={type === "sender" ? faUserPen : faUserCheck}
-			className="sm:flex-row"
+			className="sm:flex-col"
 		>
 			<TextInput
 				label="Full name"
@@ -40,16 +31,6 @@ export default function CustomerFieldset({
 				name={`${type}-name`}
 				value={name}
 				handleChange={(name) => handleChange({ ...info, name })}
-				className="sm:w-1/3"
-			/>
-			<Select
-				label="Address"
-				required={true}
-				name={`${type}-address`}
-				value={address}
-				handleChange={(address) => handleChange({ ...info, address })}
-				options={fakeAddressOptions}
-				className="sm:w-1/3"
 			/>
 			<TextInput
 				label="Phone"
@@ -57,7 +38,14 @@ export default function CustomerFieldset({
 				name={`${type}-phone`}
 				value={phone}
 				handleChange={(phone) => handleChange({ ...info, phone })}
-				className="sm:w-1/3"
+			/>
+			<AddressInput
+				handleChange={(placeId, name) =>
+					handleChange({
+						...info,
+						address: { ...address, id: placeId, name },
+					})
+				}
 			/>
 		</Fieldset>
 	);

@@ -5,10 +5,25 @@ import uniqid from "uniqid";
 import { OrderProps } from "../types/Order/orders";
 import { ItemProps, PackageProperties } from "../types/Order/package";
 
+export type Address = {
+	id?: string;
+	name: string;
+	lat: number | null;
+	long: number | null;
+};
+
 export const emptyOrder = {
 	id: "",
-	sender: { name: "", address: "", phone: "" },
-	receiver: { name: "", address: "", phone: "" },
+	sender: {
+		name: "",
+		address: { id: "", name: "", lat: null, long: null },
+		phone: "",
+	},
+	receiver: {
+		name: "",
+		address: { id: "", name: "", lat: null, long: null },
+		phone: "",
+	},
 	packageInfo: {
 		type: "parcel" as "parcel" | "document",
 		items: [] as Array<ItemProps>,

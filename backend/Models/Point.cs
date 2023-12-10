@@ -10,7 +10,9 @@ public class Point : Model
 	public required string PointName { get; set; }
 	public required string ZipCode { get; set; }
 	public required PointType Type { get; set; }
-	public string? Address { get; set; }
+	public required string Address { get; set; }
+	public required float AddressLat { get; set; }
+	public required float AddressLong { get; set; }
 	[EmailAddress]
 	public string? Email { get; set; }
 	[Phone]

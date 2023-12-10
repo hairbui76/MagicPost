@@ -1,7 +1,7 @@
 "use client";
 import { OrderProps } from "@/app/staff/types/Order/orders";
-import OrderSummary from "./OrderSummary";
 import { useState } from "react";
+import OrderSummary from "./OrderSummary";
 import Pagination from "@/app/staff/components/Pagination/Pagination";
 import OrderFilter from "./OrderFilter";
 import compareAsc from "date-fns/compareAsc";

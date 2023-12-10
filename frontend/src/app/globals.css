@@ -26,9 +26,18 @@ body {
 }
 
 .custom-input {
-	@apply input input-xs bg-transparent text-inherit focus:border-base-100 relative overflow-ellipsis border-slate-300 disabled:opacity-40;
+	@apply input input-sm bg-transparent text-inherit focus:border-base-100 relative overflow-ellipsis border-slate-300 disabled:opacity-40;
 }
 
 .custom-input-invalid {
 	@apply border-custom-red;
+}
+
+.border-cl {
+	box-shadow:
+		2px 0 0 0 #000,
+		0 2px 0 0 #000,
+		2px 2px 0 0 #000,
+		2px 0 0 0 #000 inset,
+		0 2px 0 0 #000 inset;
 }

@@ -10,7 +10,7 @@ namespace MagicPostApi.Services;
 public interface IOrderService
 {
 	Task<List<PublicOrderInfo>> GetAsync();
-	Task<Order?> GetAsync(Guid id);
+	Task<PublicOrderInfo?> GetAsync(Guid id);
 	Task UpdateAsync(Guid id, UpdateOrderModel model);
 	Task CreateAsync(Order newOrder);
 }
@@ -34,10 +34,11 @@ public class OrderService : IOrderService
 						.Select(o => o.GetPublicOrderInfo())
 						.ToListAsync();
 
-	public async Task<Order?> GetAsync(Guid id)
+	public async Task<PublicOrderInfo?> GetAsync(Guid id)
 			=> await _ordersRepository
 						.Where(o => o.Id == id)
 						.Include(o => o.Deliveries.OrderBy(d => d.CreatedAt))
+						.Select(o => o.GetPublicOrderInfo())
 						.FirstOrDefaultAsync();
 
 	public async Task UpdateAsync(Guid id, UpdateOrderModel model)
@@ -50,8 +51,6 @@ public class OrderService : IOrderService
 
 	public async Task CreateAsync(Order newOrder)
 	{
-		List<Item> items = newOrder.Items;
-		await items.ForEachAsync(async item => await _itemsRepository.AddAsync(item));
 		await _ordersRepository.AddAsync(newOrder);
 		await _webAPIDataContext.SaveChangesAsync();
 	}

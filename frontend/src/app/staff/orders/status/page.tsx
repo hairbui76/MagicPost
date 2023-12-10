@@ -1,15 +1,16 @@
 "use client";
 
+import OrderContext, { OrderContextProps } from "@/contexts/OrderContext";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "antd";
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 import OrdersSummaryTable from "./components/OrdersSummaryTable";
 import Title from "../../components/Title/Title";
 import { getOrders } from "../../utils/orders";
 
 function Page() {
-	const [orders, setOrders] = useState([]);
+	const { orders, setOrders } = useContext(OrderContext) as OrderContextProps;
 	const { isPending, error, data } = useQuery({
 		queryKey: ["orders"],
 		queryFn: getOrders,
@@ -20,7 +21,7 @@ function Page() {
 			toast.success(data.message);
 			setOrders(data.orders);
 		}
-	}, [data]);
+	}, [data, setOrders]);
 
 	if (isPending) return <Skeleton active />;
 

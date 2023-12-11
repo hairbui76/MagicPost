@@ -4,6 +4,7 @@ using MagicPostApi.Middlewares;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json.Converters;
 
 // Load environments from .env file
 DotNetEnv.Env.Load();
@@ -16,9 +17,12 @@ var builder = WebApplication.CreateBuilder(args);
 			// Can be set to CamelCase instead of null
 			.AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null)
 			// Then Ignore cycle during Serialization
-			.AddJsonOptions(option => option.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
+			.AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
 			// Response json serialization always lowercase the first character
-			.AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
+			.AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver())
+			// Serialize enum
+			// ! Don't know why JsonStringEnumConverter doesn't work, prefer NewtonsoftJson
+			.AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new StringEnumConverter()));
 	// Add custom Validation error handler for Models
 	builder.Services.Configure<ApiBehaviorOptions>(o =>
 			{

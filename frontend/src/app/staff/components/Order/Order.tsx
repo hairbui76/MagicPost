@@ -38,6 +38,7 @@ export default function Order({
 			note: extraData.note.value,
 		},
 	};
+	console.log(newOrder);
 
 	return (
 		<div>

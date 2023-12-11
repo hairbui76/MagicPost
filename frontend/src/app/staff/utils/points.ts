@@ -1,25 +1,30 @@
 import { Dispatch, SetStateAction, useState } from "react";
+import { Address } from "./orders";
 
 export type PointProps = {
 	id?: string;
 	type: string;
 	pointName: string;
-	address: string;
+	address: Address;
 	email: string;
 	phone: string;
-	lat: number;
-	long: number;
 };
 
 export const emptyPoint: PointProps = {
 	id: "",
 	type: "",
 	pointName: "",
-	address: "",
+	address: {
+		id: "",
+		name: "",
+		lat: null,
+		long: null,
+		province: "",
+		district: "",
+		ward: "",
+	},
 	email: "",
 	phone: "",
-	lat: 0,
-	long: 0,
 };
 
 export type PointStateProps = {
@@ -33,8 +38,8 @@ export type PointStateProps = {
 		handleChange: Dispatch<SetStateAction<string>>;
 	};
 	address: {
-		value: string;
-		handleChange: Dispatch<SetStateAction<string>>;
+		value: Address;
+		handleChange: Dispatch<SetStateAction<Address>>;
 	};
 	email: {
 		value: string;
@@ -44,14 +49,7 @@ export type PointStateProps = {
 		value: string;
 		handleChange: Dispatch<SetStateAction<string>>;
 	};
-	lat: {
-		value: number;
-		handleChange: Dispatch<SetStateAction<number>>;
-	};
-	long: {
-		value: number;
-		handleChange: Dispatch<SetStateAction<number>>;
-	};
+	resetPoint: () => void;
 };
 
 export function usePointState(point: PointProps): PointStateProps {
@@ -60,8 +58,14 @@ export function usePointState(point: PointProps): PointStateProps {
 	const [address, setAddress] = useState(point.address);
 	const [phone, setPhone] = useState(point.phone);
 	const [email, setEmail] = useState(point.email);
-	const [lat, setLat] = useState(point.lat);
-	const [long, setLong] = useState(point.long);
+
+	function resetPoint() {
+		setType(emptyPoint.type);
+		setPointName(emptyPoint.pointName);
+		setAddress(emptyPoint.address);
+		setPhone(emptyPoint.phone);
+		setEmail(emptyPoint.email);
+	}
 
 	return {
 		id: point.id,
@@ -85,13 +89,6 @@ export function usePointState(point: PointProps): PointStateProps {
 			value: email,
 			handleChange: setEmail,
 		},
-		lat: {
-			value: lat,
-			handleChange: setLat,
-		},
-		long: {
-			value: long,
-			handleChange: setLong,
-		},
+		resetPoint,
 	};
 }

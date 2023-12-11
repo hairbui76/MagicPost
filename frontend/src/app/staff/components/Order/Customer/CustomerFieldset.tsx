@@ -40,10 +40,17 @@ export default function CustomerFieldset({
 				handleChange={(phone) => handleChange({ ...info, phone })}
 			/>
 			<AddressInput
-				handleChange={(placeId, name) =>
+				handleChange={(placeId, name, province, district, ward) =>
 					handleChange({
 						...info,
-						address: { ...address, id: placeId, name },
+						address: {
+							...address,
+							id: placeId,
+							name,
+							province,
+							district,
+							ward,
+						},
 					})
 				}
 			/>

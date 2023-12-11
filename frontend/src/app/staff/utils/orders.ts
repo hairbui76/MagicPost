@@ -8,20 +8,39 @@ import { ItemProps, PackageProperties } from "../types/Order/package";
 export type Address = {
 	id?: string;
 	name: string;
-	lat: number | null;
-	long: number | null;
+	lat?: number | null;
+	long?: number | null;
+	province: string;
+	district: string;
+	ward: string;
 };
 
 export const emptyOrder = {
 	id: "",
 	sender: {
 		name: "",
-		address: { id: "", name: "", lat: null, long: null },
+		address: {
+			id: "",
+			name: "",
+			lat: null,
+			long: null,
+			province: "",
+			district: "",
+			ward: "",
+		},
 		phone: "",
 	},
 	receiver: {
 		name: "",
-		address: { id: "", name: "", lat: null, long: null },
+		address: {
+			id: "",
+			name: "",
+			lat: null,
+			long: null,
+			province: "",
+			district: "",
+			ward: "",
+		},
 		phone: "",
 	},
 	packageInfo: {

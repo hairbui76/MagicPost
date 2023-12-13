@@ -57,7 +57,7 @@ export default function OrdersSummaryTable({
 					setCategoryFilter,
 				}}
 			/>
-			<table className="table table-sm overflow-x-auto bg-custom-white rounded-md shadow-md">
+			<table className="table table-sm overflow-x-auto bg-custom-white rounded-md shadow-md w-full">
 				<thead className="text-custom-text-color">
 					<tr className="border-b-2 border-custom-grey">
 						{[

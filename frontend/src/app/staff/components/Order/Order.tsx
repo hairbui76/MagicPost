@@ -13,6 +13,7 @@ import Link from "next/link";
 import { faReceipt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TerminateButton from "../Button/TerminateButton";
+import { useState } from "react";
 
 export default function Order({
 	order = null,
@@ -31,6 +32,7 @@ export default function Order({
 		extraData,
 		resetOrder,
 	} = useOrderState(order || emptyOrder);
+	const [editable, setEditable] = useState(order === null);
 	const packageValue = packageInfo.items.value.reduce(
 		(packageValue, item) => packageValue + item.value,
 		0
@@ -52,11 +54,22 @@ export default function Order({
 		createdAt,
 		status: status.value,
 	};
-	console.log(newOrder);
 
 	return (
 		<div>
-			<Title>{order ? `Order ID: ${order.id}` : "New Order"}</Title>
+			<div className="flex flex-row justify-between items-center">
+				<Title>{order ? `Order ID: ${order.id}` : "New Order"}</Title>
+				{editable ? null : (
+					<button
+						className="btn btn-success mb-4 btn-sm"
+						type="button"
+						onClick={() => setEditable(true)}
+					>
+						EDIT
+					</button>
+				)}
+			</div>
+
 			{order ? (
 				<Link
 					className="w-fit link link-neutral mb-4 block"
@@ -74,25 +87,35 @@ export default function Order({
 					type="sender"
 					info={sender.value}
 					handleChange={sender.handleChange}
+					disabled={!editable}
 				/>
 				<CustomerFieldset
 					type="receiver"
 					info={receiver.value}
 					handleChange={receiver.handleChange}
+					disabled={!editable}
 				/>
-				<PackageFieldset {...packageInfo} />
-				<ExtraDataFieldset {...{ ...extraData, packageValue }} />
+				<PackageFieldset {...packageInfo} disabled={!editable} />
+				<ExtraDataFieldset
+					{...{ ...extraData, packageValue }}
+					disabled={!editable}
+				/>
 				<div className="flex flex-row gap-4">
 					{order ? (
-						<>
-							<PrimaryButton type="submit">Save</PrimaryButton>
-							<TerminateButton
-								type="submit"
-								handleClick={() => status.handleChange("cancelled")}
-							>
-								Cancel Order
-							</TerminateButton>
-						</>
+						editable ? (
+							<>
+								<PrimaryButton type="submit">Save Changes</PrimaryButton>
+								<TerminateButton
+									type="button"
+									handleClick={() => {
+										resetOrder();
+										setEditable(false);
+									}}
+								>
+									Discard Changes
+								</TerminateButton>
+							</>
+						) : null
 					) : (
 						<>
 							<PrimaryButton type="submit">Confirm</PrimaryButton>

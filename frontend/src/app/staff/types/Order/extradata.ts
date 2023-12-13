@@ -5,6 +5,7 @@ export type ExtraDataProps = {
 	payer: PayerProps;
 	note: NoteProps;
 	packageValue: number;
+	disabled: boolean;
 };
 
 export type CODProps = {

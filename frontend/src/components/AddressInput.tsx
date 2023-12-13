@@ -1,5 +1,6 @@
 "use client";
 import AddressAutoComplete from "@/app/staff/components/Form/AutoCompleteInput";
+import { Address } from "@/app/staff/utils/orders";
 import {
 	District,
 	SpecificAddress,
@@ -7,6 +8,9 @@ import {
 	getDistrictsByProvinceCode,
 	getProvinces,
 	getWardsByDistrictAndProvinceCode,
+	getDistrictByName,
+	getProvinceByName,
+	getWardByName,
 } from "@/libs/address";
 import { removeVietnameseTones } from "@/utils/helper";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
@@ -18,6 +22,7 @@ const provinces = getProvinces();
 
 export default function AddressInput({
 	handleChange,
+	address = null,
 }: {
 	handleChange: (
 		placeId: string,
@@ -26,15 +31,34 @@ export default function AddressInput({
 		district: string,
 		ward: string
 	) => void;
+	address: Address | null;
 }) {
-	const [provinceCode, setProvinceCode] = useState("");
-	const [province, setProvince] = useState("");
-	const [districts, setDistricts] = useState<District[]>([]);
-	const [district, setDistrict] = useState("");
-	const [districtCode, setDistrictCode] = useState("");
-	const [ward, setWard] = useState("");
-	const [wards, setWards] = useState<Ward[]>([]);
-	const [specificAddress, setSpecificAddress] = useState("");
+	const fullProvince = address
+		? getProvinceByName(address?.province)
+		: { name: "", code: "", unit: "" };
+	const fullDistrict = address
+		? getDistrictByName(address?.district)
+		: { name: "", code: "", unit: "" };
+	const fullWard = address
+		? getWardByName(address?.ward)
+		: { name: "", code: "", unit: "" };
+
+	const [provinceCode, setProvinceCode] = useState(fullProvince.code);
+	const [province, setProvince] = useState(fullProvince.name);
+	const [districts, setDistricts] = useState<District[]>(
+		address ? getDistrictsByProvinceCode(fullProvince.code) : []
+	);
+	const [district, setDistrict] = useState(fullDistrict.name);
+	const [districtCode, setDistrictCode] = useState(fullDistrict.code);
+	const [ward, setWard] = useState(fullWard.name);
+	const [wards, setWards] = useState<Ward[]>(
+		address
+			? getWardsByDistrictAndProvinceCode(fullDistrict.code, fullProvince.code)
+			: []
+	);
+	const [specificAddress, setSpecificAddress] = useState(
+		address ? address.name : ""
+	);
 	const [specificAddresses, setSpecificAddresses] = useState<SpecificAddress[]>(
 		[]
 	);

@@ -8,12 +8,14 @@ export default function CustomerFieldset({
 	type,
 	info,
 	handleChange,
+	disabled,
 }: {
 	type: "sender" | "receiver";
 	info: { name: string; address: Address; phone: string };
 	handleChange: Dispatch<
 		SetStateAction<{ name: string; address: Address; phone: string }>
 	>;
+	disabled?: boolean;
 }) {
 	const pronounce = type === "sender" ? "Sender's" : "Receiver's";
 	const legend = pronounce + " Information";
@@ -23,6 +25,7 @@ export default function CustomerFieldset({
 			legend={legend}
 			icon={type === "sender" ? faUserPen : faUserCheck}
 			className="sm:flex-col"
+			disabled={disabled}
 		>
 			<TextInput
 				label="Full name"
@@ -40,7 +43,7 @@ export default function CustomerFieldset({
 				handleChange={(phone) => handleChange({ ...info, phone })}
 			/>
 			<AddressInput
-				handleChange={(placeId, name, province, district, ward) =>
+				handleChange={(placeId, name, province, district, ward) => {
 					handleChange({
 						...info,
 						address: {
@@ -51,8 +54,9 @@ export default function CustomerFieldset({
 							district,
 							ward,
 						},
-					})
-				}
+					});
+				}}
+				address={address}
 			/>
 		</Fieldset>
 	);

@@ -58,6 +58,35 @@ export const emptyOrder = {
 };
 
 export function useOrderState(order: OrderProps) {
+	function itemsReducer(
+		items: Array<ItemProps>,
+		action: { type: string; item?: ItemProps }
+	) {
+		const { type, item } = action;
+		switch (type) {
+			case "item_changed": {
+				return items.map((curItem) => {
+					if (item && curItem.id === item.id) {
+						return item;
+					}
+					return curItem;
+				});
+			}
+			case "item_added": {
+				return [
+					...items,
+					{ id: uniqid(), name: "", quantity: 1, value: 0, weight: 0 },
+				];
+			}
+			case "item_removed": {
+				return items.filter((curItem) => item && curItem.id !== item.id);
+			}
+			case "items_reset": {
+				return order.packageInfo.items;
+			}
+		}
+		return [];
+	}
 	const [sender, setSender] = useState(order.sender);
 	const [receiver, setReceiver] = useState(order.receiver);
 	const [type, setType] = useState(order.packageInfo.type);
@@ -74,14 +103,14 @@ export function useOrderState(order: OrderProps) {
 	const [status, setStatus] = useState(order.status);
 
 	function resetOrder() {
-		setSender(emptyOrder.sender);
-		setReceiver(emptyOrder.receiver);
-		setType(emptyOrder.packageInfo.type);
+		setSender(order.sender);
+		setReceiver(order.receiver);
+		setType(order.packageInfo.type);
 		itemsDispatch({ type: "items_reset" });
-		setCod(emptyOrder.extraData.cod);
-		setPayer(emptyOrder.extraData.payer);
-		setNote(emptyOrder.extraData.note);
-		setStatus(emptyOrder.status);
+		setCod(order.extraData.cod);
+		setPayer(order.extraData.payer);
+		setNote(order.extraData.note);
+		setStatus(order.status);
 	}
 
 	return {
@@ -129,36 +158,6 @@ export function useOrderState(order: OrderProps) {
 			handleChange: setStatus,
 		},
 	};
-}
-
-function itemsReducer(
-	items: Array<ItemProps>,
-	action: { type: string; item?: ItemProps }
-) {
-	const { type, item } = action;
-	switch (type) {
-		case "item_changed": {
-			return items.map((curItem) => {
-				if (item && curItem.id === item.id) {
-					return item;
-				}
-				return curItem;
-			});
-		}
-		case "item_added": {
-			return [
-				...items,
-				{ id: uniqid(), name: "", quantity: 1, value: 0, weight: 0 },
-			];
-		}
-		case "item_removed": {
-			return items.filter((curItem) => item && curItem.id !== item.id);
-		}
-		case "items_reset": {
-			return [];
-		}
-	}
-	return [];
 }
 
 export async function getOrders() {

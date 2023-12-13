@@ -4,6 +4,7 @@ export type PackageProps = {
 	type: PackageTypeProps;
 	items: PackageItemsProps;
 	properties: PackagePropertiesProps;
+	disabled: boolean;
 };
 
 export type ItemProps = {

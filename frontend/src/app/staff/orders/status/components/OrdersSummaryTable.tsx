@@ -19,33 +19,26 @@ export default function OrdersSummaryTable({
 		null,
 	]);
 	const [categoryFilter, setCategoryFilter] = useState("all");
-
+	console.log(orders);
 	function filterOrders(orders: Array<OrderProps>) {
 		return orders.filter((order) => {
 			const { status, packageInfo, createdAt } = order;
 			if (statusFilter !== "all" && status !== statusFilter) {
-				console.log(1);
 				return false;
 			}
 			if (categoryFilter !== "all" && packageInfo.type !== categoryFilter) {
-				console.log(2);
-
 				return false;
 			}
 			if (
 				timeRange[0] &&
 				compareAsc(timeRange[0].toDate(), new Date(createdAt || "")) === 1
 			) {
-				console.log(3);
-
 				return false;
 			}
 			if (
 				timeRange[1] &&
 				compareAsc(timeRange[1].toDate(), new Date(createdAt || "")) === -1
 			) {
-				console.log(4);
-
 				return false;
 			}
 			return true;

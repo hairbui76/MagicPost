@@ -4,6 +4,7 @@ import { useReducer, useState } from "react";
 import uniqid from "uniqid";
 import { OrderProps } from "../types/Order/orders";
 import { ItemProps, PackageProperties } from "../types/Order/package";
+import { copyObject } from "@/utils";
 
 export type Address = {
 	id?: string;
@@ -82,7 +83,7 @@ export function useOrderState(order: OrderProps) {
 				return items.filter((curItem) => item && curItem.id !== item.id);
 			}
 			case "items_reset": {
-				return order.packageInfo.items;
+				return copyObject(order.packageInfo.items);
 			}
 		}
 		return [];
@@ -103,14 +104,14 @@ export function useOrderState(order: OrderProps) {
 	const [status, setStatus] = useState(order.status);
 
 	function resetOrder() {
-		setSender(order.sender);
-		setReceiver(order.receiver);
-		setType(order.packageInfo.type);
+		setSender(copyObject(order.sender));
+		setReceiver(copyObject(order.receiver));
+		setType(copyObject(order.packageInfo.type));
 		itemsDispatch({ type: "items_reset" });
-		setCod(order.extraData.cod);
-		setPayer(order.extraData.payer);
-		setNote(order.extraData.note);
-		setStatus(order.status);
+		setCod(copyObject(order.extraData.cod));
+		setPayer(copyObject(order.extraData.payer));
+		setNote(copyObject(order.extraData.note));
+		setStatus(copyObject(order.status));
 	}
 
 	return {

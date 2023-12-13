@@ -16,7 +16,7 @@ import { removeVietnameseTones } from "@/utils/helper";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Input } from "antd";
-import { KeyboardEventHandler, useState } from "react";
+import { KeyboardEventHandler, useState, useEffect } from "react";
 
 const provinces = getProvinces();
 
@@ -33,35 +33,47 @@ export default function AddressInput({
 	) => void;
 	address: Address | null;
 }) {
-	const fullProvince = address
-		? getProvinceByName(address?.province)
-		: { name: "", code: "", unit: "" };
-	const fullDistrict = address
-		? getDistrictByName(address?.district)
-		: { name: "", code: "", unit: "" };
-	const fullWard = address
-		? getWardByName(address?.ward)
-		: { name: "", code: "", unit: "" };
-
-	const [provinceCode, setProvinceCode] = useState(fullProvince.code);
-	const [province, setProvince] = useState(fullProvince.name);
-	const [districts, setDistricts] = useState<District[]>(
-		address ? getDistrictsByProvinceCode(fullProvince.code) : []
-	);
-	const [district, setDistrict] = useState(fullDistrict.name);
-	const [districtCode, setDistrictCode] = useState(fullDistrict.code);
-	const [ward, setWard] = useState(fullWard.name);
-	const [wards, setWards] = useState<Ward[]>(
-		address
-			? getWardsByDistrictAndProvinceCode(fullDistrict.code, fullProvince.code)
-			: []
-	);
-	const [specificAddress, setSpecificAddress] = useState(
-		address ? address.name : ""
-	);
+	const [provinceCode, setProvinceCode] = useState("");
+	const [province, setProvince] = useState("");
+	const [districts, setDistricts] = useState<District[]>([]);
+	const [district, setDistrict] = useState("");
+	const [districtCode, setDistrictCode] = useState("");
+	const [ward, setWard] = useState("");
+	const [wards, setWards] = useState<Ward[]>([]);
+	const [specificAddress, setSpecificAddress] = useState("");
 	const [specificAddresses, setSpecificAddresses] = useState<SpecificAddress[]>(
 		[]
 	);
+
+	useEffect(() => {
+		const fullProvince =
+			address && address.province
+				? getProvinceByName(address?.province)
+				: { name: "", code: "", unit: "" };
+		const fullDistrict =
+			address && address.district
+				? getDistrictByName(address?.district)
+				: { name: "", code: "", unit: "" };
+		const fullWard =
+			address && address.ward
+				? getWardByName(address?.ward)
+				: { name: "", code: "", unit: "" };
+		setProvinceCode(fullProvince.code);
+		setProvince(fullProvince.name);
+		setDistricts(address ? getDistrictsByProvinceCode(fullProvince.code) : []);
+		setDistrict(fullDistrict.name);
+		setDistrictCode(fullDistrict.code);
+		setWard(fullWard.name);
+		setWards(
+			address
+				? getWardsByDistrictAndProvinceCode(
+						fullDistrict.code,
+						fullProvince.code
+				  )
+				: []
+		);
+		setSpecificAddress(address ? address.name : "");
+	}, [address]);
 
 	const handleChangeProvince = (value: any, province: any) => {
 		setProvinceCode(province?.code);

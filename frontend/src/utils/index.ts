@@ -10,4 +10,8 @@ async function getUser() {
 	}
 }
 
-export { getUser };
+function copyObject(obj: any) {
+	return JSON.parse(JSON.stringify(obj));
+}
+
+export { getUser, copyObject };

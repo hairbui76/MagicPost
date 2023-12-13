@@ -20,7 +20,7 @@ export default function PackageItemsField({
 			</div>
 			<PrimaryButton
 				type="button"
-				onClick={() => handleChange({ type: "item_added" })}
+				handleClick={() => handleChange({ type: "item_added" })}
 				className="mx-auto block text-xs"
 			>
 				Add an item

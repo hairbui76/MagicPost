@@ -47,5 +47,9 @@ export default function Page({
 
 	if (error) toast.error(error.message);
 
-	return order ? <Order order={order} handleSubmit={updateOrder} /> : "Undone";
+	return order ? (
+		<Order order={order} handleSubmit={updateOrder} />
+	) : (
+		"Not found"
+	);
 }

@@ -14,6 +14,7 @@ import { faReceipt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TerminateButton from "../Button/TerminateButton";
 import { useState } from "react";
+import { ItemProps } from "../../types/Order/package";
 
 export default function Order({
 	order = null,
@@ -34,7 +35,7 @@ export default function Order({
 	} = useOrderState(order || emptyOrder);
 	const [editable, setEditable] = useState(order === null);
 	const packageValue = packageInfo.items.value.reduce(
-		(packageValue, item) => packageValue + item.value,
+		(packageValue: number, item: ItemProps) => packageValue + item.value,
 		0
 	);
 	const newOrder = {

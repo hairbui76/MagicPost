@@ -1,27 +1,28 @@
 "use client";
 
 import { toast } from "react-toastify";
-import { OrderProps } from "../../types/Order/orders";
+import { PointProps } from "../../utils/points";
 import Point from "../components/Point";
 
+async function getPlaceDetail(placeId: string) {
+	const res = await fetch(`/api/address/${placeId}`);
+	const { data } = await res.json();
+	const lat = data.geometry.location.lat;
+	const long = data.geometry.location.lng;
+	return { lat, long };
+}
+
 export default function Page() {
-	async function handleSubmit(order: OrderProps) {
-		const itemsWithoutID = order.packageInfo.items.map(
-			({ name, quantity, weight, value }) => {
-				return { name, quantity, weight, value };
-			}
-		);
-		const processedOrders = {
-			...order,
-			packageInfo: { ...order.packageInfo, items: itemsWithoutID },
+	async function handleSubmit(point: PointProps) {
+		const { lat, long } = await getPlaceDetail(point.address.id!);
+		const processedPoints = {
+			...point,
+			address: point.address,
+			addressLat: lat,
+			addressLong: long,
 		};
 		// TODO: Change DB schema to match OrderProps
-		const body = {
-			sender: processedOrders.sender,
-			receiver: processedOrders.receiver,
-			packageInfo: processedOrders.packageInfo,
-			extraData: processedOrders.extraData,
-		};
+		const body = processedPoints;
 		const res = await fetch(
 			`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/create`,
 			{
@@ -40,6 +41,5 @@ export default function Page() {
 			toast.error(response.message);
 		}
 	}
-	//@ts-ignore
 	return <Point handleSubmit={handleSubmit} />;
 }

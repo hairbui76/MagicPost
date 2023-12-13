@@ -3,6 +3,7 @@ using MagicPostApi.Enums;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace MagicPostApi.Models;
+
 public class Order : Model
 {
 	[Key]
@@ -11,12 +12,18 @@ public class Order : Model
 	public required string SenderAddress { get; set; }
 	public required float SenderAddressLat { get; set; }
 	public required float SenderAddressLong { get; set; }
+	public required string SenderProvince { get; set; }
+	public required string SenderDistrict { get; set; }
+	public required string SenderWard { get; set; }
 	[Phone]
 	public required string SenderPhone { get; set; }
 	public required string ReceiverName { get; set; }
 	public required string ReceiverAddress { get; set; }
 	public required float ReceiverAddressLat { get; set; }
 	public required float ReceiverAddressLong { get; set; }
+	public required string ReceiverProvince { get; set; }
+	public required string ReceiverDistrict { get; set; }
+	public required string ReceiverWard { get; set; }
 	[Phone]
 	public required string ReceiverPhone { get; set; }
 	public IList<Delivery> Deliveries { get; } = new List<Delivery>();
@@ -26,7 +33,6 @@ public class Order : Model
 	public int Cod { get; set; }
 	public required string Payer { get; set; }
 	public string? Note { get; set; }
-	public required string State { get; set; } = nameof(OrderState.PENDING);
 	public DateTime CreatedAt = DateTime.UtcNow;
 	public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 	public OrderState Status { get; set; } = OrderState.PENDING;
@@ -36,8 +42,34 @@ public class Order : Model
 				Id = Id,
 				CreatedAt = CreatedAt,
 				Status = Status,
-				Sender = new() { Name = SenderName, Address = new() { Name = SenderAddress, Lat = SenderAddressLat, Long = SenderAddressLong }, Phone = SenderPhone },
-				Receiver = new() { Name = ReceiverName, Address = new() { Name = ReceiverAddress, Lat = ReceiverAddressLat, Long = ReceiverAddressLong }, Phone = ReceiverPhone },
+				Sender = new()
+				{
+					Name = SenderName,
+					Address = new()
+					{
+						Name = SenderAddress,
+						Lat = SenderAddressLat,
+						Long = SenderAddressLong,
+						Province = SenderProvince,
+						District = SenderDistrict,
+						Ward = SenderWard
+					},
+					Phone = SenderPhone
+				},
+				Receiver = new()
+				{
+					Name = ReceiverName,
+					Address = new()
+					{
+						Name = ReceiverAddress,
+						Lat = ReceiverAddressLat,
+						Long = ReceiverAddressLong,
+						Province = ReceiverProvince,
+						District = ReceiverDistrict,
+						Ward = ReceiverWard
+					},
+					Phone = ReceiverPhone
+				},
 				PackageInfo = new() { Type = Type, Items = Items, Properties = Properties.Split("-").ToList() },
 				ExtraData = new() { Cod = Cod, Payer = Payer, Note = Note },
 			};
@@ -82,10 +114,12 @@ public class ExtraData
 
 public class Address
 {
-	public string? Id { get; set; }
-	public string? Name { get; set; }
-	public float? Lat { get; set; }
-	public float? Long { get; set; }
+	public required string Name { get; set; }
+	public required float Lat { get; set; }
+	public required float Long { get; set; }
+	public required string Province { get; set; }
+	public required string District { get; set; }
+	public required string Ward { get; set; }
 }
 
 public class CustomerProps

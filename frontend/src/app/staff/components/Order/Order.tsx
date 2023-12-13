@@ -52,6 +52,7 @@ export default function Order({
 		createdAt,
 		status: status.value,
 	};
+	console.log(newOrder);
 
 	return (
 		<div>

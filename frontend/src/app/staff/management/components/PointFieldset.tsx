@@ -37,7 +37,24 @@ export default function PointFieldSet({ state }: { state: PointStateProps }) {
 				value={state.email.value}
 				handleChange={(email: string) => state.email.handleChange(email)}
 			/>
-			<AddressInput handleChange={state.address.handleChange} />
+			<AddressInput
+				handleChange={(
+					placeId: string,
+					name: string,
+					province: string,
+					district: string,
+					ward: string
+				) =>
+					state.address.handleChange((address) => ({
+						...address,
+						id: placeId,
+						name,
+						province,
+						district,
+						ward,
+					}))
+				}
+			/>
 		</Fieldset>
 	);
 }

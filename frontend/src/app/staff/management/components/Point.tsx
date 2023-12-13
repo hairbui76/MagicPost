@@ -1,5 +1,7 @@
 "use client";
 
+import PrimaryButton from "../../components/Button/PrimaryButton";
+import SecondaryButton from "../../components/Button/SecondaryButton";
 import Form from "../../components/Form/Form";
 import { PointProps, emptyPoint, usePointState } from "../../utils/points";
 import PointFieldSet from "./PointFieldset";
@@ -19,13 +21,17 @@ export default function Point({
 		address: state.address.value,
 		email: state.email.value,
 		phone: state.phone.value,
-		lat: state.lat.value,
-		long: state.long.value,
 	};
 
 	return (
 		<Form handleSubmit={() => handleSubmit(newPoint)}>
 			<PointFieldSet state={state} />
+			<div className="flex flex-row gap-4">
+				<PrimaryButton type="submit">Confirm</PrimaryButton>
+				<SecondaryButton type="reset" handleClick={() => state.resetPoint()}>
+					Reset
+				</SecondaryButton>
+			</div>
 		</Form>
 	);
 }

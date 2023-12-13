@@ -8,11 +8,13 @@ public class Point : Model
 	[Key]
 	public Guid? Id { get; set; }
 	public required string PointName { get; set; }
-	public required string ZipCode { get; set; }
 	public required PointType Type { get; set; }
 	public required string Address { get; set; }
 	public required float AddressLat { get; set; }
 	public required float AddressLong { get; set; }
+	public required string Province { get; set; }
+	public required string District { get; set; }
+	public required string Ward { get; set; }
 	[EmailAddress]
 	public string? Email { get; set; }
 	[Phone]
@@ -23,13 +25,22 @@ public class Point : Model
 
 public class CreatePointModel : Model
 {
-	public PointType Type { get; set; }
 	[Required]
 	public string? PointName { get; set; }
 	[Required]
-	public string? ZipCode { get; set; }
+	public PointType? Type { get; set; }
 	[Required]
 	public string? Address { get; set; }
+	[Required]
+	public float? AddressLat { get; set; }
+	[Required]
+	public float? AddressLong { get; set; }
+	[Required]
+	public string? Province { get; set; }
+	[Required]
+	public string? District { get; set; }
+	[Required]
+	public string? Ward { get; set; }
 	[Required]
 	[EmailAddress]
 	public string? Email { get; set; }

@@ -19,7 +19,13 @@ const provinces = getProvinces();
 export default function AddressInput({
 	handleChange,
 }: {
-	handleChange: (value: string, name: string) => void;
+	handleChange: (
+		placeId: string,
+		address: string,
+		province: string,
+		district: string,
+		ward: string
+	) => void;
 }) {
 	const [provinceCode, setProvinceCode] = useState("");
 	const [province, setProvince] = useState("");
@@ -132,7 +138,7 @@ export default function AddressInput({
 				onSearch={(value) => setSpecificAddress(value)}
 				onSelect={(value, option) => {
 					setSpecificAddress(value);
-					handleChange(option.placeId, value);
+					handleChange(option.placeId, value, province, district, ward);
 				}}
 				onKeyDown={handleEnterSpecificAddress}
 			>

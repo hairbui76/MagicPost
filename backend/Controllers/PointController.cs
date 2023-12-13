@@ -57,6 +57,16 @@ public class PointController : ControllerBase
 	[HttpPost]
 	[VerifyToken]
 	[VerifyRole(Role.COMPANY_ADMINISTRATOR)]
+	public async Task<IActionResult> CreatePoint(CreatePointModel model)
+	{
+		Point newPoint = _mapper.Map<Point>(model);
+		await _pointService.CreateAsync(newPoint);
+		return Ok(new {message = "Create point successfully!", point = newPoint});
+	}
+
+	[HttpPost]
+	[VerifyToken]
+	[VerifyRole(Role.COMPANY_ADMINISTRATOR)]
 	public async Task<IActionResult> CreateGatheringPoint(CreatePointModel model)
 	{
 		Point gatheringPoint = _mapper.Map<Point>(model);

@@ -66,7 +66,7 @@ public class PointController : ControllerBase
 
 	[HttpPost]
 	[VerifyToken]
-	[VerifyRole(Role.COMPANY_ADMINISTRATOR)]
+	//[VerifyRole(Role.COMPANY_ADMINISTRATOR)]
 	public async Task<IActionResult> CreateGatheringPoint(CreatePointModel model)
 	{
 		Point gatheringPoint = _mapper.Map<Point>(model);

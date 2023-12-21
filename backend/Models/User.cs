@@ -18,7 +18,7 @@ public class User : Model
 	public Guid? PointId { get; set; }
 	public Point? Point { get; }
 	public PublicInfo GetPublicInfo()
-			=> new() { Id = Id, Name = Name, Username = Username, Email = Email };
+			=> new() { Id = Id, Name = Name, Username = Username, Email = Email, PointId = PointId };
 }
 
 public class PublicInfo
@@ -27,6 +27,7 @@ public class PublicInfo
 	public required string Name { get; set; }
 	public required string Username { get; set; }
 	public required string Email { get; set; }
+	public Guid? PointId {get; set;}
 }
 
 public class LoginModel : Model

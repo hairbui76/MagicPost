@@ -29,8 +29,6 @@ export default function OrderSummary({
 			{[
 				format(new Date(order.createdAt!), "MMMM dd, yyyy, HH:mm"),
 				order.packageInfo.type,
-				order.sender.name,
-				order.receiver.name,
 				order.status,
 			].map((cell, index) => (
 				<td className="text-center text-xs" key={index}>

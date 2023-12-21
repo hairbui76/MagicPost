@@ -4,7 +4,7 @@ export type PackageProps = {
 	type: PackageTypeProps;
 	items: PackageItemsProps;
 	properties: PackagePropertiesProps;
-	disabled: boolean;
+	disabled?: boolean;
 };
 
 export type ItemProps = {
@@ -21,6 +21,7 @@ export type PackageItemsProps = {
 		type: "item_changed" | "item_added" | "item_removed";
 		item?: ItemProps;
 	}>;
+	disabled?: boolean;
 };
 
 export const PACKAGE_PROPERTIES = [

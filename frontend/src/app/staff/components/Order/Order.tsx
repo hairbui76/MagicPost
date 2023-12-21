@@ -74,7 +74,7 @@ export default function Order({
 			{order ? (
 				<Link
 					className="w-fit link link-neutral mb-4 block"
-					href={`/staff/view/${order.id}`}
+					href={`/view/${order.id}`}
 				>
 					<FontAwesomeIcon icon={faReceipt} className="mr-2" />
 					View receipt

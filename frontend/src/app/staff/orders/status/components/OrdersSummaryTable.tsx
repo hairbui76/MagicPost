@@ -5,7 +5,7 @@ import OrderSummary from "./OrderSummary";
 import Pagination from "@/app/staff/components/Pagination/Pagination";
 import OrderFilter from "./OrderFilter";
 import compareAsc from "date-fns/compareAsc";
-import moment, { Moment } from "moment";
+import { Moment } from "moment";
 
 export default function OrdersSummaryTable({
 	orders,
@@ -28,6 +28,9 @@ export default function OrdersSummaryTable({
 			}
 			if (categoryFilter !== "all" && packageInfo.type !== categoryFilter) {
 				return false;
+			}
+			if (!timeRange) {
+				return true;
 			}
 			if (
 				timeRange[0] &&
@@ -60,19 +63,13 @@ export default function OrdersSummaryTable({
 			<table className="table table-sm overflow-x-auto bg-custom-white rounded-md shadow-md w-full">
 				<thead className="text-custom-text-color">
 					<tr className="border-b-2 border-custom-grey">
-						{[
-							"",
-							"ID",
-							"Created At",
-							"Category",
-							"Sender",
-							"Receiver",
-							"Status",
-						].map((header, index) => (
-							<th className="text-center text-sm" key={index}>
-								{header}
-							</th>
-						))}
+						{["", "ID", "Created At", "Category", "Status"].map(
+							(header, index) => (
+								<th className="text-center text-sm" key={index}>
+									{header}
+								</th>
+							)
+						)}
 					</tr>
 				</thead>
 				<tbody>

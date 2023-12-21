@@ -5,6 +5,7 @@ import PackageItem from "./PackageItem";
 export default function PackageItemsField({
 	value,
 	handleChange,
+	disabled = false,
 }: PackageItemsProps) {
 	return (
 		<div className="flex flex-col gap-4">
@@ -18,13 +19,15 @@ export default function PackageItemsField({
 					<span className="text-center italic  text-sm">Nothing to show!</span>
 				)}
 			</div>
-			<PrimaryButton
-				type="button"
-				handleClick={() => handleChange({ type: "item_added" })}
-				className="mx-auto block text-xs"
-			>
-				Add an item
-			</PrimaryButton>
+			{disabled ? null : (
+				<PrimaryButton
+					type="button"
+					handleClick={() => handleChange({ type: "item_added" })}
+					className="mx-auto block text-xs"
+				>
+					Add an item
+				</PrimaryButton>
+			)}
 			<hr className="border" />
 			<div className="flex flex-col gap-4 sm:flex-row sm:w-full sm:gap-44 text-sm">
 				<div className="flex flex-row w-full sm:w-1/2">

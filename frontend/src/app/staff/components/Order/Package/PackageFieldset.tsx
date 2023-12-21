@@ -9,13 +9,13 @@ export default function PackageFieldset({
 	type,
 	items,
 	properties,
-	disabled,
+	disabled = false,
 }: PackageProps) {
 	return (
 		<Fieldset legend="Package" icon={faBox} disabled={disabled}>
 			<PackageTypeField {...type} />
 			<hr className="border" />
-			<PackageItemsField {...items} />
+			<PackageItemsField {...items} disabled={disabled} />
 			<hr className="border" />
 			<PackagePropertiesField {...properties} />
 		</Fieldset>

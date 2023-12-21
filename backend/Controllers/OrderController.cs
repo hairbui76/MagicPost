@@ -5,6 +5,7 @@ using MagicPostApi.Models;
 using MagicPostApi.Services;
 using MagicPostApi.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Crypto.Engines;
 using System.Net;
 
 namespace MagicPostApi.Controllers;

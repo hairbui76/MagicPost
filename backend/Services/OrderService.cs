@@ -1,3 +1,4 @@
+using System.Data;
 using System.Net;
 using AutoMapper;
 using MagicPostApi.Configs;
@@ -28,7 +29,19 @@ public class OrderService : IOrderService
 		_ordersRepository = webAPIDataContext.Orders;
 		_itemsRepository = webAPIDataContext.Items;
 	}
-	public async Task<List<PublicOrderInfo>> GetAsync()
+	public async Task<List<PublicOrderInfo>> GetFilterAsync(User userRequest, string senderName, string receiverName, string status, int pageNumber) 
+	{
+		List<PublicOrderInfo> orders = await _ordersRepository
+											.Include(o => o.Items)
+											.Select(o => o.GetPublicOrderInfo())
+											.ToListAsync();
+		if (senderName != null) orders = orders.Where(o => o.Sender.Name.Contains(senderName)).ToList();
+		if (receiverName != null) orders =  orders.Where(o => o.Receiver.Name.Contains(receiverName)).ToList();
+		return orders.Skip(Pagination.PageSize * pageNumber).Take(Pagination.PageSize).ToList();
+	}
+
+	
+ 	public async Task<List<PublicOrderInfo>> GetAsync()
 			=> await _ordersRepository
 						.Include(o => o.Items)
 						.Select(o => o.GetPublicOrderInfo())

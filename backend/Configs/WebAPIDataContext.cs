@@ -14,29 +14,17 @@ public class WebAPIDataContext : DbContext
 	{
 		base.OnModelCreating(modelBuilder);
 
-		// Point can have multiple staffs
-		modelBuilder.Entity<Point>()
-			.HasMany(p => p.Staffs)
-			.WithOne()
-			.HasForeignKey(e => e.StaffPointId);
-
 		// Point has only one manager
 		modelBuilder.Entity<Point>()
 			.HasOne(p => p.Manager)
 			.WithOne()
-			.HasForeignKey<User>(e => e.ManagerPointId);
-
-		// User is manager of a point
-		modelBuilder.Entity<User>()
-			.HasOne(p => p.ManagerPoint)
-			.WithOne()
-			.HasForeignKey<User>(e => e.ManagerPointId);
+			.HasForeignKey<Point>(p => p.ManagerId);
 
 		// User is staff of a point
 		modelBuilder.Entity<User>()
-			.HasOne(p => p.StaffPoint)
-			.WithOne()
-			.HasForeignKey<User>(e => e.StaffPointId);
+			.HasOne(p => p.Point)
+			.WithMany(u => u.Staffs)
+			.HasForeignKey(e => e.PointId);
 
 		// Delivery is associated with an order
 		modelBuilder.Entity<Delivery>()

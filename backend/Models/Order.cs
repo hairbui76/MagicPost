@@ -143,9 +143,8 @@ public class UpdateOrderModel
 	public string? ReceiverPhone { get; set; }
 }
 
-public class FilterOrderModel 
+public class ConfirmIncomingOrderModel
 {
-	public string? SenderName { get; set; }
-	public string? ReceiverName { get; set; }
-	public string? Status { get; set; }
+	public Guid? orderId {get; set;}
+	public bool Confirm {get; set;}
 }

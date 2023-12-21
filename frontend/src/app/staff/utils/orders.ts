@@ -172,3 +172,15 @@ export async function getOrders() {
 		return res.json();
 	});
 }
+
+export async function getOrderById(orderId: string) {
+	return fetch(`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/get/${orderId}`, {
+		credentials: "include",
+	}).then(async (res) => {
+		if (res.status !== 200) {
+			const json = await res.json();
+			throw new Error(json.message);
+		}
+		return res.json();
+	});
+}

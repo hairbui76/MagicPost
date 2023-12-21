@@ -28,7 +28,7 @@ export default function Select({
 			<select
 				name={name}
 				className={`custom-input appearance-none ${
-					focused && value === "" ? "custom-input-invalid" : ""
+					focused && required && value === "" ? "custom-input-invalid" : ""
 				} w-full`}
 				onChange={(e) => handleChange(e.currentTarget.value)}
 				onFocus={() => setFocused(true)}

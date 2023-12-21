@@ -6,6 +6,7 @@ import Pagination from "@/app/staff/components/Pagination/Pagination";
 import OrderFilter from "./OrderFilter";
 import compareAsc from "date-fns/compareAsc";
 import { Moment } from "moment";
+import Table from "@/app/staff/components/Table/Table";
 
 export default function OrdersSummaryTable({
 	orders,
@@ -60,30 +61,15 @@ export default function OrdersSummaryTable({
 					setCategoryFilter,
 				}}
 			/>
-			<table className="table table-sm overflow-x-auto bg-custom-white rounded-md shadow-md w-full">
-				<thead className="text-custom-text-color">
-					<tr className="border-b-2 border-custom-grey">
-						{["", "ID", "Created At", "Category", "Status"].map(
-							(header, index) => (
-								<th className="text-center text-sm" key={index}>
-									{header}
-								</th>
-							)
-						)}
-					</tr>
-				</thead>
-				<tbody>
-					{filterOrders(orders).map((order, index) => (
-						<OrderSummary
-							key={order.id}
-							order={order}
-							visible={Math.floor(index / 20 + 1) === pageNumber}
-						/>
-					))}
-				</tbody>
-			</table>
+			<Table columnHeadings={["", "ID", "Created At", "Category", "Status"]}>
+				{filterOrders(orders).map((order, index) =>
+					Math.floor(index / 20 + 1) === pageNumber ? (
+						<OrderSummary key={order.id} order={order} />
+					) : null
+				)}
+			</Table>
 			<Pagination
-				numberOfPages={Math.floor(orders.length / 20 + 1)}
+				numberOfPages={Math.floor(filterOrders(orders).length / 20 + 1)}
 				pageNumber={pageNumber}
 				setPageNumber={setPageNumber}
 			/>

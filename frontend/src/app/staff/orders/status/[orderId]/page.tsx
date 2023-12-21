@@ -1,20 +1,12 @@
 "use client";
 
 import { OrderProps } from "@/app/staff/types/Order/orders";
-import { getOrders } from "../../../utils/orders";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { Skeleton } from "antd";
 import { Order } from "@/app/staff/components";
-
-function getOrderById(
-	orders: Array<OrderProps>,
-	orderId: string
-): OrderProps | null {
-	const filtered = orders.filter((order: OrderProps) => order.id === orderId);
-	return filtered.length ? filtered[0] : null;
-}
+import { getOrderById } from "@/app/staff/utils/orders";
 
 export default function Page({
 	params,
@@ -29,17 +21,16 @@ export default function Page({
 
 	const [order, setOrder] = useState<OrderProps | null>(null);
 	const { isPending, error, data } = useQuery({
-		queryKey: ["orders"],
-		queryFn: getOrders,
+		queryKey: [`${params.orderId}`],
+		queryFn: async () => {
+			return await getOrderById(params.orderId);
+		},
 	});
 	useEffect(() => {
-		const { orderId } = params;
 		if (data) {
-			const order = getOrderById(data.orders, orderId);
+			const { order, message } = data;
 			setOrder(order);
-			if (order === null) {
-				toast.info(`Fetched successfully but order ${orderId} not found!`);
-			} else toast.success(data.message);
+			toast.success(data.message);
 		}
 	}, [data, params, setOrder]);
 

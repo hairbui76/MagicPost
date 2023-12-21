@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "antd";
 import { useContext, useEffect } from "react";
 import { toast } from "react-toastify";
-import OrdersSummaryTable from "./components/OrdersSummaryTable";
+import OrdersSummaryTable from "./components/Summary/OrdersSummaryTable";
 import Title from "../../components/Title/Title";
 import { getOrders } from "../../utils/orders";
 
@@ -26,7 +26,6 @@ function Page() {
 	if (isPending) return <Skeleton active />;
 
 	if (error) toast.error(error.message);
-
 	return (
 		<div>
 			<Title>Order Status</Title>

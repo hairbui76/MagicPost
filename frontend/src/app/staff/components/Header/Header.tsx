@@ -23,7 +23,7 @@ export default function Header({ onToggle }: { onToggle: () => void }) {
 		}
 	};
 	return (
-		<header className="p-4 h-16 pr-6 md:gap-6 gap-4 flex flex-row items-center z-[10] fixed w-full">
+		<header className="p-4 h-16 pr-6 md:gap-6 gap-4 flex flex-row items-center z-[30] fixed w-full">
 			<Toggle onToggle={onToggle} />
 			<picture>
 				<source media="(max-width: 767px)" srcSet="/logo_no_char.png" />

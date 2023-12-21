@@ -1,18 +1,13 @@
 import { OrderProps } from "@/app/staff/types/Order/orders";
-import { format } from "date-fns";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
+import TableRow from "@/app/staff/components/Table/TableRow";
+import { formatDate } from "@/utils/helper";
 
-export default function OrderSummary({
-	order,
-	visible = false,
-}: {
-	order: OrderProps;
-	visible?: boolean;
-}) {
+export default function OrderSummary({ order }: { order: OrderProps }) {
 	return (
-		<tr className={`${visible ? "" : "hidden"} border-custom-grey`}>
+		<TableRow>
 			<td>
 				<button type="button" className="mx-auto block">
 					<FontAwesomeIcon icon={faBars} />
@@ -26,15 +21,13 @@ export default function OrderSummary({
 					{order.id}
 				</Link>
 			</td>
-			{[
-				format(new Date(order.createdAt!), "MMMM dd, yyyy, HH:mm"),
-				order.packageInfo.type,
-				order.status,
-			].map((cell, index) => (
-				<td className="text-center text-xs" key={index}>
-					{cell}
-				</td>
-			))}
-		</tr>
+			{[formatDate(order.createdAt!), order.packageInfo.type, order.status].map(
+				(cell, index) => (
+					<td className="text-center text-xs" key={index}>
+						{cell}
+					</td>
+				)
+			)}
+		</TableRow>
 	);
 }

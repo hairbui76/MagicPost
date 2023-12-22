@@ -7,13 +7,13 @@ import { ItemProps, PackageProperties } from "../types/Order/package";
 import { copyObject } from "@/utils";
 
 export type Address = {
-	id?: string;
-	name: string;
+	id?: string | null;
+	name?: string | null;
 	lat?: number | null;
 	long?: number | null;
-	province: string;
-	district: string;
-	ward: string;
+	province?: string | null;
+	district?: string | null;
+	ward?: string | null;
 };
 
 export const emptyOrder = {

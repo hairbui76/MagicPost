@@ -58,6 +58,14 @@ const getWardByName = (ward: string) => {
 	return wards.filter((w) => w.name === ward)[0];
 };
 
+const getDistrictsByProvince = (province: string) =>
+	districts.filter((d) => d.province_name === province);
+
+const getWardsByDistrictAndProvince = (district: string, province: string) =>
+	wards.filter(
+		(w) => w.district_name === district && w.province_name === province
+	);
+
 export {
 	getProvinces,
 	getDistrictsByProvinceCode,
@@ -65,4 +73,6 @@ export {
 	getDistrictByName,
 	getProvinceByName,
 	getWardByName,
+	getDistrictsByProvince,
+	getWardsByDistrictAndProvince,
 };

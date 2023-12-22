@@ -46,6 +46,14 @@ public class PointController : ControllerBase
 			=> await _pointService.GetAllGatheringPointManagersAsync();
 
 	[HttpPost]
+	public async Task<IActionResult> Create(CreatePointModel model)
+	{
+		Point newPoint = _mapper.Map<Point>(model);
+		await _pointService.CreateAsync(newPoint);
+		return Ok(new { message = "Create point successfully!", point = newPoint });
+	}
+
+	[HttpPost]
 	public async Task<IActionResult> CreateTransactionPoint(CreatePointModel model)
 	{
 		Point transactionPoint = _mapper.Map<Point>(model);
@@ -61,7 +69,7 @@ public class PointController : ControllerBase
 	{
 		Point newPoint = _mapper.Map<Point>(model);
 		await _pointService.CreateAsync(newPoint);
-		return Ok(new {message = "Create point successfully!", point = newPoint});
+		return Ok(new { message = "Create point successfully!", point = newPoint });
 	}
 
 	[HttpPost]
@@ -78,7 +86,7 @@ public class PointController : ControllerBase
 	[HttpPut("{id}")]
 	[VerifyToken]
 	[VerifyOwner]
-	[VerifyRole(new Role[] {Role.COMPANY_ADMINISTRATOR, Role.TRANSACTION_POINT_MANAGER, Role.GATHERING_POINT_MANAGER})]
+	[VerifyRole(new Role[] { Role.COMPANY_ADMINISTRATOR, Role.TRANSACTION_POINT_MANAGER, Role.GATHERING_POINT_MANAGER })]
 	public async Task<IActionResult> UpdatePointAsync(Guid id, UpdatePointModel model)
 	{
 		await _pointService.UpdateAsync(id, model);

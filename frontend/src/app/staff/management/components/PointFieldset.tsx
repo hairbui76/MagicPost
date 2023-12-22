@@ -1,6 +1,7 @@
 import AddressInput from "@/components/AddressInput";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import Fieldset from "../../components/Form/Fieldset";
+import Select from "../../components/Form/Select";
 import TextInput from "../../components/Form/TextInput";
 import { PointStateProps } from "../../utils/points";
 
@@ -21,6 +22,20 @@ export default function PointFieldSet({ state }: { state: PointStateProps }) {
 					state.pointName.handleChange(pointName)
 				}
 			/>
+			<Select
+				label="Point type"
+				name="type"
+				options={[
+					{ label: "Transaction Point", value: "TransactionPoint" },
+					{ label: "Gathering Point", value: "GatheringPoint" },
+				]}
+				handleChange={(value) => {
+					state.type.handleChange(value);
+				}}
+				className="text-sm"
+				value={state.type.value}
+				required={true}
+			/>
 			<TextInput
 				label="Phone"
 				placeholder="Phone"
@@ -38,21 +53,12 @@ export default function PointFieldSet({ state }: { state: PointStateProps }) {
 				handleChange={(email: string) => state.email.handleChange(email)}
 			/>
 			<AddressInput
-				handleChange={(
-					placeId: string,
-					name: string,
-					province: string,
-					district: string,
-					ward: string
-				) =>
-					state.address.handleChange((address) => ({
-						...address,
-						id: placeId,
-						name,
-						province,
-						district,
-						ward,
-					}))
+				value={state.address.value}
+				handleChange={(newAddress) =>
+					state.address.handleChange({
+						...state.address.value,
+						...newAddress,
+					})
 				}
 			/>
 		</Fieldset>

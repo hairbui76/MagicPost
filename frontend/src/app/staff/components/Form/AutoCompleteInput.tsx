@@ -68,6 +68,7 @@ export default function AddressAutoComplete({
 		<InputContainer {...{ label, required }}>
 			{children ? (
 				<AutoComplete
+					value={value}
 					placeholder={placeholder}
 					disabled={disabled}
 					className="flex-1"

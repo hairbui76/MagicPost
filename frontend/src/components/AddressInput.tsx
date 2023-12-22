@@ -26,7 +26,6 @@ export default function AddressInput({
 }) {
 	const [districts, setDistricts] = useState<District[]>([]);
 	const [wards, setWards] = useState<Ward[]>([]);
-	const [specificAddress, setSpecificAddress] = useState("");
 	const [specificAddresses, setSpecificAddresses] = useState<SpecificAddress[]>(
 		[]
 	);

@@ -45,3 +45,8 @@ body {
 .custom-table {
 	@apply table table-sm overflow-x-auto bg-custom-white rounded-md shadow-md w-full;
 }
+
+.grid-divider {
+	display: grid;
+	grid-template-columns: 1fr 3em 1fr;
+}

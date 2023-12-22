@@ -141,6 +141,7 @@ export async function confirmOrders(
 			`${process.env.NEXT_PUBLIC_API_ENDPOINT}/${mode}/confirm`,
 			{
 				credentials: "include",
+				method: "PUT",
 				body: JSON.stringify({
 					orders: selectedOrders,
 				}),
@@ -162,6 +163,7 @@ export async function rejectOrders(
 			`${process.env.NEXT_PUBLIC_API_ENDPOINT}/${mode}/reject`,
 			{
 				credentials: "include",
+				method: "PUT",
 				body: JSON.stringify({
 					orders: selectedOrders,
 					reason: reason,

@@ -53,7 +53,7 @@ public class OrderController : ControllerBase
 	public async Task<IActionResult> CreateAsync(CreateOrderModel model)
 	{
 		Order order = _mapper.Map<Order>(model);
-		await _orderService.CreateAsync(order);
+		await _orderService.CreateAsync((User?)HttpContext.Items["user"] ,order);
 		return Ok(new { message = "Create order successfully!", order });
 	}
 
@@ -64,18 +64,40 @@ public class OrderController : ControllerBase
 	public async Task<IActionResult> GetIncomingOrdersAsync(int pageNumber) 
 	{
 		User? user = (User?)HttpContext.Items["user"];
-		var ordersIncoming = _orderService.GetIncomingOrdersAsync(user, pageNumber);
+		var ordersIncoming = await _orderService.GetIncomingOrdersAsync(user, pageNumber);
 		return Ok(ordersIncoming);
 	} 
 
-	[HttpGet("{id}")]
+	[HttpPut("{id}")]
 	[VerifyToken]
 	[VerifyOwner]
 	[VerifyRole(new Role[] {Role.TRANSACION_STAFF, Role.GATHERING_STAFF})]
 	public async Task<IActionResult> ConfirmIncomingOrdersAsync(List<ConfirmIncomingOrderModel> orders) 
 	{
-		User user = (User)HttpContext.Items["user"];
-		var result = _orderService.ConfirmIncomingOrdersAsync(user, orders);
+		User? user = (User?)HttpContext.Items["user"];
+		var result = await _orderService.ConfirmIncomingOrdersAsync(user, orders);
+		return Ok(result);
+	} 	
+
+	[HttpGet("{id}")]
+	[VerifyToken]
+	[VerifyOwner]
+	[VerifyRole(new Role[] {Role.TRANSACION_STAFF, Role.GATHERING_STAFF})]
+	public async Task<IActionResult> GetOutgoingOrdersAsync(int pageNumber) 
+	{
+		User? user = (User?)HttpContext.Items["user"];
+		var ordersIncoming = await _orderService.GetOutgoingOrdersAsync(user, pageNumber);
+		return Ok(ordersIncoming);
+	} 
+
+	[HttpPost("{id}")]
+	[VerifyToken]
+	[VerifyOwner]
+	[VerifyRole(new Role[] {Role.TRANSACION_STAFF, Role.GATHERING_STAFF})]
+	public async Task<IActionResult> ForwardOrdersAsync(List<Guid> orders) 
+	{
+		User? user = (User?)HttpContext.Items["user"];
+		var result = await _orderService.ForwardOrdersAsync(user, orders);
 		return Ok(result);
 	} 
 }

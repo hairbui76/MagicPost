@@ -33,8 +33,8 @@ public class OrderController : ControllerBase
 	[HttpGet("{id}")]
 	public async Task<IActionResult> GetAsync(Guid id)
 	{
-		PublicOrderInfo? order = await _orderService.GetAsync(id) ?? throw new AppException(HttpStatusCode.NotFound, "Order not found");
-		return Ok(new { message = "Get order successfully", order });
+		List<OrderHistory> orderHistory = await _orderService.GetAsync(id) ?? throw new AppException(HttpStatusCode.NotFound, "Order not found");
+		return Ok(new { message = "Get order history successfully", orderHistory });
 	}
 
 	[HttpPut("{id}")]

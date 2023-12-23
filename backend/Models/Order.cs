@@ -99,6 +99,11 @@ public class PublicOrderInfo : Model
 	public required ExtraData ExtraData { get; set; }
 }
 
+public class OrderHistory {
+	public Point? Point {get; set;}
+	public DateTime? ArriveAt {get; set;}
+}
+
 public class PackageInfo
 {
 	public string? Type { get; set; }

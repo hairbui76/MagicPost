@@ -63,8 +63,8 @@ public class PointController : ControllerBase
 	}
 
 	[HttpPost]
-	[VerifyToken]
-	[VerifyRole(Role.COMPANY_ADMINISTRATOR)]
+	// [VerifyToken]
+	// [VerifyRole(Role.COMPANY_ADMINISTRATOR)]
 	public async Task<IActionResult> CreatePoint(CreatePointModel model)
 	{
 		Point newPoint = _mapper.Map<Point>(model);

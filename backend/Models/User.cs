@@ -15,16 +15,8 @@ public class User : Model
 	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 	public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 	public Role Role { get; set; }
-	// If user is staff, associate with a point
-	public Guid? StaffPointId { get; set; }
-	// Reference to the point that user is staff
-	public Point? StaffPoint { get; }
-	// If user is manager, associate with a point
-	public Guid? ManagerPointId { get; set; }
-	// Reference to the point that user is manager
-	public Point? ManagerPoint { get; }
-
-	// Get public user information
+	public Guid? PointId { get; set; }
+	public Point? Point { get; }
 	public PublicInfo GetPublicInfo()
 			=> new() { Id = Id, Name = Name, Username = Username, Email = Email };
 }

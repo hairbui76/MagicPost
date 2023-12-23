@@ -36,6 +36,7 @@ public class Order : Model
 	public DateTime CreatedAt = DateTime.UtcNow;
 	public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 	public OrderState Status { get; set; } = OrderState.PENDING;
+	public Guid? CurrentPointId { get; set; }
 	public PublicOrderInfo GetPublicOrderInfo()
 			=> new()
 			{
@@ -140,4 +141,10 @@ public class UpdateOrderModel
 	public string? ReceiverAddress { get; set; }
 	[Phone]
 	public string? ReceiverPhone { get; set; }
+}
+
+public class ConfirmIncomingOrderModel
+{
+	public Guid? orderId {get; set;}
+	public bool Confirm {get; set;}
 }

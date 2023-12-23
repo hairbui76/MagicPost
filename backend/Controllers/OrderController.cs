@@ -5,6 +5,7 @@ using MagicPostApi.Models;
 using MagicPostApi.Services;
 using MagicPostApi.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Crypto.Engines;
 using System.Net;
 
 namespace MagicPostApi.Controllers;
@@ -55,4 +56,26 @@ public class OrderController : ControllerBase
 		await _orderService.CreateAsync(order);
 		return Ok(new { message = "Create order successfully!", order });
 	}
+
+	[HttpGet("{id}")]
+	[VerifyToken]
+	[VerifyOwner]
+	[VerifyRole(new Role[] {Role.TRANSACION_STAFF, Role.GATHERING_STAFF})]
+	public async Task<IActionResult> GetIncomingOrdersAsync(int pageNumber) 
+	{
+		User? user = (User?)HttpContext.Items["user"];
+		var ordersIncoming = _orderService.GetIncomingOrdersAsync(user, pageNumber);
+		return Ok(ordersIncoming);
+	} 
+
+	[HttpGet("{id}")]
+	[VerifyToken]
+	[VerifyOwner]
+	[VerifyRole(new Role[] {Role.TRANSACION_STAFF, Role.GATHERING_STAFF})]
+	public async Task<IActionResult> ConfirmIncomingOrdersAsync(List<ConfirmIncomingOrderModel> orders) 
+	{
+		User user = (User)HttpContext.Items["user"];
+		var result = _orderService.ConfirmIncomingOrdersAsync(user, orders);
+		return Ok(result);
+	} 
 }

@@ -1,6 +1,5 @@
 using System.Data;
 using System.Net;
-using System.Transactions;
 using AutoMapper;
 using MagicPostApi.Configs;
 using MagicPostApi.Enums;
@@ -13,7 +12,7 @@ namespace MagicPostApi.Services;
 public interface IOrderService
 {
 	Task<List<PublicOrderInfo>> GetAsync();
-	Task<PublicOrderInfo?> GetAsync(Guid id);
+	Task<List<OrderHistory>> GetAsync(Guid id);
 	Task<List<PublicOrderInfo>> GetIncomingOrdersAsync(User user, int pageNumber);
 	Task<bool> ConfirmIncomingOrdersAsync(User user, List<ConfirmIncomingOrderModel> orders);
 	Task<List<PublicOrderInfo>> GetOutgoingOrdersAsync(User user, int pageNumber);
@@ -131,12 +130,29 @@ public class OrderService : IOrderService
 						.Select(o => o.GetPublicOrderInfo())
 						.ToListAsync();
 
-	public async Task<PublicOrderInfo?> GetAsync(Guid id)
-			=> await _ordersRepository
-						.Where(o => o.Id == id)
-						.Include(o => o.Deliveries.OrderBy(d => d.CreatedAt))
-						.Select(o => o.GetPublicOrderInfo())
-						.FirstOrDefaultAsync();
+	public async Task<List<OrderHistory>> GetAsync(Guid id) 
+	{
+		var deliveries = await _ordersRepository
+			.Where(o => o.Id == id)
+			.Include(o => o.Deliveries.OrderBy(d => d.CreatedAt))
+			.ThenInclude(d => d.FromPoint)
+			.Select(o => o.Deliveries)
+			.FirstOrDefaultAsync();
+		var orderHistory = new List<OrderHistory>() 
+		{
+			new OrderHistory{Point = deliveries.FirstOrDefault()?.FromPoint, ArriveAt = deliveries.FirstOrDefault().CreatedAt}
+		};
+		deliveries.ToList().ForEach(d => {
+			if (d.State == DeliveryState.ARRIVED) {
+				OrderHistory history = new OrderHistory() {
+					Point = d.ToPoint,
+					ArriveAt = d.ReceiveTime
+				};
+				orderHistory.Add(history);
+			}
+		});
+		return orderHistory;
+	}
 
 	public async Task UpdateAsync(Guid id, UpdateOrderModel model)
 	{

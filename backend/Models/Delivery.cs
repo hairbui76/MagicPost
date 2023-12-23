@@ -19,7 +19,6 @@ public class Delivery : Model
 	// Reference to order
 	public Order? Order { get; }
 	public DeliveryState State { get; set; }
-	public DateTime? SendTime { get; set; }
 	public DateTime? ReceiveTime { get; set; }
 	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 	public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

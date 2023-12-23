@@ -23,12 +23,16 @@ public class UserController : ControllerBase
 	}
 
 	[HttpGet]
-	public async Task<List<User>> GetAsync() => await _userService.GetAsync();
+	public async Task<IActionResult> GetAsync()
+	{
+		List<User> users = await _userService.GetAsync();
+		return Ok(new { message = "Get users successfully!", users });
+	}
 
 	[HttpGet("{id}")]
 	[VerifyOwner]
 	[VerifyToken]
-	[VerifyRole(new Role[] {Role.COMPANY_ADMINISTRATOR})]
+	[VerifyRole(new Role[] { Role.COMPANY_ADMINISTRATOR })]
 	public async Task<ActionResult<User>> GetAsync(Guid id)
 	{
 		var user = await _userService.GetAsyncById(id);

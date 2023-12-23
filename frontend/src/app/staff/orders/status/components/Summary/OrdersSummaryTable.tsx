@@ -1,12 +1,12 @@
 "use client";
-import { OrderProps } from "@/app/staff/types/Order/orders";
-import { useState } from "react";
-import OrderSummary from "./OrderSummary";
 import Pagination from "@/app/staff/components/Pagination/Pagination";
-import OrderFilter from "./OrderFilter";
+import Table from "@/app/staff/components/Table/Table";
+import { OrderProps } from "@/app/staff/types/Order/orders";
 import compareAsc from "date-fns/compareAsc";
 import { Moment } from "moment";
-import Table from "@/app/staff/components/Table/Table";
+import { useState } from "react";
+import OrderFilter from "./OrderFilter";
+import OrderSummary from "./OrderSummary";
 
 export default function OrdersSummaryTable({
 	orders,

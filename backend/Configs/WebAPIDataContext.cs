@@ -29,8 +29,8 @@ public class WebAPIDataContext : DbContext
 		// Delivery is associated with an order
 		modelBuilder.Entity<Delivery>()
 			.HasOne(d => d.Order)
-			.WithOne()
-			.HasForeignKey<Delivery>(e => e.OrderId);
+			.WithMany(o => o.Deliveries)
+			.HasForeignKey(d => d.OrderId);
 
 		// Delivery has been sent from a point
 		modelBuilder.Entity<Delivery>()
@@ -43,12 +43,6 @@ public class WebAPIDataContext : DbContext
 			.HasOne(d => d.ToPoint)
 			.WithOne()
 			.HasForeignKey<Delivery>(e => e.ToPointId);
-
-		// Order has many deliveries
-		modelBuilder.Entity<Order>()
-			.HasMany(o => o.Deliveries)
-			.WithOne()
-			.HasForeignKey(e => e.OrderId);
 
 		modelBuilder.Entity<Order>()
 			.HasMany(o => o.Items)

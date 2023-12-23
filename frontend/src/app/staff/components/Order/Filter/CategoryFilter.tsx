@@ -1,0 +1,35 @@
+import { Dispatch, SetStateAction } from "react";
+import SelectFilter from "./SelectFilter";
+
+const categories = [
+	{
+		value: "parcel",
+		label: "Parcel",
+	},
+	{
+		value: "document",
+		label: "Document",
+	},
+	{
+		value: "all",
+		label: "All",
+	},
+];
+
+export default function CategoryFilter({
+	categoryFilter,
+	setCategoryFilter,
+}: {
+	categoryFilter: string;
+	setCategoryFilter: Dispatch<SetStateAction<string>>;
+}) {
+	return (
+		<SelectFilter
+			label="Category"
+			name="category"
+			value={categoryFilter}
+			setValue={setCategoryFilter}
+			options={categories}
+		/>
+	);
+}

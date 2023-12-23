@@ -11,29 +11,31 @@ export default function Select({
 	options,
 	value = "",
 	handleChange,
+	flexDirection = "col",
 }: {
 	label: string;
 	name: string;
 	required?: boolean;
 	className?: string;
 	options: Array<{ value: string; label: string }>;
-	value: string;
+	value?: string;
 	handleChange: (value: string) => void;
+	flexDirection?: "row" | "col";
 }) {
 	const [focused, setFocused] = useState(false);
 	return (
-		<InputContainer {...{ label, required, className }}>
+		<InputContainer {...{ label, required, className, flexDirection }}>
 			<select
 				name={name}
 				className={`custom-input appearance-none ${
-					focused && value === "" ? "custom-input-invalid" : ""
+					focused && required && value === "" ? "custom-input-invalid" : ""
 				} w-full`}
 				onChange={(e) => handleChange(e.currentTarget.value)}
 				onFocus={() => setFocused(true)}
 				value={value}
 			>
 				<option value="" disabled hidden>
-					--Select one--
+					--None--
 				</option>
 				{options.map((option, index) => (
 					<option key={index} value={option.value}>

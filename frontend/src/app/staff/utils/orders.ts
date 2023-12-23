@@ -4,15 +4,16 @@ import { useReducer, useState } from "react";
 import uniqid from "uniqid";
 import { OrderProps } from "../types/Order/orders";
 import { ItemProps, PackageProperties } from "../types/Order/package";
+import { copyObject } from "@/utils";
 
 export type Address = {
-	id?: string;
-	name: string;
+	id?: string | null;
+	name?: string | null;
 	lat?: number | null;
 	long?: number | null;
-	province: string;
-	district: string;
-	ward: string;
+	province?: string | null;
+	district?: string | null;
+	ward?: string | null;
 };
 
 export const emptyOrder = {
@@ -58,6 +59,35 @@ export const emptyOrder = {
 };
 
 export function useOrderState(order: OrderProps) {
+	function itemsReducer(
+		items: Array<ItemProps>,
+		action: { type: string; item?: ItemProps }
+	) {
+		const { type, item } = action;
+		switch (type) {
+			case "item_changed": {
+				return items.map((curItem) => {
+					if (item && curItem.id === item.id) {
+						return item;
+					}
+					return curItem;
+				});
+			}
+			case "item_added": {
+				return [
+					...items,
+					{ id: uniqid(), name: "", quantity: 1, value: 0, weight: 0 },
+				];
+			}
+			case "item_removed": {
+				return items.filter((curItem) => item && curItem.id !== item.id);
+			}
+			case "items_reset": {
+				return copyObject(order.packageInfo.items);
+			}
+		}
+		return [];
+	}
 	const [sender, setSender] = useState(order.sender);
 	const [receiver, setReceiver] = useState(order.receiver);
 	const [type, setType] = useState(order.packageInfo.type);
@@ -71,15 +101,17 @@ export function useOrderState(order: OrderProps) {
 	const [cod, setCod] = useState(order.extraData.cod);
 	const [payer, setPayer] = useState(order.extraData.payer);
 	const [note, setNote] = useState(order.extraData.note);
+	const [status, setStatus] = useState(order.status);
 
 	function resetOrder() {
-		setSender(emptyOrder.sender);
-		setReceiver(emptyOrder.receiver);
-		setType(emptyOrder.packageInfo.type);
+		setSender(copyObject(order.sender));
+		setReceiver(copyObject(order.receiver));
+		setType(copyObject(order.packageInfo.type));
 		itemsDispatch({ type: "items_reset" });
-		setCod(emptyOrder.extraData.cod);
-		setPayer(emptyOrder.extraData.payer);
-		setNote(emptyOrder.extraData.note);
+		setCod(copyObject(order.extraData.cod));
+		setPayer(copyObject(order.extraData.payer));
+		setNote(copyObject(order.extraData.note));
+		setStatus(copyObject(order.status));
 	}
 
 	return {
@@ -122,35 +154,33 @@ export function useOrderState(order: OrderProps) {
 		},
 		resetOrder,
 		createdAt: order.createdAt,
+		status: {
+			value: status,
+			handleChange: setStatus,
+		},
 	};
 }
 
-function itemsReducer(
-	items: Array<ItemProps>,
-	action: { type: string; item?: ItemProps }
-) {
-	const { type, item } = action;
-	switch (type) {
-		case "item_changed": {
-			return items.map((curItem) => {
-				if (item && curItem.id === item.id) {
-					return item;
-				}
-				return curItem;
-			});
+export async function getOrders() {
+	return fetch(`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/get`, {
+		credentials: "include",
+	}).then(async (res) => {
+		if (res.status !== 200) {
+			const json = await res.json();
+			throw new Error(json.message);
 		}
-		case "item_added": {
-			return [
-				...items,
-				{ id: uniqid(), name: "", quantity: 1, value: 0, weight: 0 },
-			];
+		return res.json();
+	});
+}
+
+export async function getOrderById(orderId: string) {
+	return fetch(`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/get/${orderId}`, {
+		credentials: "include",
+	}).then(async (res) => {
+		if (res.status !== 200) {
+			const json = await res.json();
+			throw new Error(json.message);
 		}
-		case "item_removed": {
-			return items.filter((curItem) => item && curItem.id !== item.id);
-		}
-		case "items_reset": {
-			return [];
-		}
-	}
-	return [];
+		return res.json();
+	});
 }

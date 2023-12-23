@@ -9,8 +9,8 @@ export default function Breadcrumps() {
 					.replace("/staff/", "")
 					.split("/")
 					.map((segment) => (
-						<li key={segment}>
-							<span>{segment[0].toLocaleUpperCase() + segment.slice(1)}</span>
+						<li className="overflow-hidden" key={segment}>
+							{segment[0].toLocaleUpperCase() + segment.slice(1)}
 						</li>
 					))}
 			</ul>

@@ -1,12 +1,13 @@
 "use client";
 import AddressAutoComplete from "@/app/staff/components/Form/AutoCompleteInput";
+import { Address } from "@/app/staff/utils/orders";
 import {
 	District,
 	SpecificAddress,
 	Ward,
-	getDistrictsByProvinceCode,
+	getDistrictsByProvince,
 	getProvinces,
-	getWardsByDistrictAndProvinceCode,
+	getWardsByDistrictAndProvince,
 } from "@/libs/address";
 import { removeVietnameseTones } from "@/utils/helper";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
@@ -17,53 +18,38 @@ import { KeyboardEventHandler, useState } from "react";
 const provinces = getProvinces();
 
 export default function AddressInput({
+	value,
 	handleChange,
 }: {
-	handleChange: (
-		placeId: string,
-		address: string,
-		province: string,
-		district: string,
-		ward: string
-	) => void;
+	value: Address;
+	handleChange: (newAddress: Address) => void;
 }) {
-	const [provinceCode, setProvinceCode] = useState("");
-	const [province, setProvince] = useState("");
 	const [districts, setDistricts] = useState<District[]>([]);
-	const [district, setDistrict] = useState("");
-	const [districtCode, setDistrictCode] = useState("");
-	const [ward, setWard] = useState("");
 	const [wards, setWards] = useState<Ward[]>([]);
-	const [specificAddress, setSpecificAddress] = useState("");
 	const [specificAddresses, setSpecificAddresses] = useState<SpecificAddress[]>(
 		[]
 	);
+	console.log(value);
 
-	const handleChangeProvince = (value: any, province: any) => {
-		setProvinceCode(province?.code);
-		setProvince(value);
-		setDistrictCode("");
-		setDistricts(getDistrictsByProvinceCode(province?.code));
-		setDistrict("");
-		setWards(getWardsByDistrictAndProvinceCode(districtCode, province?.code));
-		setWard("");
+	const handleChangeProvince = (province: string) => {
+		setDistricts(getDistrictsByProvince(province));
+		setWards([]);
 		setSpecificAddresses([]);
-		setSpecificAddress("");
+
+		handleChange({ province, district: "", ward: "", name: "", id: "" });
 	};
 
-	const handleChangeDistrict = (value: any, district: any) => {
-		setDistrictCode(district?.code);
-		setDistrict(value);
-		setWards(getWardsByDistrictAndProvinceCode(district?.code, provinceCode));
-		setWard("");
+	const handleChangeDistrict = (district: string) => {
+		setWards(getWardsByDistrictAndProvince(district, value.province!));
 		setSpecificAddresses([]);
-		setSpecificAddress("");
+
+		handleChange({ district, ward: "", name: "", id: "" });
 	};
 
-	const handleChangeWard = (value: any) => {
-		setWard(value);
+	const handleChangeWard = (ward: string) => {
 		setSpecificAddresses([]);
-		setSpecificAddress("");
+
+		handleChange({ ward, name: "", id: "" });
 	};
 
 	const handleEnterSpecificAddress: KeyboardEventHandler = async (e) => {
@@ -72,10 +58,10 @@ export default function AddressInput({
 			const res = await fetch(
 				"/api/address/search?" +
 					new URLSearchParams({
-						province,
-						district,
-						ward,
-						specificAddress,
+						province: value.province ? value.province : "",
+						district: value.district ? value.district : "",
+						ward: value.ward ? value.ward : "",
+						specificAddress: value.name ? value.name : "",
 					})
 			);
 			const response = await res.json();
@@ -103,7 +89,7 @@ export default function AddressInput({
 					label="Province"
 					placeholder="Province"
 					required={true}
-					value={province}
+					value={value.province}
 					options={provinces}
 					onChange={handleChangeProvince}
 					filterOption={filterOption}
@@ -112,7 +98,7 @@ export default function AddressInput({
 					label="District"
 					placeholder="District"
 					required={true}
-					value={district}
+					value={value.district}
 					options={districts}
 					onChange={handleChangeDistrict}
 					filterOption={filterOption}
@@ -121,7 +107,7 @@ export default function AddressInput({
 					label="Ward"
 					placeholder="Ward"
 					required={true}
-					value={ward}
+					value={value.ward}
 					options={wards}
 					onChange={handleChangeWard}
 					filterOption={filterOption}
@@ -131,14 +117,13 @@ export default function AddressInput({
 				label="Specific address"
 				placeholder="Specific address"
 				required={true}
-				value={specificAddress}
+				value={value.name}
 				options={specificAddresses}
-				disabled={!province || !district || !ward}
+				disabled={!value.province || !value.district || !value.ward}
 				filterOption={filterOption}
-				onSearch={(value) => setSpecificAddress(value)}
-				onSelect={(value, option) => {
-					setSpecificAddress(value);
-					handleChange(option.placeId, value, province, district, ward);
+				onSearch={(address) => handleChange({ name: address, id: "" })}
+				onSelect={(address, option) => {
+					handleChange({ name: address, id: option.placeId });
 				}}
 				onKeyDown={handleEnterSpecificAddress}
 			>

@@ -87,7 +87,9 @@ export default function Page({ params }: { params: { slug: string } }) {
 							</div>
 							<div className="flex">
 								<b>Địa chỉ</b>
-								<p className="flex-1 text-right">{order.receiver.address}</p>
+								<p className="flex-1 text-right">
+									{order.receiver.address.name}
+								</p>
 							</div>
 							<div className="flex">
 								<b>Điện thoại</b>

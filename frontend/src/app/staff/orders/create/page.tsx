@@ -35,7 +35,6 @@ export default function Page() {
 			},
 			packageInfo: { ...order.packageInfo, items: itemsWithoutID },
 		};
-		// TODO: Change DB schema to match OrderProps
 		const body = {
 			sender: processedOrders.sender,
 			receiver: processedOrders.receiver,

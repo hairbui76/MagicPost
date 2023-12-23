@@ -10,7 +10,7 @@ interface AutoCompleteProps<T> {
 	label: string;
 	placeholder: string;
 	required: boolean;
-	value: string;
+	value?: string | null;
 	disabled?: boolean;
 	options: Array<T>;
 	onChange?: (value: string, option: any) => void;
@@ -68,6 +68,7 @@ export default function AddressAutoComplete({
 		<InputContainer {...{ label, required }}>
 			{children ? (
 				<AutoComplete
+					value={value}
 					placeholder={placeholder}
 					disabled={disabled}
 					className="flex-1"

@@ -17,14 +17,16 @@ export default function Page() {
 		const { lat, long } = await getPlaceDetail(point.address.id!);
 		const processedPoints = {
 			...point,
-			address: point.address,
+			province: point.address.province,
+			district: point.address.district,
+			ward: point.address.ward,
+			address: point.address.name,
 			addressLat: lat,
 			addressLong: long,
 		};
-		// TODO: Change DB schema to match OrderProps
 		const body = processedPoints;
 		const res = await fetch(
-			`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/create`,
+			`${process.env.NEXT_PUBLIC_POINT_ENDPOINT}/create`,
 			{
 				method: "POST",
 				body: JSON.stringify(body),

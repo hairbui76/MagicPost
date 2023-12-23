@@ -24,7 +24,10 @@ export default function Point({
 	};
 
 	return (
-		<Form handleSubmit={() => handleSubmit(newPoint)}>
+		<Form
+			handleSubmit={() => handleSubmit(newPoint)}
+			className="w-full gap-4 lg:grid lg:grid-cols-2 flex flex-col"
+		>
 			<PointFieldSet state={state} />
 			<div className="flex flex-row gap-4">
 				<PrimaryButton type="submit">Confirm</PrimaryButton>

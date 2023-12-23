@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 const removeVietnameseTones = (str: string) => {
 	str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
 	str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
@@ -30,4 +32,8 @@ const removeVietnameseTones = (str: string) => {
 	return str;
 };
 
-export { removeVietnameseTones };
+function formatDate(date: string) {
+	return format(new Date(date), "MMMM dd, yyyy, HH:mm");
+}
+
+export { removeVietnameseTones, formatDate };

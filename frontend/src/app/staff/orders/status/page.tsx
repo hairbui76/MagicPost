@@ -5,35 +5,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "antd";
 import { useContext, useEffect } from "react";
 import { toast } from "react-toastify";
-import OrdersSummaryTable from "./components/OrdersSummaryTable";
-import { OrderProps } from "../../types/Order/orders";
-import { emptyOrder } from "../../utils/orders";
+import OrdersSummaryTable from "./components/Summary/OrdersSummaryTable";
 import Title from "../../components/Title/Title";
-
-const sampleOrders = (() => {
-	const res = [];
-	for (let i = 0; i < 5; i++) {
-		res.push({ ...emptyOrder, id: `${i}`, createdAt: new Date() });
-	}
-	return res;
-})();
-
-async function getOrders() {
-	return fetch(`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/get`, {
-		credentials: "include",
-	}).then(async (res) => {
-		if (res.status !== 200) {
-			const json = await res.json();
-			throw new Error(json.message);
-		}
-		return res.json();
-	});
-}
+import { getOrders } from "../../utils/orders";
 
 function Page() {
 	const { orders, setOrders } = useContext(OrderContext) as OrderContextProps;
 	const { isPending, error, data } = useQuery({
-		queryKey: ["repoData"],
+		queryKey: ["orders"],
 		queryFn: getOrders,
 	});
 
@@ -47,7 +26,6 @@ function Page() {
 	if (isPending) return <Skeleton active />;
 
 	if (error) toast.error(error.message);
-
 	return (
 		<div>
 			<Title>Order Status</Title>

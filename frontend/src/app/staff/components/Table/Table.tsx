@@ -3,7 +3,7 @@ export default function Table({
 	children,
 }: {
 	columnHeadings: Array<string>;
-	children: Array<React.ReactNode>;
+	children: React.ReactNode[];
 }) {
 	return (
 		<table className="table table-sm overflow-x-auto bg-custom-white rounded-md shadow-md w-full">
@@ -17,7 +17,7 @@ export default function Table({
 				</tr>
 			</thead>
 			<tbody>
-				{children && children.length ? (
+				{children ? (
 					children
 				) : (
 					<tr className="border-none">

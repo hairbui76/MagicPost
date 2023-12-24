@@ -2,7 +2,7 @@ import CarouselItem from "./CarouselItem";
 
 export default function Carousel() {
 	const images = [
-		"https://daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.jpg",
+		"https://images2.alphacoders.com/133/1331863.png",
 		"https://daisyui.com/images/stock/photo-1609621838510-5ad474b7d25d.jpg",
 		"https://daisyui.com/images/stock/photo-1414694762283-acccc27bca85.jpg",
 		"https://daisyui.com/images/stock/photo-1414694762283-acccc27bca85.jpg",

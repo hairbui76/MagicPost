@@ -1,14 +1,14 @@
 "use client";
 
-import QrContainer from "./QrContainer";
 import {
-	faQrcode,
 	faImage,
 	faMagnifyingGlass,
+	faQrcode,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import LookupResult from "./LookUpResult";
+import QrContainer from "./QrContainer";
 
 export default function LookUp() {
 	const [scanning, setScanning] = useState(false);
@@ -25,14 +25,14 @@ export default function LookUp() {
 		alert(error);
 	}
 	return (
-		<>
-			<div className="bg-custom-theme p-4 md:px-32 flex flex-col items-center gap-6">
-				<h3 className="text-primary font-medium text-lg self-start">
+		<div className="h-full">
+			<div className="bg-custom-white p-4 md:px-32 flex flex-col items-center gap-6">
+				<h3 className="text-custom-text-color font-medium text-lg self-start">
 					HOW&apos;S YOUR PACKAGE
 				</h3>
 				<div className="grid-divider w-full">
 					<div className="grid self-stretch card place-items-center p-4">
-						<div className="text-custom-white text-sm mb-4">Use QR code</div>
+						<div className="text-sm mb-4">Use QR code</div>
 						<div className="flex flex-row gap-4">
 							<button type="button" className="btn btn-sm btn-primary">
 								<FontAwesomeIcon icon={faImage} className="w-4 md:w-6" />
@@ -46,19 +46,17 @@ export default function LookUp() {
 							</button>
 						</div>
 					</div>
-					<div className="divider divider-horizontal text-custom-white justify-self-center">
+					<div className="divider divider-horizontal divider-neutral justify-self-center">
 						OR
 					</div>
 					<div className="grid self-stretch card place-items-center p-4">
-						<div className="text-custom-white text-sm mb-4">
-							Search with order&apos;s ID
-						</div>
+						<div className="text-sm mb-4">Search with order&apos;s ID</div>
 						<div className="flex flex-row justify-center">
 							<input
 								type="text"
 								value={orderIdInput}
 								onChange={(e) => setOrderIdInput(e.currentTarget.value)}
-								className="input input-sm text-custom-white mr-2 border-primary w-3/4"
+								className="input input-sm bg-white text-custom-white mr-2 border-primary w-3/4"
 								placeholder="Search"
 							/>
 							<button
@@ -74,6 +72,6 @@ export default function LookUp() {
 				{orderId ? <LookupResult orderId={orderId} /> : null}
 			</div>
 			{scanning ? <QrContainer {...{ onScan, onError, setScanning }} /> : null}
-		</>
+		</div>
 	);
 }

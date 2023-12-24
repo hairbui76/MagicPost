@@ -29,18 +29,14 @@ public class UserService : IUserService
 	private readonly WebAPIDataContext _webAPIDataContext;
 	private readonly DbSet<User> _usersRepository;
 	private readonly IDatabase _redis;
-	private readonly IDataProtectionProvider _dataProtectionProvider;
-	private readonly IDataProtector _protector;
 
-	public UserService(IMapper mapper, Config config, MyPaseto paseto, MyRedis redis, WebAPIDataContext webAPIDataContext, IDataProtectionProvider dataProtectionProvider)
+	public UserService(IMapper mapper, Config config, MyPaseto paseto, MyRedis redis, WebAPIDataContext webAPIDataContext)
 	{
 		_mapper = mapper;
 		_config = config;
 		_paseto = paseto;
 		_webAPIDataContext = webAPIDataContext;
 		_usersRepository = _webAPIDataContext.Users;
-		_dataProtectionProvider = dataProtectionProvider;
-		_protector = _dataProtectionProvider.CreateProtector("auth");
 		_redis = redis.GetDatabase();
 	}
 
@@ -88,7 +84,6 @@ public class UserService : IUserService
 		var accessToken = _paseto.Encode(info, _config.TOKEN.SECRET);
 		var accessExp = DateTime.Now.AddHours(_config.TOKEN.TOKEN_EXPIRE_HOURS);
 		await _redis.StringSetAsync("ac_" + info.Id, true, accessExp.TimeOfDay);
-		accessToken = _protector.Protect(accessToken);
 		return (accessToken, accessExp);
 	}
 
@@ -97,7 +92,6 @@ public class UserService : IUserService
 		var refreshToken = _paseto.Encode(info, _config.TOKEN.REFRESH_SECRET);
 		var refreshExp = DateTime.Now.AddDays(_config.TOKEN.REFRESH_TOKEN_EXPIRE_WEEKS * 7);
 		await _redis.StringSetAsync("rf_" + info.Id, true, refreshExp.TimeOfDay);
-		refreshToken = _protector.Protect(refreshToken);
 		return (refreshToken, refreshExp);
 	}
 }

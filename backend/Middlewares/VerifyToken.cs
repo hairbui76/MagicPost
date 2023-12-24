@@ -14,16 +14,12 @@ class VerifyToken
 	private readonly Config _config;
 	private readonly MyPaseto _paseto;
 	private readonly RequestDelegate _next;
-	private readonly IDataProtectionProvider _dataProtectionProvider;
-	private readonly IDataProtector _protector;
 	private readonly IDatabase _redis;
 
-	public VerifyToken(Config config, MyPaseto paseto, MyRedis redis, IDataProtectionProvider dataProtectionProvider, RequestDelegate next)
+	public VerifyToken(Config config, MyPaseto paseto, MyRedis redis, RequestDelegate next)
 	{
 		_config = config;
 		_paseto = paseto;
-		_dataProtectionProvider = dataProtectionProvider;
-		_protector = _dataProtectionProvider.CreateProtector("auth");
 		_redis = redis.GetDatabase();
 		_next = next;
 	}
@@ -36,7 +32,6 @@ class VerifyToken
 			throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized");
 		else if (accessToken == null && refreshToken != null)
 		{
-			refreshToken = _protector.Unprotect(refreshToken);
 			var payload = _paseto.Decode(refreshToken, _config.TOKEN.REFRESH_SECRET).Paseto.Payload["value"];
 			if (payload == null)
 				throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized");
@@ -63,7 +58,6 @@ class VerifyToken
 		}
 		else if (accessToken != null)
 		{
-			accessToken = _protector.Unprotect(accessToken);
 			var payload = _paseto.Decode(accessToken, _config.TOKEN.SECRET).Paseto.Payload["value"];
 			if (payload == null)
 				throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized");

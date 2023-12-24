@@ -46,8 +46,6 @@ var builder = WebApplication.CreateBuilder(args);
 	builder.Services.AddDbContext<WebAPIDataContext>();
 	// Add redis
 	builder.Services.AddSingleton<MyRedis>();
-	// Add data protection
-	builder.Services.AddDataProtection();
 	// Add auto mapper support for model
 	builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 	// Add services

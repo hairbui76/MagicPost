@@ -9,6 +9,7 @@ import {
 	faUserGroup,
 	faBuilding,
 	IconDefinition,
+	faClockRotateLeft,
 } from "@fortawesome/free-solid-svg-icons";
 
 export default function Menu() {
@@ -36,6 +37,7 @@ export default function Menu() {
 			"/staff/deliveries/outgoing",
 			faArrowRightFromBracket
 		),
+		getMenuItemProps("History", "/staff/deliveries/history", faClockRotateLeft),
 	].map((props) => <MenuItem {...props} key={props.path} />);
 	const managementItems = [
 		getMenuItemProps("Staffs", "/staff/management/staffs", faUserGroup),

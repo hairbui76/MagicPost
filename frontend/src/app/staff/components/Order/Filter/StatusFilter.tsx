@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction } from "react";
-import Select from "../../Form/Select";
 import SelectFilter from "./SelectFilter";
 
 const statuses = [
@@ -10,10 +9,6 @@ const statuses = [
 	{
 		value: "1",
 		label: "Delivering",
-	},
-	{
-		value: "all",
-		label: "All",
 	},
 ];
 

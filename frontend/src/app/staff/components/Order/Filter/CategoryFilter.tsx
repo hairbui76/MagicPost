@@ -10,10 +10,6 @@ const categories = [
 		value: "document",
 		label: "Document",
 	},
-	{
-		value: "all",
-		label: "All",
-	},
 ];
 
 export default function CategoryFilter({

@@ -4,7 +4,6 @@ import Table from "@/app/staff/components/Table/Table";
 import { OrderProps } from "@/app/staff/types/Order/orders";
 import IncomingOrderSummary from "./IncomingOrderSummary";
 import { Dispatch, SetStateAction, useState } from "react";
-import Pagination from "@/app/staff/components/Pagination/Pagination";
 import { Moment } from "moment";
 import IncomingOrderFilter from "./IncomingOrderFilter";
 import Actions from "../../components/Actions/Actions";
@@ -19,7 +18,6 @@ export default function IncomingOrderTable({
 	selectedOrders: Array<string>;
 	setSelectedOrders: Dispatch<SetStateAction<string[]>>;
 }) {
-	const [pageNumber, setPageNumber] = useState(1);
 	const [timeRange, setTimeRange] = useState<Array<Moment | null>>([
 		null,
 		null,
@@ -27,7 +25,6 @@ export default function IncomingOrderTable({
 	const [sourceFilter, setSourceFilter] = useState("");
 	const [selectAll, setSelectAll] = useState(false);
 	const [rejectReason, setRejectReason] = useState("");
-	console.log(orders);
 	return (
 		<div className="flex flex-col gap-4">
 			<IncomingOrderFilter
@@ -71,11 +68,6 @@ export default function IncomingOrderTable({
 					);
 				})}
 			</Table>
-			<Pagination
-				numberOfPages={Math.floor(orders.length / 20 + 1)}
-				pageNumber={pageNumber}
-				setPageNumber={setPageNumber}
-			/>
 		</div>
 	);
 }

@@ -4,7 +4,6 @@ import Table from "@/app/staff/components/Table/Table";
 import { OrderProps } from "@/app/staff/types/Order/orders";
 import OutgoingOrderSummary from "./OutgoingOrderSummary";
 import { Dispatch, SetStateAction, useState } from "react";
-import Pagination from "@/app/staff/components/Pagination/Pagination";
 import { Moment } from "moment";
 import OutgoingOrderFilter from "./OutgoingOrderFilter";
 import Actions from "../../components/Actions/Actions";
@@ -19,7 +18,6 @@ export default function OutgoingOrderTable({
 	selectedOrders: Array<string>;
 	setSelectedOrders: Dispatch<SetStateAction<string[]>>;
 }) {
-	const [pageNumber, setPageNumber] = useState(1);
 	const [timeRange, setTimeRange] = useState<Array<Moment | null>>([
 		null,
 		null,
@@ -70,11 +68,6 @@ export default function OutgoingOrderTable({
 					);
 				})}
 			</Table>
-			<Pagination
-				numberOfPages={Math.floor(orders.length / 20 + 1)}
-				pageNumber={pageNumber}
-				setPageNumber={setPageNumber}
-			/>
 		</div>
 	);
 }

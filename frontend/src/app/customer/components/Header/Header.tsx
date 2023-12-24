@@ -11,8 +11,10 @@ export default function Header() {
 				height="0"
 				className="w-32 h-auto"
 			/>
-			<div className="ml-auto text-xs">A member of the MagicPost family?</div>
-			<Link href="/login">
+			<div className="ml-auto text-xs hidden md:block">
+				A member of the MagicPost family?
+			</div>
+			<Link href="/login" className=" ml-auto md:ml-0">
 				<button type="button" className="btn btn-primary text-sm btn-sm">
 					Sign into the console
 				</button>

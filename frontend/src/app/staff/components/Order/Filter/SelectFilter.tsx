@@ -18,7 +18,13 @@ export default function SelectFilter({
 		<Select
 			label={label}
 			name={name}
-			options={options}
+			options={[
+				...options,
+				{
+					value: "",
+					label: "all",
+				},
+			]}
 			handleChange={(value) => {
 				setValue(value);
 			}}

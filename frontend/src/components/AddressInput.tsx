@@ -29,7 +29,6 @@ export default function AddressInput({
 	const [specificAddresses, setSpecificAddresses] = useState<SpecificAddress[]>(
 		[]
 	);
-	console.log(value);
 
 	const handleChangeProvince = (province: string) => {
 		setDistricts(getDistrictsByProvince(province));

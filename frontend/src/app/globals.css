@@ -50,3 +50,11 @@ body {
 	display: grid;
 	grid-template-columns: 1fr 3em 1fr;
 }
+
+td > * {
+	@apply mx-auto;
+}
+
+td {
+	@apply text-center;
+}

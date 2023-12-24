@@ -10,10 +10,6 @@ const statuses = [
 		value: "1",
 		label: "Delivering",
 	},
-	{
-		value: "all",
-		label: "All",
-	},
 ];
 
 export default function StatusFilter({

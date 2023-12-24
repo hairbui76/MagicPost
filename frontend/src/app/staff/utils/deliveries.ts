@@ -175,3 +175,59 @@ export async function rejectOrders(
 		throw err;
 	}
 }
+
+export type DeliveryHistoryProps = {
+	orderId: string;
+	type: "incoming" | "outgoing";
+	point: string;
+	status: "confirmed" | "rejected" | "pending";
+	reason: string;
+	time: string;
+	deliveryId: string | undefined;
+};
+
+export async function getDeliveryHistory() {
+	return Promise.resolve({
+		message: "success",
+		history: [
+			{
+				orderId: "1231231231231232",
+				type: "incoming",
+				point: "Hanoi",
+				status: "confirmed",
+				reason: null,
+				time: new Date().toString(),
+				deliveryId: "12321312",
+			},
+			{
+				orderId: "1231231231231232",
+				type: "outgoing",
+				point: "Hanoi",
+				status: "rejected",
+				reason: "Order not found",
+				time: new Date().toString(),
+				deliveryId: "123123123",
+			},
+			{
+				orderId: "1231231231231232",
+				type: "incoming",
+				point: "Hanoi",
+				status: "pending",
+				reason: null,
+				time: new Date().toString(),
+			},
+		],
+	});
+	return await fetch(
+		`${process.env.NEXT_PUBLIC_API_ENDPOINT}/deliveries/history`,
+		{
+			credentials: "include",
+		}
+	).then(async (response) => {
+		if (response.status !== 200) {
+			const json = await response.json();
+			throw new Error(json.message);
+		}
+		return response.json();
+	});
+}

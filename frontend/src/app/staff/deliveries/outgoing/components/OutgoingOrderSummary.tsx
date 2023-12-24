@@ -1,7 +1,7 @@
 "use client";
+import OrderLink from "@/app/staff/components/Order/OrderLink/OrderLink";
 import TableRow from "@/app/staff/components/Table/TableRow";
 import { formatDate } from "@/utils/helper";
-import Link from "next/link";
 
 export default function OutgoingOrderSummary({
 	id,
@@ -27,12 +27,7 @@ export default function OutgoingOrderSummary({
 				/>
 			</td>
 			<td>
-				<Link
-					className="mx-auto block w-fit link text-[#007FFF]"
-					href={`/staff/orders/status/${id}`}
-				>
-					{id}
-				</Link>
+				<OrderLink id={id as string} />
 			</td>
 			<td className="text-center text-xs">{formatDate(arrivedAt)}</td>
 			<td className="text-center text-xs">{to}</td>

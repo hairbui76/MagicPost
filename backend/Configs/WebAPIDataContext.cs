@@ -14,12 +14,6 @@ public class WebAPIDataContext : DbContext
 	{
 		base.OnModelCreating(modelBuilder);
 
-		// Point has only one manager
-		modelBuilder.Entity<Point>()
-			.HasOne(p => p.Manager)
-			.WithOne()
-			.HasForeignKey<Point>(p => p.ManagerId);
-
 		// User is staff of a point
 		modelBuilder.Entity<User>()
 			.HasOne(p => p.Point)

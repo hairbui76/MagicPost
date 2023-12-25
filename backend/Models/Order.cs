@@ -33,7 +33,7 @@ public class Order : Model
 	public int Cod { get; set; }
 	public required string Payer { get; set; }
 	public string? Note { get; set; }
-	public DateTime CreatedAt = DateTime.UtcNow;
+	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 	public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 	public OrderState Status { get; set; } = OrderState.PENDING;
 	public Guid? CurrentPointId { get; set; }

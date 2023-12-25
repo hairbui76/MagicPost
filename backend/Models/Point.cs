@@ -15,8 +15,6 @@ public class Point : Model
 	public required string Province { get; set; }
 	public required string District { get; set; }
 	public required string Ward { get; set; }
-	public Guid? ManagerId { get; set; }
-	public User? Manager { get; }
 	[EmailAddress]
 	public string? Email { get; set; }
 	[Phone]

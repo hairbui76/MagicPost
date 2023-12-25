@@ -5,7 +5,6 @@ using MagicPostApi.Models;
 using MagicPostApi.Services;
 using MagicPostApi.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Crypto.Engines;
 using System.Net;
 
 namespace MagicPostApi.Controllers;
@@ -35,6 +34,14 @@ public class OrderController : ControllerBase
 	{
 		List<OrderHistory> orderHistory = await _orderService.GetAsync(id) ?? throw new AppException(HttpStatusCode.NotFound, "Order not found");
 		return Ok(new { message = "Get order history successfully", orderHistory });
+	}
+
+	[HttpGet] 
+	[VerifyToken]
+	public async Task<IActionResult> FilterOrderAsync( int pageNumber, string? status, string? category, DateTime? startDate, DateTime? endDate) 
+	{
+		var orders = await _orderService.FiltOrderAsync(status, category, startDate?.ToUniversalTime(), endDate?.ToUniversalTime(), pageNumber);
+		return Ok(orders);
 	}
 
 	[HttpPut("{id}")]
@@ -100,4 +107,6 @@ public class OrderController : ControllerBase
 		var result = await _orderService.ForwardOrdersAsync(user, orders);
 		return Ok(result);
 	} 
+
+	
 }

@@ -17,6 +17,7 @@ public interface IOrderService
 	Task<bool> ConfirmIncomingOrdersAsync(User user, List<ConfirmIncomingOrderModel> orders);
 	Task<List<PublicOrderInfo>> GetOutgoingOrdersAsync(User user, int pageNumber);
 	Task<bool> ForwardOrdersAsync(User user, List<Guid> orderIds);
+	Task<List<PublicOrderInfo>> FiltOrderAsync( string? status, string? category, DateTime? startDate, DateTime? endDate, int pageNumber);
 	Task UpdateAsync(Guid id, UpdateOrderModel model);
 	Task CreateAsync(User user, Order newOrder);
 }
@@ -33,6 +34,41 @@ public class OrderService : IOrderService
 		_webAPIDataContext = webAPIDataContext;
 		_ordersRepository = webAPIDataContext.Orders;
 		_itemsRepository = webAPIDataContext.Items;
+	}
+
+	public async Task<List<PublicOrderInfo>> FiltOrderAsync( string? status, string? category, DateTime? startDate, DateTime? endDate, int pageNumber ) 
+	{
+		var orders = _ordersRepository.AsQueryable();
+		if(!string.IsNullOrEmpty(status)) 
+		{
+			OrderState orderStateToFilt = OrderState.PENDING;
+			switch (status) {
+				case "delivering":
+					orderStateToFilt = OrderState.DELIVERING;
+					break;
+				case "cancelled":
+					orderStateToFilt = OrderState.CANCELLED;
+					break;
+				case "delivered":
+					orderStateToFilt  = OrderState.DELIVERED;
+					break;
+				default:
+					break;
+			}
+			orders = orders.Where(o => o.Status == orderStateToFilt).AsQueryable();
+		}
+		if (!string.IsNullOrEmpty(category)) 
+		{	
+			orders = orders.Where(o => o.Type == category).AsQueryable();
+		}
+		if (endDate != null) {
+			orders = orders.Where(o => DateTime.Compare(o.CreatedAt, endDate.Value) < 0).AsQueryable();
+		}
+		if (startDate != null)
+		{
+			orders = orders.Where(o => DateTime.Compare(o.CreatedAt, startDate.Value) > 0).AsQueryable();
+		}
+		return orders.Select(o => o.GetPublicOrderInfo()).Skip(Pagination.PageSize * (pageNumber - 1)).Take(Pagination.PageSize).ToList();
 	}
 
 	public async Task<List<PublicOrderInfo>> GetIncomingOrdersAsync(User user, int pageNumber) 

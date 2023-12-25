@@ -73,7 +73,7 @@ public class PointController : ControllerBase
 	}
 
 	[HttpPost]
-	[VerifyToken]
+	//[VerifyToken]
 	//[VerifyRole(Role.COMPANY_ADMINISTRATOR)]
 	public async Task<IActionResult> CreateGatheringPoint(CreatePointModel model)
 	{
@@ -84,9 +84,9 @@ public class PointController : ControllerBase
 	}
 
 	[HttpPut("{id}")]
-	[VerifyToken]
-	[VerifyOwner]
-	[VerifyRole(new Role[] { Role.COMPANY_ADMINISTRATOR, Role.TRANSACTION_POINT_MANAGER, Role.GATHERING_POINT_MANAGER })]
+	// [VerifyToken]
+	// [VerifyOwner]
+	// [VerifyRole(new Role[] { Role.COMPANY_ADMINISTRATOR, Role.TRANSACTION_POINT_MANAGER, Role.GATHERING_POINT_MANAGER })]
 	public async Task<IActionResult> UpdatePointAsync(Guid id, UpdatePointModel model)
 	{
 		await _pointService.UpdateAsync(id, model);

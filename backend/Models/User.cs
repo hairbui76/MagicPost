@@ -48,6 +48,9 @@ public class RegisterModel : Model
 	public string? Username { get; set; }
 	[Required]
 	public string? Password { get; set; }
+	[Required]
+	public Role Role { get; set; }
+	public Guid? PointId { get; set; }
 }
 
 public class UpdateUserModel : Model

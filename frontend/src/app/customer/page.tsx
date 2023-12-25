@@ -3,7 +3,7 @@ import LookUp from "./components/LookUp/LookUp";
 
 export default function Page() {
 	return (
-		<div className="flex flex-col h-full">
+		<div className="flex flex-col flex-grow">
 			{/* <Carousel /> */}
 			<div className="w-full">
 				<Image

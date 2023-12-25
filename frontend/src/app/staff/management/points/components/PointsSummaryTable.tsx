@@ -11,7 +11,7 @@ export default function PointsSummaryTable({
 		<div className="flex flex-col items-center gap-4">
 			<SummaryTable
 				items={points}
-				columnHeadings={["", "ID", "Created At", "Category", "Status"]}
+				columnHeadings={["", "ID", "Category", "Status"]}
 				// filter={filter}
 			>
 				{/* <OrderFilter

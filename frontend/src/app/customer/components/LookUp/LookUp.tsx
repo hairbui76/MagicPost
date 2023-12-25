@@ -25,8 +25,8 @@ export default function LookUp() {
 		alert(error);
 	}
 	return (
-		<div className="h-full">
-			<div className="bg-custom-white p-4 md:px-32 flex flex-col items-center gap-6">
+		<div className="h-full flex flex-col flex-1">
+			<div className="bg-custom-white p-4 md:px-32 flex flex-col items-center gap-6 flex-1">
 				<h3 className="text-custom-text-color font-medium text-lg self-start">
 					HOW&apos;S YOUR PACKAGE
 				</h3>

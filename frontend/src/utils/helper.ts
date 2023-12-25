@@ -33,6 +33,7 @@ const removeVietnameseTones = (str: string) => {
 };
 
 function formatDate(date: string) {
+	if (!date) return "";
 	return format(new Date(date), "MMMM dd, yyyy, HH:mm");
 }
 

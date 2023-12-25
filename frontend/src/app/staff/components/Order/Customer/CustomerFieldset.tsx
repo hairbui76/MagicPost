@@ -2,8 +2,8 @@ import { Address } from "@/app/staff/utils/orders";
 import AddressInput from "@/components/AddressInput";
 import { faUserCheck, faUserPen } from "@fortawesome/free-solid-svg-icons";
 import { Dispatch, SetStateAction } from "react";
-import Fieldset from "../../Form/Fieldset";
-import TextInput from "../../Form/TextInput";
+import Fieldset from "../../../../../components/Form/Fieldset";
+import TextInput from "../../../../../components/Form/TextInput";
 export default function CustomerFieldset({
 	type,
 	info,

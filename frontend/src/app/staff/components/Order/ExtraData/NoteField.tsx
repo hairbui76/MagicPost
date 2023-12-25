@@ -1,5 +1,5 @@
 import { NoteProps } from "@/app/staff/types/Order/extradata";
-import TextArea from "../../Form/TextArea";
+import TextArea from "../../../../../components/Form/TextArea";
 
 export default function NoteField({ value, handleChange }: NoteProps) {
 	return (

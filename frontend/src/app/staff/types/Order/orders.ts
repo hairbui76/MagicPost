@@ -9,8 +9,8 @@ export type CustomerProps = {
 
 export type OrderProps = {
 	status?: string;
-	createdAt?: string | null;
-	id?: string;
+	createdAt?: string | undefined;
+	id?: string | undefined;
 	sender: CustomerProps;
 	receiver: CustomerProps;
 	packageInfo: {

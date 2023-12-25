@@ -1,9 +1,9 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
-import NumberInput from "../../Form/NumberInput";
-import TextInput from "../../Form/TextInput";
-import { Dispatch } from "react";
 import { ItemProps } from "@/app/staff/types/Order/package";
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Dispatch } from "react";
+import NumberInput from "../../../../../components/Form/NumberInput";
+import TextInput from "../../../../../components/Form/TextInput";
 
 export default function PackageItem({
 	index,

@@ -8,6 +8,7 @@ export type PointProps = {
 	address: Address;
 	email: string;
 	phone: string;
+	createdAt?: string;
 };
 
 export const emptyPoint: PointProps = {
@@ -25,6 +26,7 @@ export const emptyPoint: PointProps = {
 	},
 	email: "",
 	phone: "",
+	createdAt: "",
 };
 
 export type PointStateProps = {
@@ -49,6 +51,7 @@ export type PointStateProps = {
 		value: string;
 		handleChange: Dispatch<SetStateAction<string>>;
 	};
+	createdAt?: string;
 	resetPoint: () => void;
 };
 
@@ -89,6 +92,19 @@ export function usePointState(point: PointProps): PointStateProps {
 			value: email,
 			handleChange: setEmail,
 		},
+		createdAt: point.createdAt,
 		resetPoint,
 	};
+}
+
+export async function getPoints() {
+	return fetch(`${process.env.NEXT_PUBLIC_POINT_ENDPOINT}/get`, {
+		credentials: "include",
+	}).then(async (res) => {
+		if (res.status !== 200) {
+			const json = await res.json();
+			throw new Error(json.message);
+		}
+		return res.json();
+	});
 }

@@ -21,7 +21,12 @@ public class PointController : ControllerBase
 		_mapper = mapper;
 		_pointService = pointService;
 	}
-
+	[HttpGet]
+	public async Task<ActionResult<Response<List<Point>>>> GetAsync()
+	{
+		List<Point> points = await _pointService.GetAsync();
+		return Ok(new Response<List<Point>>("Get points successfully!", points));
+	}
 	[HttpGet]
 	public async Task<List<Point>> GetAllTransactionPoints()
 			=> await _pointService.GetAllTransactionPointsAsync();

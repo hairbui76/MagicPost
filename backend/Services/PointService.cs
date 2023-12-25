@@ -10,6 +10,7 @@ namespace MagicPostApi.Services;
 
 public interface IPointService
 {
+	Task<List<Point>> GetAsync();
 	Task<List<Point>> GetAllTransactionPointsAsync();
 	Task<List<Point>> GetAllGatheringPointsAsync();
 	Task<Point?> GetPointByIdAsync(Guid id);
@@ -30,6 +31,9 @@ public class PointService : IPointService
 		_webAPIDataContext = webAPIDataContext;
 		_pointsRepository = webAPIDataContext.Points;
 	}
+	public async Task<List<Point>> GetAsync()
+			=> await _pointsRepository.ToListAsync();
+
 	public async Task<List<Point>> GetAllTransactionPointsAsync()
 			=> await _pointsRepository.Where(p => p.Type == PointType.TransactionPoint).ToListAsync();
 

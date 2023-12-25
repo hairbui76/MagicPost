@@ -1,10 +1,10 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import { getOutgoingOrders } from "../../utils/deliveries";
-import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import Title from "../../../../components/Title/Title";
 import { OrderProps } from "../../types/Order/orders";
-import Title from "../../components/Title/Title";
+import { getOutgoingOrders } from "../../utils/deliveries";
 import OutgoingOrderTable from "./components/OutgoingOrderTable";
 
 export default function Page() {

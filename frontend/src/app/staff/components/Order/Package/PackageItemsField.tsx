@@ -1,5 +1,5 @@
 import { PackageItemsProps } from "@/app/staff/types/Order/package";
-import PrimaryButton from "../../Button/PrimaryButton";
+import PrimaryButton from "../../../../../components/Button/PrimaryButton";
 import PackageItem from "./PackageItem";
 
 export default function PackageItemsField({

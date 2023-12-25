@@ -1,5 +1,5 @@
 import { PackageTypeProps } from "@/app/staff/types/Order/package";
-import RadioInput from "../../Form/RadioInput";
+import RadioInput from "../../../../../components/Form/RadioInput";
 
 export default function PackageTypeField({
 	value,

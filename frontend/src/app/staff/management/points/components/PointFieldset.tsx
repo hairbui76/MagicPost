@@ -1,9 +1,9 @@
 import AddressInput from "@/components/AddressInput";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
-import Fieldset from "../../components/Form/Fieldset";
-import Select from "../../components/Form/Select";
-import TextInput from "../../components/Form/TextInput";
-import { PointStateProps } from "../../utils/points";
+import Fieldset from "../../../../../components/Form/Fieldset";
+import Select from "../../../../../components/Form/Select";
+import TextInput from "../../../../../components/Form/TextInput";
+import { PointStateProps } from "../../../utils/points";
 
 export default function PointFieldSet({ state }: { state: PointStateProps }) {
 	return (

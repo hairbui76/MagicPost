@@ -1,11 +1,10 @@
 "use client";
-import Table from "@/app/staff/components/Table/Table";
 import { OrderProps } from "@/app/staff/types/Order/orders";
-import compareAsc from "date-fns/compareAsc";
+import SummaryTable from "@/components/SummaryTable";
+import { compareAsc } from "date-fns";
 import { Moment } from "moment";
 import { useState } from "react";
 import OrderFilter from "./OrderFilter";
-import OrderSummary from "./OrderSummary";
 
 export default function OrdersSummaryTable({
 	orders,
@@ -18,7 +17,6 @@ export default function OrdersSummaryTable({
 		null,
 	]);
 	const [categoryFilter, setCategoryFilter] = useState("");
-	console.log(orders);
 	function filter(orders: Array<OrderProps>) {
 		return orders.filter((order) => {
 			const { status, packageInfo, createdAt } = order;
@@ -49,21 +47,22 @@ export default function OrdersSummaryTable({
 
 	return (
 		<div className="flex flex-col items-center gap-4">
-			<OrderFilter
-				{...{
-					statusFilter,
-					setStatusFilter,
-					timeRange,
-					setTimeRange,
-					categoryFilter,
-					setCategoryFilter,
-				}}
-			/>
-			<Table columnHeadings={["", "ID", "Created At", "Category", "Status"]}>
-				{filter(orders).map((order) => (
-					<OrderSummary key={order.id} order={order} />
-				))}
-			</Table>
+			<SummaryTable
+				items={orders}
+				columnHeadings={["", "ID", "Created At", "Category", "Status"]}
+				filter={filter}
+			>
+				<OrderFilter
+					{...{
+						statusFilter,
+						setStatusFilter,
+						timeRange,
+						setTimeRange,
+						categoryFilter,
+						setCategoryFilter,
+					}}
+				/>
+			</SummaryTable>
 		</div>
 	);
 }

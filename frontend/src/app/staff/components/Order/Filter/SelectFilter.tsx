@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import Select from "../../Form/Select";
+import Select from "../../../../../components/Form/Select";
 
 export default function SelectFilter({
 	value,

@@ -1,47 +1,45 @@
 "use client";
 
+import PrimaryButton from "@/components/Button/PrimaryButton";
+import Title from "@/components/Title/Title";
+import PointContext, { PointContextProps } from "@/contexts/PointContext";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "antd";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect } from "react";
 import { toast } from "react-toastify";
-import { PointProps } from "../../utils/points";
-import Point from "../components/Point";
+import { getPoints } from "../../utils/points";
+import PointsSummaryTable from "./components/PointsSummaryTable";
 
-async function getPlaceDetail(placeId: string) {
-	const res = await fetch(`/api/address/${placeId}`);
-	const { data } = await res.json();
-	const lat = data.geometry.location.lat;
-	const long = data.geometry.location.lng;
-	return { lat, long };
-}
+function Page() {
+	const { points, setPoints } = useContext(PointContext) as PointContextProps;
+	const { isPending, error, data } = useQuery({
+		queryKey: ["points"],
+		queryFn: getPoints,
+	});
+	const router = useRouter();
 
-export default function Page() {
-	async function handleSubmit(point: PointProps) {
-		const { lat, long } = await getPlaceDetail(point.address.id!);
-		const processedPoints = {
-			...point,
-			province: point.address.province,
-			district: point.address.district,
-			ward: point.address.ward,
-			address: point.address.name,
-			addressLat: lat,
-			addressLong: long,
-		};
-		const body = processedPoints;
-		const res = await fetch(
-			`${process.env.NEXT_PUBLIC_POINT_ENDPOINT}/create`,
-			{
-				method: "POST",
-				body: JSON.stringify(body),
-				credentials: "include",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			}
-		);
-		const response = await res.json();
-		if (res.status === 200) {
-			toast.success(response.message);
-		} else {
-			toast.error(response.message);
+	useEffect(() => {
+		if (data) {
+			toast.success(data.message);
+			setPoints(data.data);
 		}
-	}
-	return <Point handleSubmit={handleSubmit} />;
+	}, [data, setPoints]);
+
+	if (isPending) return <Skeleton active />;
+
+	if (error) toast.error(error.message);
+	return (
+		<div className="flex flex-col">
+			<div className="flex justify-between">
+				<Title>Points</Title>
+				<PrimaryButton handleClick={() => router.push("points/create")}>
+					Create new point
+				</PrimaryButton>
+			</div>
+			<PointsSummaryTable points={points} />
+		</div>
+	);
 }
+
+export default Page;

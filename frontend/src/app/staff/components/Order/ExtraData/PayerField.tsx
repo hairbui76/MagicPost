@@ -1,5 +1,5 @@
 import { PayerProps } from "@/app/staff/types/Order/extradata";
-import RadioInput from "../../Form/RadioInput";
+import RadioInput from "../../../../../components/Form/RadioInput";
 
 export function PayerField({ value, handleChange }: PayerProps) {
 	return (

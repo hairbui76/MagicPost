@@ -6,7 +6,7 @@ export default function PrimaryButton({
 	disabled = false,
 }: {
 	children: React.ReactNode | Array<React.ReactNode>;
-	type: "button" | "submit" | "reset";
+	type?: "button" | "submit" | "reset";
 	handleClick?: () => void;
 	className?: string;
 	disabled?: boolean;

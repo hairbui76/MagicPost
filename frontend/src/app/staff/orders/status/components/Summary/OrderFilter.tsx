@@ -1,8 +1,26 @@
-import CategoryFilter from "@/app/staff/components/Order/Filter/CategoryFilter";
 import FilterFieldset from "@/app/staff/components/Order/Filter/FilterFieldset";
-import StatusFilter from "@/app/staff/components/Order/Filter/StatusFilter";
-import TimeRangeFilter from "@/app/staff/components/Order/Filter/TimeRangeFilter";
+import Filter from "@/components/Filter";
 import { Dispatch, SetStateAction } from "react";
+const statuses = [
+	{
+		value: "0",
+		label: "Pending",
+	},
+	{
+		value: "1",
+		label: "Delivering",
+	},
+];
+const categories = [
+	{
+		value: "parcel",
+		label: "Parcel",
+	},
+	{
+		value: "document",
+		label: "Document",
+	},
+];
 
 export default function OrderFilter({
 	statusFilter,
@@ -21,9 +39,28 @@ export default function OrderFilter({
 }) {
 	return (
 		<FilterFieldset>
-			<StatusFilter {...{ statusFilter, setStatusFilter }} />
-			<CategoryFilter {...{ categoryFilter, setCategoryFilter }} />
-			<TimeRangeFilter {...{ timeRange, setTimeRange }} />
+			<Filter
+				label="Status"
+				name="status"
+				value={statusFilter}
+				setValue={setStatusFilter}
+				options={statuses}
+			/>
+			<Filter
+				label="Category"
+				name="category"
+				value={categoryFilter}
+				setValue={setCategoryFilter}
+				options={categories}
+			/>
+			<Filter
+				label="Timerange"
+				name="timerange"
+				type="timerange"
+				value={timeRange}
+				setValue={setTimeRange}
+			/>
+			{/* <TimeRangeFilter {...{ timeRange, setTimeRange }} /> */}
 		</FilterFieldset>
 	);
 }

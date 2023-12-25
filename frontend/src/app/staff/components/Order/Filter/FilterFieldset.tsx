@@ -1,5 +1,5 @@
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
-import Fieldset from "../../Form/Fieldset";
+import Fieldset from "../../../../../components/Form/Fieldset";
 
 export default function FilterFieldset({
 	children,

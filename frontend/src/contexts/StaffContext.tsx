@@ -1,5 +1,6 @@
 "use client";
-import { StaffProps } from "@/app/staff/types/Order/staffs";
+
+import { StaffProps } from "@/app/staff/utils/staffs";
 import { Dispatch, SetStateAction, createContext, useState } from "react";
 
 export type StaffContextProps = {

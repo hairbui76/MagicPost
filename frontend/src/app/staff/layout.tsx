@@ -1,5 +1,6 @@
 "use client";
 import { OrderContextProvider } from "@/contexts/OrderContext";
+import { PointContextProvider } from "@/contexts/PointContext";
 import { StaffContextProvider } from "@/contexts/StaffContext";
 import withAuth from "@/utils/withAuth";
 import { Dispatch, SetStateAction, createContext, useState } from "react";
@@ -15,15 +16,17 @@ function Layout({ children }: { children: Array<React.ReactNode> }) {
 	return (
 		<OrderContextProvider>
 			<StaffContextProvider>
-				<CollapsedContext.Provider value={{ collapsed, setCollapsed }}>
-					<div className="h-screen">
-						<Header onToggle={() => setCollapsed(!collapsed)} />
-						<div className="flex h-screen relative">
-							<Nav />
-							<Content>{children}</Content>
+				<PointContextProvider>
+					<CollapsedContext.Provider value={{ collapsed, setCollapsed }}>
+						<div className="h-screen">
+							<Header onToggle={() => setCollapsed(!collapsed)} />
+							<div className="flex h-screen relative">
+								<Nav />
+								<Content>{children}</Content>
+							</div>
 						</div>
-					</div>
-				</CollapsedContext.Provider>
+					</CollapsedContext.Provider>
+				</PointContextProvider>
 			</StaffContextProvider>
 		</OrderContextProvider>
 	);

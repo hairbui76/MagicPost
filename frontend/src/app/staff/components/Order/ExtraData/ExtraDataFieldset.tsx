@@ -1,9 +1,9 @@
 import { ExtraDataProps } from "@/app/staff/types/Order/extradata";
-import Fieldset from "../../Form/Fieldset";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import Fieldset from "../../../../../components/Form/Fieldset";
 import CODField from "./CODField";
 import NoteField from "./NoteField";
 import { PayerField } from "./PayerField";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 
 export default function ExtraDataFieldset({
 	cod,

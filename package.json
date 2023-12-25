@@ -16,10 +16,5 @@
 	"devDependencies": {
 		"concurrently": "^8.2.2",
 		"husky": "^8.0.0"
-	},
-	"dependencies": {
-		"@goongmaps/goong-js": "^1.0.9",
-		"react-qr-scanner": "^1.0.0-alpha.11",
-		"react-toastify": "^9.1.3"
 	}
 }

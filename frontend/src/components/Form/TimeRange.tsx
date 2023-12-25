@@ -6,15 +6,13 @@ export default function TimeRange({
 	timeRange,
 	handleChange,
 	label,
-	className = "",
 }: {
 	label: string;
 	timeRange: any;
 	handleChange: any;
-	className?: string;
 }) {
 	return (
-		<InputContainer {...{ label, className }}>
+		<InputContainer {...{ label }} className="text-sm">
 			<RangePicker value={timeRange} onChange={handleChange} />
 		</InputContainer>
 	);

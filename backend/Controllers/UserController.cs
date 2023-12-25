@@ -23,10 +23,10 @@ public class UserController : ControllerBase
 	}
 
 	[HttpGet]
-	public async Task<IActionResult> GetAsync()
+	public async Task<ActionResult<UserListResponse>> GetAsync()
 	{
 		List<User> users = await _userService.GetAsync();
-		return Ok(new { message = "Get users successfully!", users });
+		return Ok(new UserListResponse("Get users successfully!", users));
 	}
 
 	[HttpGet("{id}")]

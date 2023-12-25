@@ -1,9 +1,9 @@
-import Fieldset from "../../Form/Fieldset";
+import { PackageProps } from "@/app/staff/types/Order/package";
 import { faBox } from "@fortawesome/free-solid-svg-icons";
-import PackageTypeField from "./PackageTypeField";
+import Fieldset from "../../../../../components/Form/Fieldset";
 import PackageItemsField from "./PackageItemsField";
 import PackagePropertiesField from "./PackagePropertiesField";
-import { PackageProps } from "@/app/staff/types/Order/package";
+import PackageTypeField from "./PackageTypeField";
 
 export default function PackageFieldset({
 	type,

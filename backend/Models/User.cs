@@ -27,7 +27,7 @@ public class PublicInfo
 	public required string Name { get; set; }
 	public required string Username { get; set; }
 	public required string Email { get; set; }
-	public Guid? PointId {get; set;}
+	public Guid? PointId { get; set; }
 }
 
 public class LoginModel : Model
@@ -58,4 +58,16 @@ public class UpdateUserModel : Model
 	public string? Password { get; set; }
 	public Guid? StaffPointId { get; set; }
 	public Guid? ManagerPointId { get; set; }
+}
+
+public class UserResponse : Response<User>
+{
+	public UserResponse(string Message, User? Data) : base(Message, Data) { }
+	public UserResponse() { }
+}
+
+public class UserListResponse : Response<List<User>>
+{
+	public UserListResponse(string Message, List<User>? Data) : base(Message, Data) { }
+	public UserListResponse() { }
 }

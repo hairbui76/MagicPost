@@ -1,9 +1,9 @@
 import TableRow from "@/app/staff/components/Table/TableRow";
+import { StaffProps } from "@/app/staff/utils/staffs";
 import { formatDate } from "@/utils/helper";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import { StaffProps } from "../../types/Order/staffs";
 
 export default function StaffsSummary({ staff }: { staff: StaffProps }) {
 	return (

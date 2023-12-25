@@ -2,7 +2,7 @@
 
 import { toast } from "react-toastify";
 import { PointProps } from "../../../utils/points";
-import Point from "../../components/Point";
+import Point from "../components/Point";
 
 async function getPlaceDetail(placeId: string) {
 	const res = await fetch(`/api/address/${placeId}`);

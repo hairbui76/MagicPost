@@ -1,6 +1,6 @@
 "use client";
-import AddressAutoComplete from "@/app/staff/components/Form/AutoCompleteInput";
 import { Address } from "@/app/staff/utils/orders";
+import AddressAutoComplete from "@/components/Form/AutoCompleteInput";
 import {
 	District,
 	SpecificAddress,

@@ -1,3 +1,6 @@
-public class Pagination {
-    public static int PageSize = 3;
+namespace MagicPostApi.Enums;
+
+public enum Pagination
+{
+	PAGESIZE = 10
 }

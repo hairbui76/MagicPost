@@ -1,5 +1,6 @@
 namespace MagicPostApi.Configs;
 
+using System.Diagnostics;
 using MagicPostApi.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -57,6 +58,8 @@ public class WebAPIDataContext : DbContext
 	{
 		// connect to postgres
 		options.UseNpgsql(_config.DB.URL);
+		// Logging
+		options.LogTo(Console.WriteLine, LogLevel.Information).EnableSensitiveDataLogging();
 	}
 
 	public DbSet<User> Users { get; set; }

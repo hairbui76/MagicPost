@@ -1,8 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import Pagination from "../Pagination/Pagination";
-
 export default function Table({
 	columnHeadings,
 	children,
@@ -10,7 +7,6 @@ export default function Table({
 	columnHeadings: Array<string>;
 	children: React.ReactNode[];
 }) {
-	const [pageNumber, setPageNumber] = useState(1);
 	return (
 		<div className="flex flex-col gap-4 w-full">
 			<table className="table table-sm overflow-x-auto bg-custom-white rounded-md shadow-md w-full">
@@ -25,7 +21,7 @@ export default function Table({
 				</thead>
 				<tbody>
 					{children ? (
-						children.slice((pageNumber - 1) * 20, pageNumber * 20)
+						children
 					) : (
 						<tr className="border-none">
 							<td colSpan={100} className="text-center italic">
@@ -35,11 +31,6 @@ export default function Table({
 					)}
 				</tbody>
 			</table>
-			<Pagination
-				pageNumber={pageNumber}
-				numberOfPages={Math.floor(children.length / 20) + 1}
-				setPageNumber={setPageNumber}
-			/>
 		</div>
 	);
 }

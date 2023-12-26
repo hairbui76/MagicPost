@@ -20,9 +20,13 @@ const provinces = getProvinces();
 export default function AddressInput({
 	value,
 	handleChange,
+	className,
+	includeSpecificAddress = true,
 }: {
 	value: Address;
 	handleChange: (newAddress: Address) => void;
+	className: string;
+	includeSpecificAddress?: boolean;
 }) {
 	const [districts, setDistricts] = useState<District[]>([]);
 	const [wards, setWards] = useState<Ward[]>([]);
@@ -82,60 +86,66 @@ export default function AddressInput({
 	};
 
 	return (
-		<div className="flex flex-col gap-4">
-			<div className="flex flex-col sm:flex-row gap-4">
-				<AddressAutoComplete
-					label="Province"
-					placeholder="Province"
-					required={true}
-					value={value.province}
-					options={provinces}
-					onChange={handleChangeProvince}
-					filterOption={filterOption}
-				/>
-				<AddressAutoComplete
-					label="District"
-					placeholder="District"
-					required={true}
-					value={value.district}
-					options={districts}
-					onChange={handleChangeDistrict}
-					filterOption={filterOption}
-				/>
-				<AddressAutoComplete
-					label="Ward"
-					placeholder="Ward"
-					required={true}
-					value={value.ward}
-					options={wards}
-					onChange={handleChangeWard}
-					filterOption={filterOption}
-				/>
+		<div className={className}>
+			<div className="flex flex-col gap-4">
+				<div className="flex flex-col sm:flex-row gap-4">
+					<AddressAutoComplete
+						label="Province"
+						placeholder="Province"
+						required={true}
+						value={value.province}
+						options={provinces}
+						onChange={handleChangeProvince}
+						filterOption={filterOption}
+					/>
+					<AddressAutoComplete
+						label="District"
+						placeholder="District"
+						required={true}
+						value={value.district}
+						options={districts}
+						onChange={handleChangeDistrict}
+						filterOption={filterOption}
+					/>
+					<AddressAutoComplete
+						label="Ward"
+						placeholder="Ward"
+						required={true}
+						value={value.ward}
+						options={wards}
+						onChange={handleChangeWard}
+						filterOption={filterOption}
+					/>
+				</div>
+				{includeSpecificAddress && (
+					<AddressAutoComplete
+						label="Specific address"
+						placeholder="Specific address"
+						required={true}
+						value={value.name}
+						options={specificAddresses}
+						disabled={!value.province || !value.district || !value.ward}
+						filterOption={filterOption}
+						onSearch={(address) => handleChange({ name: address, id: "" })}
+						onSelect={(address, option) => {
+							handleChange({ name: address, id: option.placeId });
+						}}
+						onKeyDown={handleEnterSpecificAddress}
+					>
+						<Input
+							suffix={
+								<small style={{ color: "grey" }}>
+									Press <b>Enter</b> to search
+								</small>
+							}
+							size="large"
+							allowClear={{
+								clearIcon: <FontAwesomeIcon icon={faCircleXmark} />,
+							}}
+						/>
+					</AddressAutoComplete>
+				)}
 			</div>
-			<AddressAutoComplete
-				label="Specific address"
-				placeholder="Specific address"
-				required={true}
-				value={value.name}
-				options={specificAddresses}
-				disabled={!value.province || !value.district || !value.ward}
-				filterOption={filterOption}
-				onSearch={(address) => handleChange({ name: address, id: "" })}
-				onSelect={(address, option) => {
-					handleChange({ name: address, id: option.placeId });
-				}}
-				onKeyDown={handleEnterSpecificAddress}
-			>
-				<Input
-					suffix={
-						<small style={{ color: "grey" }}>
-							Press <b>Enter</b> to search
-						</small>
-					}
-					size="large"
-					allowClear={{ clearIcon: <FontAwesomeIcon icon={faCircleXmark} /> }}
-				/>
-			</AddressAutoComplete>
 		</div>
 	);
 }

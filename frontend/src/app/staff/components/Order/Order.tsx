@@ -1,14 +1,14 @@
 "use client";
 
+import PrimaryButton from "@/components/Button/PrimaryButton";
+import SecondaryButton from "@/components/Button/SecondaryButton";
+import TerminateButton from "@/components/Button/TerminateButton";
+import Form from "@/components/Form/Form";
+import Title from "@/components/Title/Title";
 import { faReceipt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useState } from "react";
-import PrimaryButton from "../../../../components/Button/PrimaryButton";
-import SecondaryButton from "../../../../components/Button/SecondaryButton";
-import TerminateButton from "../../../../components/Button/TerminateButton";
-import Form from "../../../../components/Form/Form";
-import Title from "../../../../components/Title/Title";
 import { OrderProps } from "../../types/Order/orders";
 import { ItemProps } from "../../types/Order/package";
 import { emptyOrder, useOrderState } from "../../utils/orders";

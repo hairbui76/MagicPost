@@ -54,7 +54,7 @@ export const emptyOrder = {
 		payer: "sender" as "sender" | "receiver",
 		note: "",
 	},
-	createdAt: null,
+	createdAt: "",
 	status: "",
 };
 

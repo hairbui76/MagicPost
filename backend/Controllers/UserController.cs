@@ -22,6 +22,9 @@ public class UserController : ControllerBase
 		_userService = userService;
 	}
 
+	// [HttpPost]
+	// public async Task<ActionResult<Response<User>>> CreateAsync(CreateMo)
+
 	[HttpGet]
 	public async Task<ActionResult<Response<List<User>>>> GetAsync()
 	{
@@ -59,7 +62,7 @@ public class UserController : ControllerBase
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> CreateTransactionStaffAsync(RegisterModel model)
+	public async Task<IActionResult> CreateTransactionStaffAsync(CreateUserModel model)
 	{
 		User user = _mapper.Map<User>(model);
 		user.Role = Role.TRANSACION_STAFF;
@@ -68,7 +71,7 @@ public class UserController : ControllerBase
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> CreateGatheringStaffAsync(RegisterModel model)
+	public async Task<IActionResult> CreateGatheringStaffAsync(CreateUserModel model)
 	{
 		User user = _mapper.Map<User>(model);
 		user.Role = Role.GATHERING_STAFF;

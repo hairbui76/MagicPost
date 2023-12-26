@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using MagicPostApi.Enums;
 
 namespace MagicPostApi.Models;
@@ -38,7 +37,7 @@ public class LoginModel : Model
 	public string? Password { get; set; }
 }
 
-public class RegisterModel : Model
+public class CreateUserModel : Model
 {
 	[Required]
 	public string? Name { get; set; }

@@ -1,7 +1,31 @@
 import Fieldset from "@/components/Form/Fieldset";
+import Select from "@/components/Form/Select";
 import TextInput from "@/components/Form/TextInput";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { StaffStateProps } from "../../../utils/staffs";
+
+const roles = [
+	{
+		label: "Company Administrator",
+		value: "COMPANY_ADMINISTRATOR",
+	},
+	{
+		label: "Gathering Point Manager",
+		value: "GATHERING_POINT_MANAGER",
+	},
+	{
+		label: "Transaction Point Manager",
+		value: "TRANSACTION_POINT_MANAGER",
+	},
+	{
+		label: "Transaction Staff",
+		value: "TRANSACTION_STAFF",
+	},
+	{
+		label: "Gathering Staff",
+		value: "GATHERING_STAFF",
+	},
+];
 
 export default function StaffFieldSet({ state }: { state: StaffStateProps }) {
 	return (
@@ -10,6 +34,17 @@ export default function StaffFieldSet({ state }: { state: StaffStateProps }) {
 			icon={faLocationDot}
 			className="sm:flex-col"
 		>
+			<Select
+				label="Role"
+				name="role"
+				options={roles}
+				handleChange={(value) => {
+					state.role.handleChange(value);
+				}}
+				className="text-sm"
+				value={state.role.value}
+				required={true}
+			/>
 			<TextInput
 				label="Name"
 				placeholder="Name"

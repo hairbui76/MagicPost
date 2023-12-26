@@ -1,8 +1,8 @@
 "use client";
 
-import PrimaryButton from "../../../../../components/Button/PrimaryButton";
-import SecondaryButton from "../../../../../components/Button/SecondaryButton";
-import Form from "../../../../../components/Form/Form";
+import PrimaryButton from "@/components/Button/PrimaryButton";
+import SecondaryButton from "@/components/Button/SecondaryButton";
+import Form from "@/components/Form/Form";
 import { PointProps, emptyPoint, usePointState } from "../../../utils/points";
 import PointFieldSet from "./PointFieldset";
 

@@ -17,7 +17,7 @@ export default function Select({
 	name: string;
 	required?: boolean;
 	className?: string;
-	options: Array<{ value: string; label: string }>;
+	options: Array<{ value?: string; label?: string }>;
 	value?: string;
 	handleChange: (value: string) => void;
 	flexDirection?: "row" | "col";

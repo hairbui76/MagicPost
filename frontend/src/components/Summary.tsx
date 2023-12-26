@@ -1,5 +1,4 @@
 import TableRow from "@/app/staff/components/Table/TableRow";
-import { formatDate } from "@/utils/helper";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
@@ -28,9 +27,9 @@ export default function Summary<T extends DatabaseTableProps>({
 					{item.id}
 				</Link>
 			</td>
-			{headers.map(({ value }, index) => (
+			{[{ label: "", value: "" }, ...headers].map(({ value }, index) => (
 				<td className="text-center text-xs" key={index}>
-					{item[value] instanceof Date ? formatDate(item[value]) : item[value]}
+					{item[value]}
 				</td>
 			))}
 		</TableRow>

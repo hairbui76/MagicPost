@@ -26,8 +26,8 @@ export default function PointFieldSet({ state }: { state: PointStateProps }) {
 				label="Point type"
 				name="type"
 				options={[
-					{ label: "Transaction Point", value: "TransactionPoint" },
-					{ label: "Gathering Point", value: "GatheringPoint" },
+					{ label: "Transaction Point", value: "TRANSACTION_POINT" },
+					{ label: "Gathering Point", value: "GATHERING_POINT" },
 				]}
 				handleChange={(value) => {
 					state.type.handleChange(value);

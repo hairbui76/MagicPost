@@ -12,7 +12,11 @@ export default function Table({
 			<table className="table table-sm overflow-x-auto bg-custom-white rounded-md shadow-md w-full">
 				<thead className="text-custom-text-color">
 					<tr className="border-b-2 border-custom-grey">
-						{columnHeadings.map((header, index) => (
+						{[
+							{ label: "", value: "" },
+							{ label: "ID", value: "id" },
+							...columnHeadings,
+						].map((header, index) => (
 							<th className="text-center text-sm" key={index}>
 								{header.label}
 							</th>

@@ -11,6 +11,7 @@ namespace MagicPostApi.Services;
 public interface IPointService
 {
 	Task<List<Point>> GetAsync();
+	Task<DataPagination<Point>> FilterAsync(int pageNumber, PointType? type);
 	Task<List<Point>> GetAllTransactionPointsAsync();
 	Task<List<Point>> GetAllGatheringPointsAsync();
 	Task<Point?> GetPointByIdAsync(Guid id);
@@ -34,11 +35,25 @@ public class PointService : IPointService
 	public async Task<List<Point>> GetAsync()
 			=> await _pointsRepository.ToListAsync();
 
+	public async Task<DataPagination<Point>> FilterAsync(int pageNumber, PointType? type)
+	{
+		var points = _pointsRepository.AsQueryable();
+		if (type != null)
+		{
+			points = points.Where(p => p.Type == type);
+		}
+		List<Point> result = await points
+												.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
+												.Take((int)Pagination.PAGESIZE)
+												.ToListAsync();
+		return new DataPagination<Point>(result, points.Count(), pageNumber);
+	}
+
 	public async Task<List<Point>> GetAllTransactionPointsAsync()
-			=> await _pointsRepository.Where(p => p.Type == PointType.TransactionPoint).ToListAsync();
+			=> await _pointsRepository.Where(p => p.Type == PointType.TRANSACTION_POINT).ToListAsync();
 
 	public async Task<List<Point>> GetAllGatheringPointsAsync()
-			=> await _pointsRepository.Where(p => p.Type == PointType.GatheringPoint).ToListAsync();
+			=> await _pointsRepository.Where(p => p.Type == PointType.GATHERING_POINT).ToListAsync();
 
 	public async Task<Point?> GetPointByIdAsync(Guid id)
 			=> await _pointsRepository.Where(p => p.Id == id).FirstOrDefaultAsync();

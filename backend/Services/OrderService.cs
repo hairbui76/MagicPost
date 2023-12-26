@@ -118,12 +118,12 @@ public class OrderService : IOrderService
 			Delivery newDelivery = new Delivery();
 			newDelivery.FromPointId = currentPoint?.Id;
 			newDelivery.State = DeliveryState.DELIVERING;
-			if (currentPoint?.Type == PointType.TransactionPoint)
+			if (currentPoint?.Type == PointType.TRANSACTION_POINT)
 			{
 				if (order.SenderProvince == currentPoint.Province)
 				{
 					newDelivery.ToPointId = _webAPIDataContext.Points
-						.FirstOrDefault(p => p.Province == currentPoint.Province && p.Type == PointType.GatheringPoint)?.Id;
+						.FirstOrDefault(p => p.Province == currentPoint.Province && p.Type == PointType.GATHERING_POINT)?.Id;
 				}
 				else if (order.ReceiverProvince == currentPoint.Province)
 				{
@@ -135,12 +135,12 @@ public class OrderService : IOrderService
 				if (order.ReceiverProvince == currentPoint.Province)
 				{
 					newDelivery.ToPointId = _webAPIDataContext.Points
-						.FirstOrDefault(p => p.District == order.ReceiverDistrict && p.Type == PointType.TransactionPoint)?.Id;
+						.FirstOrDefault(p => p.District == order.ReceiverDistrict && p.Type == PointType.TRANSACTION_POINT)?.Id;
 				}
 				else
 				{
 					newDelivery.ToPointId = _webAPIDataContext.Points
-						.FirstOrDefault(p => p.Type == PointType.GatheringPoint && p.Province == order.ReceiverProvince)?.Id;
+						.FirstOrDefault(p => p.Type == PointType.GATHERING_POINT && p.Province == order.ReceiverProvince)?.Id;
 				}
 			}
 			newDelivery.CreatedAt = DateTime.UtcNow;

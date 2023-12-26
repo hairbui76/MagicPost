@@ -1,6 +1,6 @@
 namespace MagicPostApi.Enums;
 public enum PointType
 {
-	GatheringPoint = 0,
-	TransactionPoint = 1
+	TRANSACTION_POINT = 0,
+	GATHERING_POINT = 1,
 }

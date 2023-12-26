@@ -1,29 +1,93 @@
 "use client";
-import { PointProps } from "@/app/staff/utils/points";
 import SummaryTable from "@/components/SummaryTable";
+import PointContext, { PointContextProps } from "@/contexts/PointContext";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "antd";
+import { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import PointFilter from "./PointFilter";
 
-export default function PointsSummaryTable({
-	points,
-}: {
-	points: Array<PointProps>;
-}) {
+async function filterPoints(pageNumber: number, pointTypeFilter?: string) {
+	const filter: { [key: string]: string } = {
+		pageNumber: pageNumber.toString(),
+	};
+	if (pointTypeFilter) filter["type"] = pointTypeFilter;
+	return fetch(
+		`${process.env.NEXT_PUBLIC_POINT_ENDPOINT}/filter?` +
+			new URLSearchParams(filter),
+		{ credentials: "include" }
+	).then(async (res) => {
+		if (res.status !== 200) {
+			const json = await res.json();
+			throw new Error(json.message);
+		}
+		return res.json();
+	});
+}
+
+const columnHeadings = [
+	{
+		label: "Type",
+		value: "type",
+	},
+	{
+		label: "Point Name",
+		value: "pointName",
+	},
+	{
+		label: "Address",
+		value: "address.name",
+	},
+	{
+		label: "Phone",
+		value: "phone",
+	},
+	{
+		label: "Email",
+		value: "email",
+	},
+];
+
+export default function PointsSummaryTable() {
+	const [pageNumber, setPageNumber] = useState(1);
+	const [totalPage, setTotalPage] = useState(1);
+	const [pointTypeFilter, setPointTypeFilter] = useState("");
+
+	const { points, setPoints } = useContext(PointContext) as PointContextProps;
+	const {
+		isPending,
+		error,
+		data: response,
+	} = useQuery({
+		queryKey: ["points", pointTypeFilter, pageNumber],
+		queryFn: () => filterPoints(pageNumber, pointTypeFilter),
+	});
+
+	useEffect(() => {
+		if (response) {
+			toast.success(response.message);
+			setPoints(response.data.data);
+			setTotalPage(response.data.totalPage);
+		}
+	}, [response, setPoints]);
+
+	if (isPending) return <Skeleton active />;
+
+	if (error) toast.error(error.message);
+
 	return (
 		<div className="flex flex-col items-center gap-4">
 			<SummaryTable
 				items={points}
-				columnHeadings={["", "ID", "Category", "Status"]}
-				// filter={filter}
+				columnHeadings={columnHeadings}
+				pageNumber={pageNumber}
+				totalPage={totalPage}
+				setPageNumber={setPageNumber}
 			>
-				{/* <OrderFilter
-					{...{
-						statusFilter,
-						setStatusFilter,
-						timeRange,
-						setTimeRange,
-						categoryFilter,
-						setCategoryFilter,
-					}}
-				/> */}
+				<PointFilter
+					pointTypeFilter={pointTypeFilter}
+					setPointTypeFilter={setPointTypeFilter}
+				/>
 			</SummaryTable>
 		</div>
 	);

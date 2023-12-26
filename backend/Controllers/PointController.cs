@@ -21,12 +21,22 @@ public class PointController : ControllerBase
 		_mapper = mapper;
 		_pointService = pointService;
 	}
+
 	[HttpGet]
 	public async Task<ActionResult<Response<List<Point>>>> GetAsync()
 	{
 		List<Point> points = await _pointService.GetAsync();
 		return Ok(new Response<List<Point>>("Get points successfully!", points));
 	}
+
+	[HttpGet]
+	[VerifyToken]
+	public async Task<ActionResult<Response<DataPagination<PublicUserInfo>>>> FilterAsync(int pageNumber, PointType? type)
+	{
+		DataPagination<Point> points = await _pointService.FilterAsync(pageNumber, type);
+		return Ok(new Response<DataPagination<Point>>("Get points successfully", points));
+	}
+
 	[HttpGet]
 	public async Task<List<Point>> GetAllTransactionPoints()
 			=> await _pointService.GetAllTransactionPointsAsync();
@@ -62,7 +72,7 @@ public class PointController : ControllerBase
 	public async Task<IActionResult> CreateTransactionPoint(CreatePointModel model)
 	{
 		Point transactionPoint = _mapper.Map<Point>(model);
-		transactionPoint.Type = PointType.TransactionPoint;
+		transactionPoint.Type = PointType.TRANSACTION_POINT;
 		await _pointService.CreateAsync(transactionPoint);
 		return Ok(new { message = "Create transaction point successfully!", point = transactionPoint });
 	}
@@ -83,7 +93,7 @@ public class PointController : ControllerBase
 	public async Task<IActionResult> CreateGatheringPoint(CreatePointModel model)
 	{
 		Point gatheringPoint = _mapper.Map<Point>(model);
-		gatheringPoint.Type = PointType.GatheringPoint;
+		gatheringPoint.Type = PointType.GATHERING_POINT;
 		await _pointService.CreateAsync(gatheringPoint);
 		return Ok(new { message = "Create gathering point successfully!", point = gatheringPoint });
 	}

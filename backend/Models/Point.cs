@@ -19,7 +19,38 @@ public class Point : Model
 	public string? Email { get; set; }
 	[Phone]
 	public string? Phone { get; set; }
+	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 	public List<User> Staffs { get; } = new List<User>();
+	public PublicPointInfo GetPublicPointInfo()
+			=> new()
+			{
+				Id = Id,
+				Type = Type,
+				PointName = PointName,
+				Address = new()
+				{
+					Name = Address,
+					Lat = AddressLat,
+					Long = AddressLong,
+					Province = Province,
+					District = District,
+					Ward = Ward
+				},
+				Email = Email,
+				Phone = Phone,
+				CreatedAt = CreatedAt
+			};
+}
+
+public class PublicPointInfo : Model
+{
+	public Guid? Id { get; set; }
+	public PointType? Type { get; set; }
+	public string? PointName { get; set; }
+	public Address? Address { get; set; }
+	public string? Email { get; set; }
+	public string? Phone { get; set; }
+	public DateTime? CreatedAt { get; set; }
 }
 
 public class CreatePointModel : Model

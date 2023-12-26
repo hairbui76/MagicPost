@@ -25,7 +25,7 @@ export default function AddressInput({
 }: {
 	value: Address;
 	handleChange: (newAddress: Address) => void;
-	className: string;
+	className?: string;
 	includeSpecificAddress?: boolean;
 }) {
 	const [districts, setDistricts] = useState<District[]>([]);

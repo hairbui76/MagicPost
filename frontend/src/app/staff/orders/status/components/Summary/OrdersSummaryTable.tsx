@@ -17,15 +17,16 @@ async function filterOrders(
 	startDate?: Date,
 	endDate?: Date
 ) {
+	const filter: { [key: string]: string } = {
+		pageNumber: pageNumber.toString(),
+	};
+	if (statusFilter) filter[`status`] = statusFilter;
+	if (categoryFilter) filter[`category`] = categoryFilter;
+	if (startDate) filter[`startDate`] = startDate.toISOString();
+	if (endDate) filter[`endDate`] = endDate.toISOString();
 	return fetch(
 		`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/filter?` +
-			new URLSearchParams({
-				pageNumber: pageNumber.toString(),
-				status: statusFilter ? statusFilter : "",
-				category: categoryFilter ? categoryFilter : "",
-				startDate: startDate ? startDate.toISOString() : "",
-				endDate: endDate ? endDate.toISOString() : "",
-			}),
+			new URLSearchParams(filter),
 		{
 			credentials: "include",
 		}
@@ -37,6 +38,25 @@ async function filterOrders(
 		return res.json();
 	});
 }
+
+const columnHeadings = [
+	{
+		label: "ID",
+		value: "id",
+	},
+	{
+		label: "Created At",
+		value: "createdAt",
+	},
+	{
+		label: "Category",
+		value: "category",
+	},
+	{
+		label: "Status",
+		value: "status",
+	},
+];
 
 export default function OrdersSummaryTable({
 	orders,
@@ -53,7 +73,11 @@ export default function OrdersSummaryTable({
 	const [categoryFilter, setCategoryFilter] = useState("");
 
 	const { setOrders } = useContext(OrderContext) as OrderContextProps;
-	const { isPending, error, data } = useQuery({
+	const {
+		isPending,
+		error,
+		data: response,
+	} = useQuery({
 		queryKey: ["orders", statusFilter, timeRange, categoryFilter],
 		queryFn: () =>
 			filterOrders(
@@ -66,12 +90,12 @@ export default function OrdersSummaryTable({
 	});
 
 	useEffect(() => {
-		if (data) {
-			toast.success(data.message);
-			setOrders(data.data);
-			setTotalPage(data.totalPage);
+		if (response) {
+			toast.success(response.message);
+			setOrders(response.data.data);
+			setTotalPage(response.data.totalPage);
 		}
-	}, [data, setOrders]);
+	}, [response, setOrders]);
 
 	if (isPending) return <Skeleton active />;
 
@@ -109,7 +133,7 @@ export default function OrdersSummaryTable({
 		<div className="flex flex-col items-center gap-4">
 			<SummaryTable
 				items={orders}
-				columnHeadings={["", "ID", "Created At", "Category", "Status"]}
+				columnHeadings={columnHeadings}
 				filter={filter}
 				pageNumber={pageNumber}
 				totalPage={totalPage}

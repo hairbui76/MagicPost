@@ -17,11 +17,11 @@ public class User : Model
 	public Role Role { get; set; }
 	public Guid? PointId { get; set; }
 	public Point? Point { get; }
-	public PublicInfo GetPublicInfo()
+	public PublicUserInfo GetPublicInfo()
 			=> new() { Id = Id, Name = Name, Username = Username, Email = Email, PointId = PointId };
 }
 
-public class PublicInfo
+public class PublicUserInfo
 {
 	public Guid? Id { get; set; }
 	public required string Name { get; set; }

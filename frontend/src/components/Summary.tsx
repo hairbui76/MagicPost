@@ -10,7 +10,7 @@ export default function Summary<T extends DatabaseTableProps>({
 	headers,
 }: {
 	item: T;
-	headers: Array<string>;
+	headers: Array<{ label: string; value: string }>;
 }) {
 	const pathname = usePathname();
 	return (
@@ -28,12 +28,9 @@ export default function Summary<T extends DatabaseTableProps>({
 					{item.id}
 				</Link>
 			</td>
-			{[
-				formatDate(item.createdAt!),
-				...headers.map((header) => item[header]),
-			].map((cell, index) => (
+			{headers.map(({ value }, index) => (
 				<td className="text-center text-xs" key={index}>
-					{cell}
+					{item[value] instanceof Date ? formatDate(item[value]) : item[value]}
 				</td>
 			))}
 		</TableRow>

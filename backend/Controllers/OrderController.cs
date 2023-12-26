@@ -31,10 +31,10 @@ public class OrderController : ControllerBase
 
 	[HttpGet]
 	[VerifyToken]
-	public async Task<ActionResult<Response<DataPagination<PublicOrderInfo>>>> FilterAsync(int pageNumber, string? status, string? category, DateTime? startDate, DateTime? endDate)
+	public async Task<ActionResult<Response<DataPagination<PublicOrderInfo>>>> FilterAsync(int pageNumber, OrderState? status, string? category, DateTime? startDate, DateTime? endDate)
 	{
-		DataPagination<PublicOrderInfo> orders = await _orderService.GetAsync(status, category, startDate?.ToUniversalTime(), endDate?.ToUniversalTime(), pageNumber);
-		return Ok(new Response<DataPagination<PublicOrderInfo>>("Get orders successfully", orders, orders.PageNumber, orders.TotalPage));
+		DataPagination<PublicOrderInfo> orders = await _orderService.FilterAsync(pageNumber, status, category, startDate?.ToUniversalTime(), endDate?.ToUniversalTime());
+		return Ok(new Response<DataPagination<PublicOrderInfo>>("Get orders successfully", orders));
 	}
 
 	[HttpGet("{id}")]

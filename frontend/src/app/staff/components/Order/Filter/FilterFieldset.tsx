@@ -1,10 +1,10 @@
+import Fieldset from "@/components/Form/Fieldset";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
-import Fieldset from "../../../../../components/Form/Fieldset";
 
 export default function FilterFieldset({
 	children,
 }: {
-	children: Array<React.ReactNode>;
+	children: Array<React.ReactNode> | React.ReactNode;
 }) {
 	return (
 		<Fieldset

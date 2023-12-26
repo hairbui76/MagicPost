@@ -12,7 +12,7 @@ namespace MagicPostApi.Services;
 public interface IOrderService
 {
 	Task<List<PublicOrderInfo>> GetAsync();
-	Task<DataPagination<PublicOrderInfo>> GetAsync(string? status, string? category, DateTime? startDate, DateTime? endDate, int pageNumber);
+	Task<DataPagination<PublicOrderInfo>> FilterAsync(int pageNumber, OrderState? status, string? category, DateTime? startDate, DateTime? endDate);
 	Task<List<OrderHistory>> GetAsyncById(Guid id);
 	Task<List<PublicOrderInfo>> GetIncomingOrdersAsync(User user, int pageNumber);
 	Task<bool> ConfirmIncomingOrdersAsync(User user, List<ConfirmIncomingOrderModel> orders);
@@ -36,27 +36,12 @@ public class OrderService : IOrderService
 		_itemsRepository = webAPIDataContext.Items;
 	}
 
-	public async Task<DataPagination<PublicOrderInfo>> GetAsync(string? status, string? category, DateTime? startDate, DateTime? endDate, int pageNumber)
+	public async Task<DataPagination<PublicOrderInfo>> FilterAsync(int pageNumber, OrderState? status, string? category, DateTime? startDate, DateTime? endDate)
 	{
 		var orders = _ordersRepository.AsQueryable();
-		if (!string.IsNullOrEmpty(status))
+		if (status != null)
 		{
-			OrderState orderStateToFilt = OrderState.PENDING;
-			switch (status)
-			{
-				case "delivering":
-					orderStateToFilt = OrderState.DELIVERING;
-					break;
-				case "cancelled":
-					orderStateToFilt = OrderState.CANCELLED;
-					break;
-				case "delivered":
-					orderStateToFilt = OrderState.DELIVERED;
-					break;
-				default:
-					break;
-			}
-			orders = orders.Where(o => o.Status == orderStateToFilt);
+			orders = orders.Where(o => o.Status == status);
 		}
 		if (!string.IsNullOrEmpty(category))
 		{

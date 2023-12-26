@@ -4,7 +4,7 @@ export default function Table({
 	columnHeadings,
 	children,
 }: {
-	columnHeadings: Array<string>;
+	columnHeadings: Array<{ label: string; value: string }>;
 	children: React.ReactNode[];
 }) {
 	return (
@@ -14,7 +14,7 @@ export default function Table({
 					<tr className="border-b-2 border-custom-grey">
 						{columnHeadings.map((header, index) => (
 							<th className="text-center text-sm" key={index}>
-								{header}
+								{header.label}
 							</th>
 						))}
 					</tr>

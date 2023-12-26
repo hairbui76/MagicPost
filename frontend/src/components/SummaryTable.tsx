@@ -9,10 +9,10 @@ function renderItems<T extends DatabaseTableProps>(
 	items: Array<T>,
 	filter?: ((items: Array<T>) => Array<T>) | undefined
 ) {
-	if (filter) {
-		return filter(items);
+	if (!filter) {
+		return items;
 	}
-	return items;
+	return filter(items);
 }
 
 export default function SummaryTable<T extends DatabaseTableProps>({
@@ -25,7 +25,7 @@ export default function SummaryTable<T extends DatabaseTableProps>({
 	setPageNumber,
 }: {
 	items: Array<T>;
-	columnHeadings: Array<string>;
+	columnHeadings: Array<{ label: string; value: string }>;
 	filter?: ((items: Array<T>) => Array<T>) | undefined;
 	children?: React.ReactElement;
 	pageNumber: number;

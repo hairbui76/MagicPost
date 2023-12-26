@@ -3,22 +3,24 @@ using AutoMapper;
 using MagicPostApi.Configs;
 using MagicPostApi.Models;
 using MagicPostApi.Utils;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
+using MagicPostApi.Enums;
 using StackExchange.Redis;
+using Role = MagicPostApi.Enums.Role;
 
 namespace MagicPostApi.Services;
 
 public interface IUserService
 {
 	Task<List<User>> GetAsync();
+	Task<DataPagination<PublicUserInfo>> FilterAsync(int pageNumber, Role role);
 	Task<User?> GetAsyncById(Guid id);
 	Task<User?> GetAsyncByUsername(string username);
 	Task<User?> GetAsyncByEmail(string email);
 	Task CreateAsync(User newUser);
 	Task UpdateAsync(Guid id, UpdateUserModel model);
-	Task<(string, DateTime)> PrepareAccessToken(PublicInfo info);
-	Task<(string, DateTime)> PrepareRefreshToken(PublicInfo info);
+	Task<(string, DateTime)> PrepareAccessToken(PublicUserInfo info);
+	Task<(string, DateTime)> PrepareRefreshToken(PublicUserInfo info);
 }
 
 public class UserService : IUserService
@@ -42,6 +44,19 @@ public class UserService : IUserService
 
 	public async Task<List<User>> GetAsync()
 			=> await _usersRepository.ToListAsync();
+
+	public async Task<DataPagination<PublicUserInfo>> FilterAsync(int pageNumber, Role role)
+	{
+		var users = _usersRepository.AsQueryable();
+		{
+			users = _usersRepository.Where(u => u.Role == role);
+		}
+		List<PublicUserInfo> result = await users.Select(o => o.GetPublicInfo())
+												.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
+												.Take((int)Pagination.PAGESIZE)
+												.ToListAsync();
+		return new DataPagination<PublicUserInfo>(result, users.Count(), pageNumber);
+	}
 
 	public async Task<User?> GetAsyncById(Guid id)
 			=> await _usersRepository
@@ -79,7 +94,7 @@ public class UserService : IUserService
 	public async Task RemoveAsync(Guid id) =>
 			await _usersRepository.Where(c => c.Id == id).ExecuteDeleteAsync();
 
-	public async Task<(string, DateTime)> PrepareAccessToken(PublicInfo info)
+	public async Task<(string, DateTime)> PrepareAccessToken(PublicUserInfo info)
 	{
 		var accessToken = _paseto.Encode(info, _config.TOKEN.SECRET);
 		var accessExp = DateTime.Now.AddHours(_config.TOKEN.TOKEN_EXPIRE_HOURS);
@@ -87,7 +102,7 @@ public class UserService : IUserService
 		return (accessToken, accessExp);
 	}
 
-	public async Task<(string, DateTime)> PrepareRefreshToken(PublicInfo info)
+	public async Task<(string, DateTime)> PrepareRefreshToken(PublicUserInfo info)
 	{
 		var refreshToken = _paseto.Encode(info, _config.TOKEN.REFRESH_SECRET);
 		var refreshExp = DateTime.Now.AddDays(_config.TOKEN.REFRESH_TOKEN_EXPIRE_WEEKS * 7);

@@ -60,7 +60,6 @@ public class UpdateUserModel : Model
 	public string? Email { get; set; }
 	public string? Password { get; set; }
 	public Guid? StaffPointId { get; set; }
-	public Guid? ManagerPointId { get; set; }
 }
 
 public class UserResponse : Response<User>

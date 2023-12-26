@@ -46,6 +46,7 @@ public class UserController : ControllerBase
 	[VerifyToken]
 	public async Task<ActionResult> UpdateUserAsync(Guid id, UpdateUserModel model)
 	{
+		model.Password = Password.Hash(model.Password);
 		await _userService.UpdateAsync(id, model);
 		return Ok(new { message = "Update user successfully!" });
 	}
@@ -53,6 +54,7 @@ public class UserController : ControllerBase
 	[HttpPost]
 	public async Task<IActionResult> CreateTransactionStaffAsync(RegisterModel model)
 	{
+		model.Password = Password.Hash(model.Password);
 		User user = _mapper.Map<User>(model);
 		user.Role = Role.TRANSACION_STAFF;
 		await _userService.CreateAsync(user);
@@ -62,6 +64,7 @@ public class UserController : ControllerBase
 	[HttpPost]
 	public async Task<IActionResult> CreateGatheringStaffAsync(RegisterModel model)
 	{
+		model.Password = Password.Hash(model.Password);
 		User user = _mapper.Map<User>(model);
 		user.Role = Role.GATHERING_STAFF;
 		await _userService.CreateAsync(user);

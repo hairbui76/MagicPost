@@ -151,7 +151,6 @@ public class OrderService : IOrderService
 				}
 			} 
 			newDelivery.CreatedAt = DateTime.UtcNow;
-			newDelivery.UpdatedAt = DateTime.UtcNow;
 			newDelivery.OrderId = order.Id;
 			newDeliveries.Add(newDelivery);
 		});

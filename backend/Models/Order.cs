@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using MagicPostApi.Enums;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Org.BouncyCastle.Asn1.Cms;
 
 namespace MagicPostApi.Models;
 
@@ -99,10 +100,13 @@ public class PublicOrderInfo : Model
 	public required ExtraData ExtraData { get; set; }
 }
 
-public class OrderHistory {
-	public Point? Point {get; set;}
-	public DateTime? ArriveAt {get; set;}
+public class OrderHistory 
+{
+	public Point? Point { get; set; }
+	public DateTime? ArriveAt { get; set; }
 }
+
+
 
 public class PackageInfo
 {

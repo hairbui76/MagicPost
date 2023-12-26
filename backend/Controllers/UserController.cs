@@ -31,7 +31,7 @@ public class UserController : ControllerBase
 
 	[HttpGet]
 	[VerifyToken]
-	public async Task<ActionResult<Response<DataPagination<PublicUserInfo>>>> FilterAsync(int pageNumber, Role role)
+	public async Task<ActionResult<Response<DataPagination<PublicUserInfo>>>> FilterAsync(int pageNumber, Role? role)
 	{
 		DataPagination<PublicUserInfo> users = await _userService.FilterAsync(pageNumber, role);
 		return Ok(new Response<DataPagination<PublicUserInfo>>("Get users successfully", users));

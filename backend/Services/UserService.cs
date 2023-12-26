@@ -13,7 +13,7 @@ namespace MagicPostApi.Services;
 public interface IUserService
 {
 	Task<List<User>> GetAsync();
-	Task<DataPagination<PublicUserInfo>> FilterAsync(int pageNumber, Role role);
+	Task<DataPagination<PublicUserInfo>> FilterAsync(int pageNumber, Role? role);
 	Task<User?> GetAsyncById(Guid id);
 	Task<User?> GetAsyncByUsername(string username);
 	Task<User?> GetAsyncByEmail(string email);
@@ -45,9 +45,10 @@ public class UserService : IUserService
 	public async Task<List<User>> GetAsync()
 			=> await _usersRepository.ToListAsync();
 
-	public async Task<DataPagination<PublicUserInfo>> FilterAsync(int pageNumber, Role role)
+	public async Task<DataPagination<PublicUserInfo>> FilterAsync(int pageNumber, Role? role)
 	{
 		var users = _usersRepository.AsQueryable();
+		if (role != null)
 		{
 			users = _usersRepository.Where(u => u.Role == role);
 		}

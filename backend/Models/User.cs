@@ -59,5 +59,16 @@ public class UpdateUserModel : Model
 	public string? Email { get; set; }
 	public string? Password { get; set; }
 	public Guid? StaffPointId { get; set; }
-	public Guid? ManagerPointId { get; set; }
+}
+
+public class UserResponse : Response<User>
+{
+	public UserResponse(string Message, User? Data) : base(Message, Data) { }
+	public UserResponse() { }
+}
+
+public class UserListResponse : Response<List<User>>
+{
+	public UserListResponse(string Message, List<User>? Data) : base(Message, Data) { }
+	public UserListResponse() { }
 }

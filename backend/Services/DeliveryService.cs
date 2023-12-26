@@ -1,7 +1,9 @@
 using AutoMapper;
 using MagicPostApi.Configs;
 using MagicPostApi.Models;
+using MagicPostApi.Utils;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
 namespace MagicPostApi.Services;
 
@@ -10,6 +12,7 @@ public interface IDeliveryService
 	Task<List<Delivery>> GetAsync();
 	Task<Delivery?> GetAsync(Guid id);
 	Task CreateAsync(Delivery newDelivery);
+	Task<List<DeliveryHistory>> GetDeliveryHistory(Guid id, string? type, string? status, int pageNumber);
 }
 
 public class DeliveryServce : IDeliveryService
@@ -38,5 +41,25 @@ public class DeliveryServce : IDeliveryService
 	{
 		await _deliveriesRepository.AddAsync(newDelivery);
 		await _webAPIDataContext.SaveChangesAsync();
+	}
+
+	public async Task<List<DeliveryHistory>> GetDeliveryHistory(Guid id, string? type, string? status, int pageNumber) 
+	{
+		Point? currentPoint = _webAPIDataContext.Points.FirstOrDefault( p => p.Id == id );
+		var relatedDelivery = _deliveriesRepository.Where(d => d.FromPointId == currentPoint.Id || d.ToPointId == currentPoint.Id)
+												.Skip(Pagination.PageSize * (pageNumber - 1))
+												.Take(Pagination.PageSize)
+												.ToList();
+		List<DeliveryHistory> deliveryHistory = new();
+		relatedDelivery.ForEach(d => deliveryHistory.AddRange(d.GetOperationDeliveryHistory()));
+		if (type != null) 
+		{
+			deliveryHistory = deliveryHistory.Where(d => d.Type == type).ToList();
+		}
+		if (status != null)
+		{
+			deliveryHistory = deliveryHistory.Where(d => d.Status == status).ToList();
+		}
+		return deliveryHistory;
 	}
 }

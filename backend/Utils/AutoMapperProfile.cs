@@ -16,6 +16,8 @@ public class AutoMapperProfile : Profile
 	}
 	public AutoMapperProfile()
 	{
+		// RegisterModel -> User
+		CreateMap<RegisterModel, User>();
 		// CreateUserModel -> User
 		CreateMap<CreateUserModel, User>();
 		// LoginModel -> User

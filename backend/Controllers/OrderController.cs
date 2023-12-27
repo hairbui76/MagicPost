@@ -60,7 +60,7 @@ public class OrderController : ControllerBase
 	public async Task<IActionResult> CreateAsync(CreateOrderModel model)
 	{
 		Order order = _mapper.Map<Order>(model);
-		await _orderService.CreateAsync((User?)HttpContext.Items["user"], order);
+		await _orderService.CreateAsync((User?)HttpContext.Items["user"]!, order);
 		return Ok(new { message = "Create order successfully!", order });
 	}
 
@@ -71,7 +71,7 @@ public class OrderController : ControllerBase
 	public async Task<IActionResult> GetIncomingOrdersAsync(int pageNumber)
 	{
 		User? user = (User?)HttpContext.Items["user"];
-		var ordersIncoming = await _orderService.GetIncomingOrdersAsync(user, pageNumber);
+		var ordersIncoming = await _orderService.GetIncomingOrdersAsync(user!, pageNumber);
 		return Ok(ordersIncoming);
 	}
 
@@ -82,7 +82,7 @@ public class OrderController : ControllerBase
 	public async Task<IActionResult> ConfirmIncomingOrdersAsync(List<ConfirmIncomingOrderModel> orders)
 	{
 		User? user = (User?)HttpContext.Items["user"];
-		var result = await _orderService.ConfirmIncomingOrdersAsync(user, orders);
+		var result = await _orderService.ConfirmIncomingOrdersAsync(user!, orders);
 		return Ok(result);
 	}
 
@@ -93,7 +93,7 @@ public class OrderController : ControllerBase
 	public async Task<IActionResult> GetOutgoingOrdersAsync(int pageNumber)
 	{
 		User? user = (User?)HttpContext.Items["user"];
-		var ordersIncoming = await _orderService.GetOutgoingOrdersAsync(user, pageNumber);
+		var ordersIncoming = await _orderService.GetOutgoingOrdersAsync(user!, pageNumber);
 		return Ok(ordersIncoming);
 	}
 
@@ -104,7 +104,7 @@ public class OrderController : ControllerBase
 	public async Task<IActionResult> ForwardOrdersAsync(List<Guid> orders)
 	{
 		User? user = (User?)HttpContext.Items["user"];
-		var result = await _orderService.ForwardOrdersAsync(user, orders);
+		var result = await _orderService.ForwardOrdersAsync(user!, orders);
 		return Ok(result);
 	}
 }

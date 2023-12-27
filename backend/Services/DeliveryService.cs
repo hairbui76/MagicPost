@@ -1,5 +1,6 @@
 using AutoMapper;
 using MagicPostApi.Configs;
+using MagicPostApi.Enums;
 using MagicPostApi.Models;
 using MagicPostApi.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -43,16 +44,16 @@ public class DeliveryServce : IDeliveryService
 		await _webAPIDataContext.SaveChangesAsync();
 	}
 
-	public async Task<List<DeliveryHistory>> GetDeliveryHistory(Guid id, string? type, string? status, int pageNumber) 
+	public async Task<List<DeliveryHistory>> GetDeliveryHistory(Guid id, string? type, string? status, int pageNumber)
 	{
-		Point? currentPoint = _webAPIDataContext.Points.FirstOrDefault( p => p.Id == id );
-		var relatedDelivery = _deliveriesRepository.Where(d => d.FromPointId == currentPoint.Id || d.ToPointId == currentPoint.Id)
-												.Skip(Pagination.PageSize * (pageNumber - 1))
-												.Take(Pagination.PageSize)
-												.ToList();
+		Point? currentPoint = _webAPIDataContext.Points.FirstOrDefault(p => p.Id == id);
+		var relatedDelivery = await _deliveriesRepository.Where(d => d.FromPointId == currentPoint!.Id || d.ToPointId == currentPoint.Id)
+												.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
+												.Take((int)Pagination.PAGESIZE)
+												.ToListAsync();
 		List<DeliveryHistory> deliveryHistory = new();
 		relatedDelivery.ForEach(d => deliveryHistory.AddRange(d.GetOperationDeliveryHistory()));
-		if (type != null) 
+		if (type != null)
 		{
 			deliveryHistory = deliveryHistory.Where(d => d.Type == type).ToList();
 		}

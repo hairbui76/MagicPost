@@ -79,7 +79,7 @@ public class AuthController : ControllerBase
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> Register(CreateUserModel model)
+	public async Task<IActionResult> Register(RegisterModel model)
 	{
 		User newUser = _mapper.Map<User>(model);
 		newUser.Password = Password.Hash(newUser.Password);

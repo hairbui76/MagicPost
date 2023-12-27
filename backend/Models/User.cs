@@ -46,10 +46,27 @@ public class CreateUserModel : Model
 	[Required]
 	public string? Username { get; set; }
 	[Required]
+	public Role Role { get; set; }
+	[Required]
+	public string? Province { get; set; }
+	[Required]
+	public string? District { get; set; }
+	[Required]
+	public string? Ward { get; set; }
+}
+
+public class RegisterModel : Model
+{
+	[Required]
+	public string? Name { get; set; }
+	[Required]
+	public string? Email { get; set; }
+	[Required]
+	public string? Username { get; set; }
+	[Required]
 	public string? Password { get; set; }
 	[Required]
 	public Role Role { get; set; }
-	public Guid? PointId { get; set; }
 }
 
 public class UpdateUserModel : Model

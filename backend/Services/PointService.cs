@@ -12,6 +12,7 @@ public interface IPointService
 {
 	Task<List<Point>> GetAsync();
 	Task<DataPagination<PublicPointInfo>> FilterAsync(int pageNumber, PointType? type);
+	Task<Point?> FindByAddressAsync(string province, string district, string ward);
 	Task<List<Point>> GetAllTransactionPointsAsync();
 	Task<List<Point>> GetAllGatheringPointsAsync();
 	Task<Point?> GetPointByIdAsync(Guid id);
@@ -49,6 +50,10 @@ public class PointService : IPointService
 												.ToListAsync();
 		return new DataPagination<PublicPointInfo>(result, points.Count(), pageNumber);
 	}
+
+	public async Task<Point?> FindByAddressAsync(string province, string district, string ward)
+			=> await _pointsRepository.Where(p => p.Province == province && p.District == district && p.Ward == ward)
+																.FirstOrDefaultAsync();
 
 	public async Task<List<Point>> GetAllTransactionPointsAsync()
 			=> await _pointsRepository.Where(p => p.Type == PointType.TRANSACTION_POINT).ToListAsync();

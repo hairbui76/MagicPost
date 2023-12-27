@@ -1,4 +1,5 @@
 "use client";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, createContext, useState } from "react";
 import { ToastContainer } from "react-toastify";

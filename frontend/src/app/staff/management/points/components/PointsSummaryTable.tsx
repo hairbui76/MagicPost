@@ -1,4 +1,5 @@
 "use client";
+
 import SummaryTable from "@/components/SummaryTable";
 import PointContext, { PointContextProps } from "@/contexts/PointContext";
 import { useQuery } from "@tanstack/react-query";

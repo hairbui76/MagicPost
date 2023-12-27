@@ -1,4 +1,3 @@
-"use client";
 import OrderLink from "@/app/staff/components/Order/OrderLink/OrderLink";
 import TableRow from "@/components/legacy/Table/TableRow";
 import { formatDate } from "@/utils/helper";

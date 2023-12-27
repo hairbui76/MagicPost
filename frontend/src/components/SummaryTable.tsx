@@ -1,7 +1,5 @@
-"use client";
-
 import Table from "@/app/staff/components/Table/Table";
-import { Dispatch, SetStateAction } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import Pagination from "./Pagination/Pagination";
 import Summary from "./Summary";
 

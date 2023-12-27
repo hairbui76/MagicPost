@@ -1,4 +1,5 @@
 "use client";
+
 import { AppContext } from "@/contexts";
 import { AppContextProps } from "@/contexts/AppContext";
 import { useQuery } from "@tanstack/react-query";

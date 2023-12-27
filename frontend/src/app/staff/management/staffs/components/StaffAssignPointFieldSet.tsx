@@ -1,5 +1,3 @@
-"use client";
-
 import { Address } from "@/app/staff/utils/orders";
 import { CreateStaffStateProps } from "@/app/staff/utils/staffs";
 import AddressInput from "@/components/AddressInput";

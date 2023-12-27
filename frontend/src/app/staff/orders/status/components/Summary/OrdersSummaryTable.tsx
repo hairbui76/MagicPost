@@ -1,4 +1,5 @@
 "use client";
+
 import SummaryTable from "@/components/SummaryTable";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "antd";

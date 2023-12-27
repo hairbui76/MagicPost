@@ -1,5 +1,3 @@
-"use client";
-
 import Title from "@/components/Title/Title";
 import OrdersSummaryTable from "./components/Summary/OrdersSummaryTable";
 

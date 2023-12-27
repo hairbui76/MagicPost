@@ -1,6 +1,6 @@
 "use client";
 import OrderLink from "@/app/staff/components/Order/OrderLink/OrderLink";
-import TableRow from "@/app/staff/components/Table/TableRow";
+import TableRow from "@/components/legacy/Table/TableRow";
 import { formatDate } from "@/utils/helper";
 
 export default function OutgoingOrderSummary({

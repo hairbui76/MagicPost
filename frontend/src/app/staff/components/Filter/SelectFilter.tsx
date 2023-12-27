@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import Select from "../../../../../components/Form/Select";
+import Select from "../../../../components/Form/Select";
 
 export default function SelectFilter({
 	value,
@@ -9,7 +9,7 @@ export default function SelectFilter({
 	name,
 }: {
 	value: string;
-	setValue: Dispatch<SetStateAction<string>>;
+	setValue: Dispatch<SetStateAction<any>>;
 	label: string;
 	options: Array<{ value: string; label: string }>;
 	name: string;

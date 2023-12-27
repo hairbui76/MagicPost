@@ -70,7 +70,6 @@ export default function Order({
 					</button>
 				)}
 			</div>
-
 			{order ? (
 				<Link
 					className="w-fit link link-neutral mb-4 block"

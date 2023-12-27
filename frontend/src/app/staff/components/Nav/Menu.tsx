@@ -3,7 +3,6 @@ import MenuItem from "./MenuItem";
 import {
 	faFolderPlus,
 	faListCheck,
-	faLineChart,
 	faArrowRightFromBracket,
 	faArrowRightToBracket,
 	faUserGroup,
@@ -23,7 +22,6 @@ export default function Menu() {
 	const orderItems = [
 		getMenuItemProps("Create", "/staff/orders/create", faFolderPlus),
 		getMenuItemProps("Status", "/staff/orders/status", faListCheck),
-		getMenuItemProps("Statistics", "/staff/orders/statistics", faLineChart),
 	].map((props) => <MenuItem {...props} key={props.path} />);
 
 	const deliveryItems = [
@@ -46,7 +44,7 @@ export default function Menu() {
 
 	return (
 		<ul className="menu w-full rounded-box">
-			<MenuItem label="Home" path="/staff" />
+			<MenuItem label="Dashboard" path="/staff" />
 			<SubMenu label="Orders">{orderItems}</SubMenu>
 			<SubMenu label="Deliveries">{deliveryItems}</SubMenu>
 			<SubMenu label="Management">{managementItems}</SubMenu>

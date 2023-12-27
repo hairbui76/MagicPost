@@ -1,6 +1,5 @@
 "use client";
 
-import Table from "@/app/staff/components/Table/Table";
 import {
 	DeliveryHistoryProps,
 	getDeliveryHistory,
@@ -13,6 +12,7 @@ import { useState } from "react";
 import HistoryFilter from "./HistoryFilter";
 import compareAsc from "date-fns/compareAsc";
 import { Moment } from "moment";
+import Table from "@/components/legacy/Table/Table";
 
 export default function HistoryTable() {
 	const { isLoading, error, data } = useQuery({

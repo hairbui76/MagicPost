@@ -1,8 +1,40 @@
-export default async function Page() {
-	return (
-		<div className="h-full w-full flex flex-col items-center gap-6 justify-center">
-			<h1 className="text-3xl font-bold">WELCOME BACK</h1>
-			<div>We wish you another wonderful day at MagicPost!</div>
-		</div>
-	);
+"use client";
+
+import Title from "@/components/Title/Title";
+import Overview from "./components/Dashboard/Overview";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getStatistics } from "./utils/statistics";
+import { toast } from "react-toastify";
+import MonthlyOrderChart from "./components/Dashboard/MonthlyOrderChart";
+import RevenueChart from "./components/Dashboard/RevenueChart";
+import TopDeliveriesChart from "./components/Dashboard/TopDeliveriesChart";
+import PropertiesChart from "./components/Dashboard/PropertiesChart";
+
+export default function Page() {
+	const [point, setPoint] = useState("all");
+	const { isLoading, error, data } = useQuery({
+		queryKey: ["statistics", point],
+		queryFn: async () => {
+			return await getStatistics(point);
+		},
+	});
+	if (isLoading) return <div>Loading...</div>;
+	if (error) toast.error(error.message);
+
+	if (data) {
+		const statistics = data.statistics;
+		return (
+			<div className="pt-4">
+				<Title>Dashboard</Title>
+				<div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+					<Overview {...statistics.overview} />
+					<MonthlyOrderChart data={statistics.orders} />
+					<RevenueChart {...statistics.revenue} />
+					<TopDeliveriesChart data={statistics.topDeliveries} />
+					<PropertiesChart data={statistics.properties} />
+				</div>
+			</div>
+		);
+	}
 }

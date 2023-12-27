@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import SelectFilter from "./SelectFilter";
+import SelectFilter from "../../Filter/SelectFilter";
 
 const points = [
 	{

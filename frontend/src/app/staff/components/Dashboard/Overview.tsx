@@ -21,7 +21,7 @@ export default function Overview({
 		}
 	);
 	return (
-		<div className=" bg-custom-white px-6 p-4 rounded-md col-span-2 lg:col-span-3">
+		<div className=" bg-custom-white px-6 p-4 rounded-md col-span-2 lg:col-span-3 shadow-md">
 			<div className="font-md mb-2">Today</div>
 			<div className="grid grid-cols-5">
 				{zip.map(({ label, value }) => (

@@ -27,10 +27,6 @@ async function filterPoints(pageNumber: number, pointTypeFilter?: string) {
 
 const columnHeadings = [
 	{
-		label: "Type",
-		value: "type",
-	},
-	{
 		label: "Point Name",
 		value: "pointName",
 	},
@@ -45,6 +41,10 @@ const columnHeadings = [
 	{
 		label: "Email",
 		value: "email",
+	},
+	{
+		label: "Type",
+		value: "type",
 	},
 ];
 

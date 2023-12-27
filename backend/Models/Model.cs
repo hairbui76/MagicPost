@@ -21,7 +21,7 @@ public class DataPagination<T>
 		this.Data = Data;
 		this.DataCount = DataCount;
 		this.PageNumber = PageNumber;
-		TotalPage = (int)Math.Ceiling((double)(DataCount / PageSize));
+		TotalPage = (int)Math.Ceiling((double)DataCount / PageSize);
 	}
 	public DataPagination(List<T> Data, int DataCount, int PageNumber, int PageSize)
 	{

@@ -1,3 +1,5 @@
+import { Address } from "./orders";
+
 const fakeWeeklyOrderStats = (() => {
 	const res = [];
 	for (let i = 1; i < 32; i += 1) {
@@ -114,7 +116,7 @@ const fakeProperties = [
 	},
 ];
 
-export async function getStatistics(point: string) {
+export async function getStatistics(point: Address) {
 	return Promise.resolve({
 		message: "success",
 		statistics: {
@@ -125,9 +127,11 @@ export async function getStatistics(point: string) {
 			properties: fakeProperties,
 		},
 	});
-	const params = new URLSearchParams({
-		point: point,
-	});
+	const rawParams = {};
+	if (point.province) rawParams["province"] = point.province;
+	if (point.district) rawParams["district"] = point.district;
+	if (point.ward) rawParams["ward"] = point.ward;
+	const params = new URLSearchParams(rawParams);
 	return await fetch(
 		`${process.env.NEXT_PUBLIC_API_ENDPOINT}/statistics/overview?${params}`,
 		{

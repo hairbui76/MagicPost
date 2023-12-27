@@ -19,7 +19,7 @@ export default function MonthlyOrderChart({
 		};
 	});
 	return (
-		<div className="col-span-2 bg-custom-white px-6 p-4 rounded-md">
+		<div className="col-span-2 bg-custom-white px-6 p-4 rounded-md shadow-md">
 			<div className="mb-2">This month&apos;s order status</div>
 			<div className="ml-[-2rem] md:ml-[-1.5rem]">
 				<CustomLineChart data={chartData} />

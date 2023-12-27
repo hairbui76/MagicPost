@@ -21,11 +21,13 @@ export default function AddressInput({
 	handleChange,
 	className,
 	includeSpecificAddress = true,
+	rowLayoutOnSmallView = false,
 }: {
 	value: Address;
 	handleChange: (newAddress: Address) => void;
 	className?: string;
 	includeSpecificAddress?: boolean;
+	rowLayoutOnSmallView?: boolean;
 }) {
 	const [districts, setDistricts] = useState<District[]>([]);
 	const [wards, setWards] = useState<Ward[]>([]);
@@ -87,7 +89,11 @@ export default function AddressInput({
 	return (
 		<div className={className}>
 			<div className="flex flex-col gap-4">
-				<div className="flex flex-col sm:flex-row gap-4">
+				<div
+					className={`flex ${
+						rowLayoutOnSmallView ? "flex-row" : "flex-col"
+					} sm:flex-row gap-4`}
+				>
 					<AddressAutoComplete
 						label="Province"
 						placeholder="Province"

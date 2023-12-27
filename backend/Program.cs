@@ -66,9 +66,9 @@ if (app.Environment.IsDevelopment())
 	// Get db context for development initialization
 	var db = scope.ServiceProvider.GetRequiredService<WebAPIDataContext>();
 	// Delete database
-	db.Database.EnsureDeleted();
-	// Create database again to sync schemas update
-	db.Database.EnsureCreated();
+	// db.Database.EnsureDeleted();
+	// // Create database again to sync schemas update
+	// db.Database.EnsureCreated();
 }
 
 {

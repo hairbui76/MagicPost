@@ -10,7 +10,7 @@ namespace MagicPostApi.Controllers;
 [ApiController]
 [Route("[controller]/[action]")]
 [VerifyToken]
-[VerifyRole(new Role[] { Role.COMPANY_ADMINISTRATOR, Role.TRANSACTION_POINT_MANAGER, Role.TRANSACION_STAFF })]
+[VerifyRole(Role.COMPANY_ADMINISTRATOR, Role.TRANSACTION_POINT_MANAGER, Role.TRANSACION_STAFF)]
 public class DeliveryController : ControllerBase
 {
 	private readonly IMapper _mapper;
@@ -41,10 +41,10 @@ public class DeliveryController : ControllerBase
 		return Ok(new { message = "Create order successfully!", delivery });
 	}
 	[HttpGet("{id}")]
-	[VerifyToken] 
-	public async Task<IActionResult> GetDeliveryHistory (Guid id , int pageNumber, string type, string status)
+	[VerifyToken]
+	public async Task<IActionResult> GetDeliveryHistory(Guid id, int pageNumber, string type, string status)
 	{
 		List<DeliveryHistory> deliveryHistories = await _deliveryService.GetDeliveryHistory(id, type, status, pageNumber);
-		return Ok(new Response<List<DeliveryHistory>>{ Message = "Get Delivery Successfully", Data = deliveryHistories });
+		return Ok(new Response<List<DeliveryHistory>> { Message = "Get Delivery Successfully", Data = deliveryHistories });
 	}
 }

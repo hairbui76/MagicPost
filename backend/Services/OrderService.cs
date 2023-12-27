@@ -1,10 +1,12 @@
 using System.Data;
 using System.Net;
+using System.Reflection.Metadata.Ecma335;
 using AutoMapper;
 using MagicPostApi.Configs;
 using MagicPostApi.Enums;
 using MagicPostApi.Models;
 using MagicPostApi.Utils;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace MagicPostApi.Services;
@@ -14,9 +16,9 @@ public interface IOrderService
 	Task<List<PublicOrderInfo>> GetAsync();
 	Task<DataPagination<PublicOrderInfo>> FilterAsync(int pageNumber, OrderState? status, string? category, DateTime? startDate, DateTime? endDate);
 	Task<List<OrderHistory>> GetAsyncById(Guid id);
-	Task<List<PublicOrderInfo>> GetIncomingOrdersAsync(User user, int pageNumber);
+	Task<DataPagination<PublicOrderInfo>> GetIncomingOrdersAsync(User user, int pageNumber);
 	Task<bool> ConfirmIncomingOrdersAsync(User user, List<ConfirmIncomingOrderModel> orders);
-	Task<List<PublicOrderInfo>> GetOutgoingOrdersAsync(User user, int pageNumber);
+	Task<DataPagination<PublicOrderInfo>> GetOutgoingOrdersAsync(User user, int pageNumber);
 	Task<bool> ForwardOrdersAsync(User user, List<Guid> orderIds);
 	Task UpdateAsync(Guid id, UpdateOrderModel model);
 	Task CreateAsync(User user, Order newOrder);
@@ -62,16 +64,17 @@ public class OrderService : IOrderService
 		return new DataPagination<PublicOrderInfo>(result, orders.Count(), pageNumber);
 	}
 
-	public async Task<List<PublicOrderInfo>> GetIncomingOrdersAsync(User user, int pageNumber)
+	public async Task<DataPagination<PublicOrderInfo>> GetIncomingOrdersAsync(User user, int pageNumber)
 	{
 		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId);
-		List<PublicOrderInfo> orders = _webAPIDataContext.Deliveries.Where(d => d.ToPointId == currentPoint!.Id && d.State == DeliveryState.DELIVERING)
-														.Include(d => d.Order)
-														.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
-														.Take((int)Pagination.PAGESIZE)
-														.Select(d => d.Order!.GetPublicOrderInfo())
-														.ToList();
-		return orders;
+		var orders = _webAPIDataContext.Deliveries
+					.Where(d => d.ToPointId == currentPoint!.Id && d.State == DeliveryState.DELIVERING);
+		List<PublicOrderInfo> result = await orders.Include(d => d.Order)
+					.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
+					.Take((int)Pagination.PAGESIZE)
+					.Select(d => d.Order!.GetPublicOrderInfo())
+					.ToListAsync();
+		return new DataPagination<PublicOrderInfo>(result, orders.Count(), pageNumber);
 	}
 
 	public async Task<bool> ConfirmIncomingOrdersAsync(User user, List<ConfirmIncomingOrderModel> orders)
@@ -97,15 +100,16 @@ public class OrderService : IOrderService
 		return true;
 	}
 
-	public async Task<List<PublicOrderInfo>> GetOutgoingOrdersAsync(User user, int pageNumber)
+	public async Task<DataPagination<PublicOrderInfo>> GetOutgoingOrdersAsync(User user, int pageNumber)
 	{
 		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId);
-		List<PublicOrderInfo> orders = _ordersRepository.Where(o => o.CurrentPointId == currentPoint!.Id)
+		var orders = _ordersRepository.Where(o => o.CurrentPointId == currentPoint!.Id);
+		List<PublicOrderInfo> result = await orders
 														.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
 														.Take((int)Pagination.PAGESIZE)
 														.Select(o => o.GetPublicOrderInfo())
-														.ToList();
-		return orders;
+														.ToListAsync();
+		return new DataPagination<PublicOrderInfo>(result, orders.Count(), pageNumber);
 	}
 
 	public async Task<bool> ForwardOrdersAsync(User user, List<Guid> orderIds)

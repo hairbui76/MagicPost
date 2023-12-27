@@ -6,6 +6,7 @@ import { Skeleton } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import PointFilter from "./PointFilter";
+import { Address } from "@/app/staff/utils/orders";
 
 async function filterPoints(pageNumber: number, pointTypeFilter?: string) {
 	const filter: { [key: string]: string } = {
@@ -52,6 +53,12 @@ export default function PointsSummaryTable() {
 	const [pageNumber, setPageNumber] = useState(1);
 	const [totalPage, setTotalPage] = useState(1);
 	const [pointTypeFilter, setPointTypeFilter] = useState("");
+	const [filterToggle, setFilterToggle] = useState(false);
+	const [pointFilter, setPointFilter] = useState<Address>({
+		province: "",
+		district: "",
+		ward: "",
+	});
 
 	const { points, setPoints } = useContext(PointContext) as PointContextProps;
 	const {
@@ -59,7 +66,7 @@ export default function PointsSummaryTable() {
 		error,
 		data: response,
 	} = useQuery({
-		queryKey: ["points", pointTypeFilter, pageNumber],
+		queryKey: ["points", filterToggle, pageNumber],
 		queryFn: () => filterPoints(pageNumber, pointTypeFilter),
 	});
 
@@ -85,8 +92,13 @@ export default function PointsSummaryTable() {
 				setPageNumber={setPageNumber}
 			>
 				<PointFilter
-					pointTypeFilter={pointTypeFilter}
-					setPointTypeFilter={setPointTypeFilter}
+					{...{
+						pointFilter,
+						setPointFilter,
+						pointTypeFilter,
+						setPointTypeFilter,
+						handleConfirm: () => setFilterToggle(!filterToggle),
+					}}
 				/>
 			</SummaryTable>
 		</div>

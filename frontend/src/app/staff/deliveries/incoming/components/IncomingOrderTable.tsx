@@ -59,9 +59,10 @@ export default function IncomingOrderTable() {
 		district: "",
 		ward: "",
 	});
+	const [filterToggle, setFilterToggle] = useState(false);
 
 	const { isLoading, error, data } = useQuery({
-		queryKey: ["incoming", timeRange, pointFilter],
+		queryKey: ["incoming", filterToggle, pageNumber],
 		queryFn: () =>
 			filterIncomingOrders(
 				pageNumber,
@@ -79,7 +80,13 @@ export default function IncomingOrderTable() {
 	return (
 		<div className="flex flex-col gap-4">
 			<DeliveryOrderFilter
-				{...{ pointFilter, setPointFilter, timeRange, setTimeRange }}
+				{...{
+					pointFilter,
+					setPointFilter,
+					timeRange,
+					setTimeRange,
+					handleConfirm: () => setFilterToggle(!filterToggle),
+				}}
 			/>
 			<Actions
 				selectAll={selectAll}
@@ -87,7 +94,7 @@ export default function IncomingOrderTable() {
 					setSelectAll(!selectAll);
 					!selectAll
 						? setSelectedOrders(
-								data.data.data.map((order) => order.id as string)
+								data?.data.data.map((order: any) => order.id as string)
 						  )
 						: setSelectedOrders([]);
 				}}
@@ -98,28 +105,39 @@ export default function IncomingOrderTable() {
 				onReject={() => rejectOrders(selectedOrders, rejectReason, "incoming")}
 			/>
 			<Table columnHeadings={["", "ID", "From", "Time of Delivery"]}>
-				{data?.data.data.map(({ id, from, deliveryTime }) => {
-					const selected =
-						selectedOrders.findIndex((selectedId) => selectedId === id) !== -1;
-					const onChange = () => {
-						const index = selectedOrders.findIndex(
-							(selectedId) => selectedId === id
-						);
-						if (index === -1) {
-							setSelectedOrders([...selectedOrders, id as string]);
-						} else {
-							setSelectedOrders(
-								selectedOrders.filter((selectedId) => selectedId !== id)
+				{data?.data.data.map(
+					({
+						id,
+						from,
+						deliveryTime,
+					}: {
+						id: string;
+						from: string;
+						deliveryTime: string;
+					}) => {
+						const selected =
+							selectedOrders.findIndex((selectedId) => selectedId === id) !==
+							-1;
+						const onChange = () => {
+							const index = selectedOrders.findIndex(
+								(selectedId) => selectedId === id
 							);
-						}
-					};
-					return (
-						<IncomingOrderSummary
-							key={id}
-							{...{ id, from, deliveryTime, selected, onChange }}
-						/>
-					);
-				})}
+							if (index === -1) {
+								setSelectedOrders([...selectedOrders, id as string]);
+							} else {
+								setSelectedOrders(
+									selectedOrders.filter((selectedId) => selectedId !== id)
+								);
+							}
+						};
+						return (
+							<IncomingOrderSummary
+								key={id}
+								{...{ id, from, deliveryTime, selected, onChange }}
+							/>
+						);
+					}
+				)}
 			</Table>
 			<Pagination
 				numberOfPages={data?.data.totalPage || 1}

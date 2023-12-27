@@ -19,11 +19,11 @@ export default function SelectFilter({
 			label={label}
 			name={name}
 			options={[
-				...options,
 				{
 					value: "",
-					label: "all",
+					label: "All",
 				},
+				...options,
 			]}
 			handleChange={(value) => {
 				setValue(value);

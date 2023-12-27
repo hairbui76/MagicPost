@@ -1,4 +1,6 @@
 import FilterFieldset from "@/app/staff/components/Order/Filter/FilterFieldset";
+import { Address } from "@/app/staff/utils/orders";
+import AddressInput from "@/components/AddressInput";
 import TimeRange from "@/components/Form/TimeRange";
 import SelectFilter from "@/components/legacy/Filter/SelectFilter";
 import { Dispatch, SetStateAction } from "react";
@@ -10,6 +12,9 @@ export default function HistoryFilter({
 	setTypeFilter,
 	setTimeRange,
 	setStatusFilter,
+	pointFilter,
+	setPointFilter,
+	handleConfirm,
 }: {
 	typeFilter: string;
 	timeRange: any;
@@ -17,9 +22,15 @@ export default function HistoryFilter({
 	setTypeFilter: Dispatch<SetStateAction<string>>;
 	setTimeRange: any;
 	setStatusFilter: Dispatch<SetStateAction<string>>;
+	handleConfirm: () => void;
+	pointFilter: Address;
+	setPointFilter: Dispatch<SetStateAction<Address>>;
 }) {
 	return (
-		<FilterFieldset>
+		<FilterFieldset
+			handleConfirm={handleConfirm}
+			className="text-sm md:grid md:grid-cols-3"
+		>
 			<SelectFilter
 				label="Type"
 				name="type"
@@ -27,17 +38,25 @@ export default function HistoryFilter({
 				value={typeFilter}
 				setValue={setTypeFilter}
 			/>
-			<TimeRange
-				label="Time"
-				timeRange={timeRange}
-				handleChange={setTimeRange}
-			/>
 			<SelectFilter
 				label="Status"
 				name="status"
 				options={statuses}
 				value={statusFilter}
 				setValue={setStatusFilter}
+			/>
+			<TimeRange
+				label="Time"
+				timeRange={timeRange}
+				handleChange={setTimeRange}
+			/>
+			<AddressInput
+				includeSpecificAddress={false}
+				value={pointFilter}
+				handleChange={(address) =>
+					setPointFilter({ ...pointFilter, ...address })
+				}
+				className="col-span-3"
 			/>
 		</FilterFieldset>
 	);

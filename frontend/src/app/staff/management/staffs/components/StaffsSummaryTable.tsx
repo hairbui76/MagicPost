@@ -7,6 +7,7 @@ import { Skeleton } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import StaffFilter from "./StaffFilter";
+import { Address } from "@/app/staff/utils/orders";
 
 async function filterStaffs(pageNumber: number, roleFilter?: string) {
 	const filter: { [key: string]: string } = {
@@ -53,14 +54,19 @@ export default function StaffsSummaryTable() {
 	const [pageNumber, setPageNumber] = useState(1);
 	const [totalPage, setTotalPage] = useState(1);
 	const [roleFilter, setRoleFilter] = useState("");
-
+	const [filterToggle, setFilterToggle] = useState(false);
+	const [pointFilter, setPointFilter] = useState<Address>({
+		province: "",
+		district: "",
+		ward: "",
+	});
 	const { staffs, setStaffs } = useContext(StaffContext) as StaffContextProps;
 	const {
 		isPending,
 		error,
 		data: response,
 	} = useQuery({
-		queryKey: ["staffs", roleFilter, pageNumber],
+		queryKey: ["staffs", filterToggle, pageNumber],
 		queryFn: () => filterStaffs(pageNumber, roleFilter),
 	});
 
@@ -85,7 +91,15 @@ export default function StaffsSummaryTable() {
 				totalPage={totalPage}
 				setPageNumber={setPageNumber}
 			>
-				<StaffFilter {...{ roleFilter, setRoleFilter }} />
+				<StaffFilter
+					{...{
+						roleFilter,
+						setRoleFilter,
+						handleConfirm: () => setFilterToggle(!filterToggle),
+						pointFilter,
+						setPointFilter,
+					}}
+				/>
 			</SummaryTable>
 		</div>
 	);

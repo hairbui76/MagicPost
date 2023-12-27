@@ -27,7 +27,7 @@ export default function Page() {
 		return (
 			<div className="pt-4">
 				<Title>Dashboard</Title>
-				<div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+				<div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
 					<Overview {...statistics.overview} />
 					<MonthlyOrderChart data={statistics.orders} />
 					<RevenueChart {...statistics.revenue} />

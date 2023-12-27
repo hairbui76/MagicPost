@@ -1,51 +1,82 @@
 "use client";
 
-import {
-	DeliveryHistoryProps,
-	getDeliveryHistory,
-} from "@/app/staff/utils/deliveries";
+import { DeliveryHistoryProps } from "@/app/staff/utils/deliveries";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import HistoryItem from "./HistoryItem";
 import uniqid from "uniqid";
 import { useState } from "react";
 import HistoryFilter from "./HistoryFilter";
-import compareAsc from "date-fns/compareAsc";
 import { Moment } from "moment";
 import Table from "@/components/legacy/Table/Table";
+import { Address } from "@/app/staff/utils/orders";
+import Pagination from "@/components/Pagination/Pagination";
+
+async function filterHistory(
+	pageNumber: number,
+	startDate?: Date,
+	endDate?: Date,
+	type?: string,
+	status?: string,
+	province?: string | undefined | null,
+	district?: string | undefined | null,
+	ward?: string | undefined | null
+) {
+	const filter: { [key: string]: string } = {
+		pageNumber: pageNumber.toString(),
+	};
+	if (startDate) filter[`startDate`] = startDate.toISOString();
+	if (endDate) filter[`endDate`] = endDate.toISOString();
+	if (type) filter["type"] = type;
+	if (status) filter["status"] = status;
+	if (province) filter[`province`] = province;
+	if (district) filter[`district`] = district;
+	if (ward) filter[`province`] = ward;
+
+	return fetch(
+		`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/history?` +
+			new URLSearchParams(filter),
+		{
+			credentials: "include",
+		}
+	).then(async (res) => {
+		if (res.status !== 200) {
+			const json = await res.json();
+			throw new Error(json.message);
+		}
+		return res.json();
+	});
+}
 
 export default function HistoryTable() {
-	const { isLoading, error, data } = useQuery({
-		queryKey: ["delivery-history"],
-		queryFn: getDeliveryHistory,
-	});
 	const [typeFilter, setTypeFilter] = useState("");
 	const [statusFilter, setStatusFilter] = useState("");
 	const [timeRange, setTimeRange] = useState<Array<Moment | null>>([
 		null,
 		null,
 	]);
+	const [pointFilter, setPointFilter] = useState<Address>({
+		province: "",
+		district: "",
+		ward: "",
+	});
+	const [filterToggle, setFilterToggle] = useState(false);
+	const [pageNumber, setPageNumber] = useState(1);
 
-	function filter(history: Array<DeliveryHistoryProps>) {
-		return history.filter((event) => {
-			if (typeFilter !== "" && typeFilter !== event.type) return false;
-			if (statusFilter !== "" && statusFilter !== event.status) return false;
-			if (!timeRange) return true;
-			if (
-				timeRange[0] &&
-				compareAsc(timeRange[0].toDate(), new Date(event.time || "")) === 1
-			) {
-				return false;
-			}
-			if (
-				timeRange[1] &&
-				compareAsc(timeRange[1].toDate(), new Date(event.time || "")) === -1
-			) {
-				return false;
-			}
-			return true;
-		});
-	}
+	const { isLoading, error, data } = useQuery({
+		queryKey: ["history", filterToggle, pageNumber],
+		queryFn: () =>
+			filterHistory(
+				pageNumber,
+				timeRange[0]?.toDate(),
+				timeRange[1]?.toDate(),
+				typeFilter,
+				statusFilter,
+				pointFilter.province,
+				pointFilter.district,
+				pointFilter.ward
+			),
+	});
 
 	if (isLoading) return <div>Loading...</div>;
 
@@ -55,12 +86,15 @@ export default function HistoryTable() {
 		<div className="flex flex-col gap-4">
 			<HistoryFilter
 				{...{
+					pointFilter,
+					setPointFilter,
 					statusFilter,
 					setStatusFilter,
 					timeRange,
 					setTimeRange,
 					typeFilter,
 					setTypeFilter,
+					handleConfirm: () => setFilterToggle(!filterToggle),
 				}}
 			/>
 			<Table
@@ -74,12 +108,15 @@ export default function HistoryTable() {
 					"Reason",
 				]}
 			>
-				{data
-					? filter(data.history).map((event: DeliveryHistoryProps) => (
-							<HistoryItem key={uniqid()} {...event} />
-					  ))
-					: null}
+				{data?.data.data.map((event: DeliveryHistoryProps) => (
+					<HistoryItem key={uniqid()} {...event} />
+				))}
 			</Table>
+			<Pagination
+				pageNumber={pageNumber}
+				setPageNumber={setPageNumber}
+				numberOfPages={data?.data.totalPage || 1}
+			/>
 		</div>
 	);
 }

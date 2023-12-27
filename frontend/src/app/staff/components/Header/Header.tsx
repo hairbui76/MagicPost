@@ -41,7 +41,6 @@ export default function Header({ onToggle }: { onToggle: () => void }) {
 				placeholder="Search"
 				className="input input-bordered input-sm w-1/2 mx-auto"
 			/>
-			<FontAwesomeIcon icon={faBell} className=" ml-auto h-4" />
 			<Avatar src="/default_avatar.png" />
 			<button onClick={handleLogout}>
 				<FontAwesomeIcon icon={faDoorOpen} className="h-4" />

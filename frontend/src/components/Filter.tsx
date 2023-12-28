@@ -17,7 +17,6 @@ export default function Filter<T>({
 	setValue: Dispatch<SetStateAction<T>>;
 	options?: { value: string; label: string }[];
 }) {
-	console.log(type);
 	if (type === "timerange") {
 		return (
 			<TimeRange

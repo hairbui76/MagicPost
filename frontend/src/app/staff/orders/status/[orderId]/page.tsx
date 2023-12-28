@@ -69,7 +69,7 @@ export default function Page({
 	if (error) toast.error(error.message);
 
 	if (data) {
-		const order = data.data.data;
+		const order = data.data;
 
 		return (
 			<Order

@@ -29,6 +29,7 @@ export default function OrderFilter({
 	setCategoryFilter,
 	timeRange,
 	setTimeRange,
+	handleConfirm,
 }: {
 	statusFilter: string;
 	setStatusFilter: Dispatch<SetStateAction<string>>;
@@ -36,9 +37,10 @@ export default function OrderFilter({
 	setCategoryFilter: Dispatch<SetStateAction<string>>;
 	timeRange: any;
 	setTimeRange: any;
+	handleConfirm: () => void;
 }) {
 	return (
-		<FilterFieldset>
+		<FilterFieldset handleConfirm={() => handleConfirm()}>
 			<Filter
 				label="Status"
 				name="status"

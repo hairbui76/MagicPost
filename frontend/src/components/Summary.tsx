@@ -1,4 +1,5 @@
 import TableRow from "@/app/staff/components/Table/TableRow";
+import { formatDate } from "@/utils/helper";
 import { faBars, faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
@@ -16,13 +17,14 @@ export default function Summary<T extends DatabaseTableProps>({
 		headers: Array<{ label: string; value: string }>,
 		item: T
 	) => {
-		return headers.map(({ value: key }) => {
+		return headers.map(({ label, value: key }) => {
 			if (key.includes(".")) {
 				const keys = key.split(".");
 				return keys.reduce((nestedItem: { [key: string]: any }, k: string) => {
 					return nestedItem[k];
 				}, item);
 			}
+			if (label === "Created At") return formatDate(item[key]);
 			return item[key];
 		});
 	};

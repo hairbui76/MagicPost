@@ -1,51 +1,48 @@
 "use client";
 
-import { OrderProps } from "@/app/staff/types/Order/orders";
-import OrderContext, { OrderContextProps } from "@/contexts/OrderContext";
 import { useQuery } from "@tanstack/react-query";
 import { QRCode, Skeleton } from "antd";
 import { format } from "date-fns";
 import Image from "next/image";
-import { useContext, useEffect, useState } from "react";
 import Barcode from "react-barcode";
 import { toast } from "react-toastify";
 import "./style.css";
 
-async function getOrderById(id: string) {
-	return fetch(`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/get/${id}`, {
-		credentials: "include",
-	}).then((res) => res.json());
+async function fetchOrder(orderId: string) {
+	return await fetch(
+		`${process.env.NEXT_PUBLIC_API_ENDPOINT}/order/get/${orderId}`,
+		{
+			credentials: "include",
+		}
+	).then(async (response) => {
+		if (response.status !== 200) {
+			const message = await Promise.resolve(response.json()).then(
+				(json) => json.message
+			);
+			throw new Error(message);
+		}
+		return response.json();
+	});
 }
 
-export default function Page({ params }: { params: { slug: string } }) {
-	const { orders } = useContext(OrderContext) as OrderContextProps;
-	const [order, setOrder] = useState<OrderProps | null>(null);
+export default function Page({ params }: { params: { orderId: string } }) {
+	const { orderId } = params;
 	const { isPending, error, data } = useQuery({
-		queryKey: ["repoData"],
-		queryFn: () => getOrderById(params.slug),
+		queryKey: ["order-by-id", orderId],
+		queryFn: () => fetchOrder(orderId),
 	});
-
-	useEffect(() => {
-		const myOrder = orders.find((o) => o.id === params.slug);
-		if (myOrder) setOrder(myOrder);
-		else {
-			if (data) {
-				toast.success(data.message);
-				setOrder(data.order);
-			}
-		}
-	}, [orders, params.slug, data]);
 
 	if (isPending) return <Skeleton active />;
 
 	if (error) toast.error(error.message);
 
-	return (
-		order && (
+	if (data) {
+		const order = data.data;
+		return (
 			<div className="flex flex-col border-cl">
 				<div className="flex items-center border-cl p-2">
 					<div className="barcode__container">
-						<Barcode value={params.slug} width={1.5} />
+						<Barcode value={params.orderId} width={1.5} />
 					</div>
 					<div className="flex-1">
 						<h1 className="text-center">
@@ -74,7 +71,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 							</div>
 							<div className="flex">
 								<b>Địa chỉ</b>
-								<p className="flex-1 text-right">{order.sender.address}</p>
+								<p className="flex-1 text-right">{order.sender.address.name}</p>
 							</div>
 							<div className="flex">
 								<b>Điện thoại</b>
@@ -123,7 +120,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 						</div>
 						<div className="flex">
 							<div className="border-cl">
-								<QRCode value={params.slug} />
+								<QRCode value={params.orderId} />
 							</div>
 							<div className="flex flex-col border-cl p-2">
 								<div className="flex">
@@ -145,6 +142,6 @@ export default function Page({ params }: { params: { slug: string } }) {
 					</div>
 				</div>
 			</div>
-		)
-	);
+		);
+	}
 }

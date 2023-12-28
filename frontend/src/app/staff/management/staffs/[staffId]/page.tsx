@@ -8,40 +8,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import Staff from "../components/Staff";
 
-const fakeStaffFetchResult = {
-	message: "Fetch successfully",
-	data: {
-		data: {
-			id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-			name: "string",
-			username: "string",
-			email: "string",
-			password: "string",
-			createdAt: "2023-12-28T16:07:00.038Z",
-			updatedAt: "2023-12-28T16:07:00.038Z",
-			role: 0,
-			phoneNumber: "123218937",
-			pointId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-			point: {
-				id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-				pointName: "string",
-				type: 0,
-				address: "string",
-				addressLat: 0,
-				addressLong: 0,
-				province: "string",
-				district: "string",
-				ward: "string",
-				email: "user@example.com",
-				phone: "012312312",
-				createdAt: "2023-12-28T16:07:00.038Z",
-			},
-		},
-	},
-};
-
 async function fetchStaff(staffId: string) {
-	return Promise.resolve(fakeStaffFetchResult);
 	return await fetch(
 		`${process.env.NEXT_PUBLIC_API_ENDPOINT}/user/Get/${staffId}`,
 		{
@@ -95,9 +62,11 @@ export default function Page() {
 
 	if (error) toast.error(error.message);
 
-	if (data.data.data) {
+	console.log(data);
+
+	if (data.data) {
 		const { id, role, name, username, email, phoneNumber, pointId, point } =
-			data.data.data;
+			data.data;
 		const staff: CreateStaffProps = {
 			id,
 			role,

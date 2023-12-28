@@ -52,9 +52,9 @@ public class UserController : ControllerBase
 	}
 
 	[HttpGet("{id}")]
-	[VerifyOwner]
+	// [VerifyOwner]
 	[VerifyToken]
-	[VerifyRole(Role.COMPANY_ADMINISTRATOR)]
+	// [VerifyRole(Role.COMPANY_ADMINISTRATOR)]
 	public async Task<ActionResult<User>> GetAsync(Guid id)
 	{
 		var user = await _userService.GetAsyncById(id);

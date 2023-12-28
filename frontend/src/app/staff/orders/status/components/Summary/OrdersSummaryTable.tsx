@@ -62,9 +62,10 @@ export default function OrdersSummaryTable() {
 		null,
 	]);
 	const [categoryFilter, setCategoryFilter] = useState("");
+	const [filterToggle, setFilterToggle] = useState(false);
 
 	const { isPending, error, data } = useQuery({
-		queryKey: ["orders", statusFilter, timeRange, categoryFilter, pageNumber],
+		queryKey: ["orders", filterToggle, pageNumber],
 		queryFn: () =>
 			filterOrders(
 				pageNumber,
@@ -96,6 +97,7 @@ export default function OrdersSummaryTable() {
 						setTimeRange,
 						categoryFilter,
 						setCategoryFilter,
+						handleConfirm: () => setFilterToggle(!filterToggle),
 					}}
 				/>
 			</SummaryTable>

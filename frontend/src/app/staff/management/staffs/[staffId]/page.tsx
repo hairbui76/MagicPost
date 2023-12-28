@@ -2,51 +2,15 @@
 import { CreateStaffProps } from "@/app/staff/utils/staffs";
 import Title from "@/components/Title/Title";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Staff from "../components/Staff";
 
-const fakeStaffFetchResult = {
-	message: "Fetch successfully",
-	data: {
-		data: {
-			id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-			name: "string",
-			username: "string",
-			email: "string",
-			password: "string",
-			createdAt: "2023-12-28T16:07:00.038Z",
-			updatedAt: "2023-12-28T16:07:00.038Z",
-			role: 0,
-			phoneNumber: "123218937",
-			pointId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-			point: {
-				id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-				pointName: "string",
-				type: 0,
-				address: "string",
-				addressLat: 0,
-				addressLong: 0,
-				province: "string",
-				district: "string",
-				ward: "string",
-				email: "user@example.com",
-				phone: "012312312",
-				createdAt: "2023-12-28T16:07:00.038Z",
-			},
-		},
-	},
-};
-
 async function fetchStaff(staffId: string) {
-	return Promise.resolve(fakeStaffFetchResult);
 	return await fetch(
-		`${process.env.NEXT_PUBLIC_API_ENDPOINT}/user/Get/${staffId}`,
-		{
-			credentials: "include",
-		}
+		`${process.env.NEXT_PUBLIC_USER_ENDPOINT}/get/${staffId}`,
+		{ credentials: "include" }
 	).then(async (response) => {
 		if (response.status !== 200) {
 			const message = await Promise.resolve(response.json()).then(

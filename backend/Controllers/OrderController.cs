@@ -29,25 +29,25 @@ public class OrderController : ControllerBase
 		return Ok(new { message = "Get orders successfully", orders });
 	}
 
-	[HttpGet]
-	[VerifyToken]
-	public async Task<ActionResult<Response<DataPagination<PublicOrderInfo>>>> FilterAsync(int pageNumber, OrderState? status, string? category, DateTime? startDate, DateTime? endDate)
-	{
-		DataPagination<PublicOrderInfo> orders = await _orderService.FilterAsync(pageNumber, status, category, startDate?.ToUniversalTime(), endDate?.ToUniversalTime());
-		return Ok(new Response<DataPagination<PublicOrderInfo>>("Get orders successfully", orders));
-	}
-
 	[HttpGet("{id}")]
 	public async Task<IActionResult> GetAsync(Guid id)
 	{
-		List<OrderHistory> orderHistory = await _orderService.GetAsyncById(id) ?? throw new AppException(HttpStatusCode.NotFound, "Order not found");
+		List<OrderHistory> orderHistory = await _orderService.GetAsync(id) ?? throw new AppException(HttpStatusCode.NotFound, "Order not found");
 		return Ok(new { message = "Get order history successfully", orderHistory });
+	}
+
+	[HttpGet] 
+	[VerifyToken]
+	public async Task<IActionResult> FilterOrderAsync( int pageNumber, string? status, string? category, DateTime? startDate, DateTime? endDate) 
+	{
+		var orders = await _orderService.FiltOrderAsync(status, category, startDate?.ToUniversalTime(), endDate?.ToUniversalTime(), pageNumber);
+		return Ok(orders);
 	}
 
 	[HttpPut("{id}")]
 	[VerifyToken]
 	[VerifyOwner]
-	[VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF)]
+	[VerifyRole(new Role[] { Role.TRANSACION_STAFF, Role.GATHERING_STAFF })]
 	public async Task<IActionResult> UpdateAsync(Guid id, UpdateOrderModel model)
 	{
 		await _orderService.UpdateAsync(id, model);
@@ -77,13 +77,13 @@ public class OrderController : ControllerBase
 	[HttpPut("{id}")]
 	[VerifyToken]
 	[VerifyOwner]
-	[VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF)]
-	public async Task<IActionResult> ConfirmIncomingOrdersAsync(List<ConfirmIncomingOrderModel> orders)
+	[VerifyRole(new Role[] {Role.TRANSACION_STAFF, Role.GATHERING_STAFF})]
+	public async Task<IActionResult> ConfirmIncomingOrdersAsync(List<ConfirmIncomingOrderModel> orders) 
 	{
 		User? user = (User?)HttpContext.Items["user"];
-		var result = await _orderService.ConfirmIncomingOrdersAsync(user!, orders);
+		var result = await _orderService.ConfirmIncomingOrdersAsync(user, orders);
 		return Ok(result);
-	}
+	} 	
 
 	[HttpGet]
 	[VerifyToken]

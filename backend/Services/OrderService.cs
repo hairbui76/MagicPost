@@ -15,7 +15,8 @@ public interface IOrderService
 {
 	Task<List<PublicOrderInfo>> GetAsync();
 	Task<DataPagination<PublicOrderInfo>> FilterAsync(int pageNumber, OrderState? status, string? category, DateTime? startDate, DateTime? endDate);
-	Task<List<OrderHistory>> GetAsyncById(Guid id);
+	Task<PublicOrderInfo?> GetAsyncById(Guid id);
+	Task<List<OrderHistory>> GetOrderHistoryAsyncById(Guid id);
 	Task<DataPagination<PublicOrderInfo>> GetIncomingOrdersAsync(User user, string? province, string? district, DateTime? startDate, DateTime? endDate, int pageNumber);
 	Task<bool> ConfirmIncomingOrdersAsync(User user, List<ConfirmIncomingOrderModel> orders);
 	Task<DataPagination<PublicOrderInfo>> GetOutgoingOrdersAsync(User user, string? province, string? district, int pageNumber);
@@ -67,10 +68,11 @@ public class OrderService : IOrderService
 
 	public async Task<DataPagination<PublicOrderInfo>> GetIncomingOrdersAsync(User user, string? province, string? district, DateTime? startDate, DateTime? endDate, int pageNumber)
 	{
-		Point? currentPoint = await _webAPIDataContext.Points.Where(p => p.Id == user.PointId).FirstOrDefaultAsync();
+		Point? currentPoint = await _webAPIDataContext.Points.Where(p => p.Id == user.PointId).FirstOrDefaultAsync() ?? throw new AppException(HttpStatusCode.NotFound, "The point you belong to not found!");
 		var orders = _webAPIDataContext.Deliveries
 														.Include(d => d.FromPoint)
 														.Include(d => d.ToPoint)
+														.Include(d => d.Order)
 														.Where(d => d.ToPointId == currentPoint.Id && d.State == DeliveryState.DELIVERING)
 														.AsQueryable();
 		if (province != null)
@@ -122,29 +124,22 @@ public class OrderService : IOrderService
 
 	public async Task<DataPagination<PublicOrderInfo>> GetOutgoingOrdersAsync(User user, string? province, string? district, int pageNumber)
 	{
-		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId);
+		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId) ?? throw new AppException(HttpStatusCode.NotFound, "The point you belong to not found!");
 
-		List<Order> orders = await _ordersRepository.Where(o => o.CurrentPointId == currentPoint.Id)
-														.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
-														.Take((int)Pagination.PAGESIZE)
-														.ToListAsync();
+		List<Order> orders = await _ordersRepository
+						.Where(o => o.CurrentPointId == currentPoint.Id && o.Status == OrderState.PENDING)
+						.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
+						.Take((int)Pagination.PAGESIZE)
+						.ToListAsync();
 		List<PublicOrderInfo> ordersToGo = new();
 		orders.ForEach(ord =>
 		{
 			ordersToGo.Add(ord.GetPublicOrderInfo());
 			Delivery newDelivery = new();
 			Point? nextPoint = null;
-			if (currentPoint?.Type == PointType.TRANSACTION_POINT)
+			if (currentPoint.Type == PointType.TRANSACTION_POINT)
 			{
-				if (ord.SenderProvince == currentPoint.Province)
-				{
-					nextPoint = _webAPIDataContext.Points.FirstOrDefault(p => p.Province == currentPoint.Province && p.Type == PointType.GATHERING_POINT);
-
-				}
-				else if (ord.SenderProvince == currentPoint.Province)
-				{
-					// Delivery to user and export the bill
-				}
+				nextPoint = _webAPIDataContext.Points.FirstOrDefault(p => p.Province == currentPoint.Province && p.Type == PointType.GATHERING_POINT);
 			}
 			else
 			{
@@ -160,7 +155,6 @@ public class OrderService : IOrderService
 			if (province != null)
 			{
 				if (nextPoint.Province == province) ordersToGo.Add(ord.GetPublicOrderInfo());
-
 			}
 			if (district != null)
 			{
@@ -172,43 +166,41 @@ public class OrderService : IOrderService
 
 	public async Task<bool> ForwardOrdersAsync(User user, List<Guid> orderIds)
 	{
-		Console.WriteLine(orderIds);
-		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId);
+		Point currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId) ?? throw new AppException(HttpStatusCode.NotFound, "The point you belong to not found!");
 		List<Delivery> newDeliveries = new();
 		orderIds.ForEach(ord =>
 		{
-			Order? order = _ordersRepository.FirstOrDefault(o => o.Id == ord);
+			Order? order = _ordersRepository.FirstOrDefault(o => o.Id == ord)!;
 			Delivery newDelivery = new()
 			{
-				FromPointId = currentPoint?.Id,
+				FromPointId = currentPoint.Id,
 				State = DeliveryState.DELIVERING
 			};
-			if (currentPoint?.Type == PointType.TRANSACTION_POINT)
+			order.Status = OrderState.DELIVERING;
+			if (currentPoint.Type == PointType.TRANSACTION_POINT)
 			{
 				if (order!.SenderProvince == currentPoint.Province)
 				{
-					newDelivery.ToPointId = _webAPIDataContext.Points
-						.FirstOrDefault(p => p.Province == currentPoint.Province && p.Type == PointType.GATHERING_POINT)?.Id;
-				}
-				else if (order.ReceiverProvince == currentPoint.Province)
-				{
-					// Delivery to user and export the bill
+					Point toPoint = _webAPIDataContext.Points
+						.FirstOrDefault(p => p.Province == currentPoint.Province && p.Type == PointType.GATHERING_POINT) ?? throw new AppException("Destination not supported");
+					newDelivery.ToPointId = toPoint.Id;
 				}
 			}
 			else
 			{
-				if (order!.ReceiverProvince == currentPoint!.Province)
+				if (order.ReceiverProvince == currentPoint.Province)
 				{
-					newDelivery.ToPointId = _webAPIDataContext.Points
-						.FirstOrDefault(p => p.District == order.ReceiverDistrict && p.Type == PointType.TRANSACTION_POINT)?.Id;
+					Point toPoint = _webAPIDataContext.Points
+						.FirstOrDefault(p => p.District == order.ReceiverDistrict && p.Type == PointType.TRANSACTION_POINT) ?? throw new AppException("Destination transaction point not supported");
+					newDelivery.ToPointId = toPoint.Id;
 				}
 				else
 				{
-					newDelivery.ToPointId = _webAPIDataContext.Points
-						.FirstOrDefault(p => p.Type == PointType.GATHERING_POINT && p.Province == order.ReceiverProvince)?.Id;
+					Point toPoint = _webAPIDataContext.Points
+						.FirstOrDefault(p => p.Type == PointType.GATHERING_POINT && p.Province == order.ReceiverProvince) ?? throw new AppException("Destination gathering point not supported");
+					newDelivery.ToPointId = toPoint.Id;
 				}
 			}
-			newDelivery.CreatedAt = DateTime.UtcNow;
 			newDelivery.OrderId = order.Id;
 			newDeliveries.Add(newDelivery);
 		});
@@ -223,7 +215,13 @@ public class OrderService : IOrderService
 					 .Select(o => o.GetPublicOrderInfo())
 					 .ToListAsync();
 
-	public async Task<List<OrderHistory>> GetAsyncById(Guid id)
+	public async Task<PublicOrderInfo?> GetAsyncById(Guid id)
+		 => await _ordersRepository
+					 .Include(o => o.Items)
+					 .Select(o => o.GetPublicOrderInfo())
+					 .FirstOrDefaultAsync();
+
+	public async Task<List<OrderHistory>> GetOrderHistoryAsyncById(Guid id)
 	{
 		var deliveries = await _ordersRepository
 			.Where(o => o.Id == id)

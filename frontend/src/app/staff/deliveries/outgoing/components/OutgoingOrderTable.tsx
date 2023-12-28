@@ -61,7 +61,7 @@ export default function OutgoingOrderTable() {
 	});
 	const [filterToggle, setFilterToggle] = useState(false);
 	const { isLoading, error, data } = useQuery({
-		queryKey: ["incoming", filterToggle, pageNumber],
+		queryKey: ["outgoing", filterToggle, pageNumber],
 		queryFn: () =>
 			filterOutgoingOrders(
 				pageNumber,

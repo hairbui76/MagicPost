@@ -38,9 +38,16 @@ public class OrderController : ControllerBase
 	}
 
 	[HttpGet("{id}")]
-	public async Task<IActionResult> GetAsync(Guid id)
+	public async Task<ActionResult<Response<PublicOrderInfo>>> GetAsync(Guid id)
 	{
-		List<OrderHistory> orderHistory = await _orderService.GetAsyncById(id) ?? throw new AppException(HttpStatusCode.NotFound, "Order not found");
+		PublicOrderInfo order = await _orderService.GetAsyncById(id) ?? throw new AppException(HttpStatusCode.NotFound, "Order not found");
+		return Ok(new Response<PublicOrderInfo>("Get order successfully!", order));
+	}
+
+	[HttpGet("{id}")]
+	public async Task<IActionResult> GetOrderHistoryAsync(Guid id)
+	{
+		List<OrderHistory> orderHistory = await _orderService.GetOrderHistoryAsyncById(id);
 		return Ok(new { message = "Get order history successfully", orderHistory });
 	}
 
@@ -69,7 +76,7 @@ public class OrderController : ControllerBase
 	[VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF, Role.GATHERING_POINT_MANAGER, Role.TRANSACTION_POINT_MANAGER)]
 	public async Task<ActionResult<Response<DataPagination<PublicOrderInfo>>>> GetIncomingOrdersAsync(string? province, string? district, DateTime? startDate, DateTime? endDate, int pageNumber)
 	{
-		User? user = (User?)HttpContext.Items["user"];
+		User user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");
 		DataPagination<PublicOrderInfo> ordersIncoming = await _orderService.GetIncomingOrdersAsync(user, province, district, startDate, endDate, pageNumber);
 		return Ok(new Response<DataPagination<PublicOrderInfo>>("Get incoming orders successfully!", ordersIncoming));
 	}
@@ -90,7 +97,7 @@ public class OrderController : ControllerBase
 	[VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF, Role.GATHERING_POINT_MANAGER, Role.TRANSACTION_POINT_MANAGER)]
 	public async Task<ActionResult<Response<DataPagination<PublicOrderInfo>>>> GetOutgoingOrdersAsync(string? province, string? district, int pageNumber)
 	{
-		User? user = (User?)HttpContext.Items["user"];
+		User? user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");
 		DataPagination<PublicOrderInfo> ordersOutgoing = await _orderService.GetOutgoingOrdersAsync(user, province, district, pageNumber);
 		return Ok(new Response<DataPagination<PublicOrderInfo>>("Get outgoing orders successfully!", ordersOutgoing));
 	}
@@ -100,7 +107,7 @@ public class OrderController : ControllerBase
 	[VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF, Role.GATHERING_POINT_MANAGER, Role.TRANSACTION_POINT_MANAGER)]
 	public async Task<IActionResult> ForwardOrdersAsync(List<Guid> orders)
 	{
-		User? user = (User?)HttpContext.Items["user"];
+		User? user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");
 		await _orderService.ForwardOrdersAsync(user!, orders);
 		return Ok(new { message = "Forward outgoing orders successfully!" });
 	}

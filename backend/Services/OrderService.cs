@@ -22,6 +22,7 @@ public interface IOrderService
 	Task<bool> ForwardOrdersAsync(User user, List<Guid> orderIds);
 	Task UpdateAsync(Guid id, UpdateOrderModel model);
 	Task CreateAsync(User user, Order newOrder);
+	Task CreateAsync(Order newOrder);
 }
 
 public class OrderService : IOrderService
@@ -200,6 +201,12 @@ public class OrderService : IOrderService
 	public async Task CreateAsync(User user, Order newOrder)
 	{
 		newOrder.CurrentPointId = user.PointId;
+		await _ordersRepository.AddAsync(newOrder);
+		await _webAPIDataContext.SaveChangesAsync();
+	}
+
+	public async Task CreateAsync(Order newOrder)
+	{
 		await _ordersRepository.AddAsync(newOrder);
 		await _webAPIDataContext.SaveChangesAsync();
 	}

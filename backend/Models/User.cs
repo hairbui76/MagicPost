@@ -68,6 +68,7 @@ public class RegisterModel : Model
 	public string? Password { get; set; }
 	[Required]
 	public Role Role { get; set; }
+	public Guid? PointId { get; set; }
 }
 
 public class UpdateUserModel : Model

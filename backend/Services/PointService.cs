@@ -11,7 +11,7 @@ namespace MagicPostApi.Services;
 public interface IPointService
 {
 	Task<List<Point>> GetAsync();
-	Task<DataPagination<PublicPointInfo>> FilterAsync(int pageNumber, PointType? type);
+	Task<DataPagination<PublicPointInfo>> FilterAsync(int pageNumber, string? province, string? district, string? ward, PointType? type);
 	Task<Point?> FindByAddressAsync(string province, string district, string ward);
 	Task<List<Point>> GetAllTransactionPointsAsync();
 	Task<List<Point>> GetAllGatheringPointsAsync();
@@ -36,12 +36,24 @@ public class PointService : IPointService
 	public async Task<List<Point>> GetAsync()
 			=> await _pointsRepository.ToListAsync();
 
-	public async Task<DataPagination<PublicPointInfo>> FilterAsync(int pageNumber, PointType? type)
+	public async Task<DataPagination<PublicPointInfo>> FilterAsync(int pageNumber, string? province, string? district, string? ward, PointType? type)
 	{
 		var points = _pointsRepository.AsQueryable();
 		if (type != null)
 		{
 			points = points.Where(p => p.Type == type);
+		}
+		if (province != null)
+		{
+			points = points.Where(p => p.Province == province);
+		}
+		if (district != null)
+		{
+			points = points.Where(p => p.District == district);
+		}
+		if (ward != null)
+		{
+			points = points.Where(p => p.Ward == ward);
 		}
 		List<PublicPointInfo> result = await points
 												.Select(p => p.GetPublicPointInfo())

@@ -46,7 +46,7 @@ const columnHeadings = [
 	},
 	{
 		label: "Category",
-		value: "category",
+		value: "packageInfo.type",
 	},
 	{
 		label: "Status",

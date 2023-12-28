@@ -44,6 +44,11 @@ public class WebAPIDataContext : DbContext
 			.WithOne()
 			.HasForeignKey(e => e.OrderId);
 
+		modelBuilder.Entity<Order>()
+			.HasOne(o => o.CurrentPoint)
+			.WithMany()
+			.HasForeignKey(e => e.CurrentPointId);
+
 		modelBuilder.Entity<Trans_Gather>()
 			.HasOne(tg => tg.GatheringPoint)
 			.WithMany()

@@ -67,13 +67,13 @@ public class OrderController : ControllerBase
 	[HttpGet("{id}")]
 	[VerifyToken]
 	[VerifyOwner]
-	[VerifyRole(new Role[] {Role.TRANSACION_STAFF, Role.GATHERING_STAFF})]
-	public async Task<IActionResult> GetIncomingOrdersAsync(string? province, string? district, DateTime? startDate, DateTime? endDate ,int pageNumber) 
+	[VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF)]
+	public async Task<ActionResult<Response<DataPagination<PublicOrderInfo>>>> GetIncomingOrdersAsync(string? province, string? district, DateTime? startDate, DateTime? endDate, int pageNumber)
 	{
 		User? user = (User?)HttpContext.Items["user"];
-		var ordersIncoming = await _orderService.GetIncomingOrdersAsync(user, province, district, startDate, endDate, pageNumber);
-		return Ok(ordersIncoming);
-	} 
+		DataPagination<PublicOrderInfo> ordersIncoming = await _orderService.GetIncomingOrdersAsync(user, province, district, startDate, endDate, pageNumber);
+		return Ok(new Response<DataPagination<PublicOrderInfo>>("Get incoming orders successfully!", ordersIncoming));
+	}
 
 	[HttpPut("{id}")]
 	[VerifyToken]
@@ -89,19 +89,19 @@ public class OrderController : ControllerBase
 	[HttpGet("{id}")]
 	[VerifyToken]
 	[VerifyOwner]
-	[VerifyRole(new Role[] {Role.TRANSACION_STAFF, Role.GATHERING_STAFF})]
-	public async Task<IActionResult> GetOutgoingOrdersAsync(string? province, string? district, int pageNumber) 
+	[VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF)]
+	public async Task<ActionResult<Response<DataPagination<PublicOrderInfo>>>> GetOutgoingOrdersAsync(string? province, string? district, int pageNumber)
 	{
 		User? user = (User?)HttpContext.Items["user"];
-		var ordersIncoming = await _orderService.GetOutgoingOrdersAsync(user, province, district, pageNumber);
-		return Ok(ordersIncoming);
-	} 
+		DataPagination<PublicOrderInfo> ordersOutgoing = await _orderService.GetOutgoingOrdersAsync(user, province, district, pageNumber);
+		return Ok(new Response<DataPagination<PublicOrderInfo>>("Get outgoing orders successfully!", ordersOutgoing));
+	}
 
 	[HttpPost("{id}")]
 	[VerifyToken]
-	[VerifyOwner]
-	[VerifyRole(new Role[] {Role.TRANSACION_STAFF, Role.GATHERING_STAFF})]
-	public async Task<IActionResult> ForwardOrdersAsync(List<Guid> orders) 
+	// [VerifyOwner]
+	// [VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF)]
+	public async Task<IActionResult> ForwardOrdersAsync(List<Guid> orders)
 	{
 		User? user = (User?)HttpContext.Items["user"];
 		var result = await _orderService.ForwardOrdersAsync(user, orders);

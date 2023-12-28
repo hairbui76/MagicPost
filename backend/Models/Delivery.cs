@@ -41,8 +41,11 @@ public class Delivery : Model
 			history.Add(new DeliveryHistory() { OrderId = OrderId, Point = ToPoint.ToString(), Type = "outgoing", Status = "confirmed", Reason = "", Time = ReceiveTime });
 			history.Add(new DeliveryHistory() { OrderId = OrderId, Point = FromPoint.ToString(), Type = "incoming", Status = "confirmed", Reason = "", Time = ReceiveTime });
 		}
-
-
+		else
+		{
+			history.Add(new DeliveryHistory() { OrderId = OrderId, Point = ToPoint.ToString(), Type = "outgoing", Status = "confirmed", Reason = "", Time = ReceiveTime });
+			history.Add(new DeliveryHistory() { OrderId = OrderId, Point = FromPoint.ToString(), Type = "incoming", Status = "confirmed", Reason = "", Time = ReceiveTime });
+		}
 		return history;
 	}
 

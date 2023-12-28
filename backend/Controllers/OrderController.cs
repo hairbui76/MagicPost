@@ -68,10 +68,10 @@ public class OrderController : ControllerBase
 	[VerifyToken]
 	[VerifyOwner]
 	[VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF)]
-	public async Task<ActionResult<Response<DataPagination<PublicOrderInfo>>>> GetIncomingOrdersAsync(int pageNumber)
+	public async Task<ActionResult<Response<DataPagination<PublicOrderInfo>>>> GetIncomingOrdersAsync(string? province, string? district, DateTime? startDate, DateTime? endDate, int pageNumber)
 	{
 		User? user = (User?)HttpContext.Items["user"];
-		DataPagination<PublicOrderInfo> ordersIncoming = await _orderService.GetIncomingOrdersAsync(user!, pageNumber);
+		DataPagination<PublicOrderInfo> ordersIncoming = await _orderService.GetIncomingOrdersAsync(user, province, district, startDate, endDate, pageNumber);
 		return Ok(new Response<DataPagination<PublicOrderInfo>>("Get incoming orders successfully!", ordersIncoming));
 	}
 
@@ -90,17 +90,17 @@ public class OrderController : ControllerBase
 	[VerifyToken]
 	[VerifyOwner]
 	[VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF)]
-	public async Task<ActionResult<Response<DataPagination<PublicOrderInfo>>>> GetOutgoingOrdersAsync(int pageNumber)
+	public async Task<ActionResult<Response<DataPagination<PublicOrderInfo>>>> GetOutgoingOrdersAsync(string? province, string? district, int pageNumber)
 	{
 		User? user = (User?)HttpContext.Items["user"];
-		DataPagination<PublicOrderInfo> ordersOutgoing = await _orderService.GetOutgoingOrdersAsync(user!, pageNumber);
+		DataPagination<PublicOrderInfo> ordersOutgoing = await _orderService.GetOutgoingOrdersAsync(user, province, district, pageNumber);
 		return Ok(new Response<DataPagination<PublicOrderInfo>>("Get outgoing orders successfully!", ordersOutgoing));
 	}
 
 	[HttpPost("{id}")]
 	[VerifyToken]
-	[VerifyOwner]
-	[VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF)]
+	// [VerifyOwner]
+	// [VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF)]
 	public async Task<IActionResult> ForwardOrdersAsync(List<Guid> orders)
 	{
 		User? user = (User?)HttpContext.Items["user"];

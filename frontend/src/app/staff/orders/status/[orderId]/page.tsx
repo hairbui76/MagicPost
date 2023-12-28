@@ -1,18 +1,16 @@
 "use client";
 
+import { Order } from "@/app/staff/components";
 import { OrderProps } from "@/app/staff/types/Order/orders";
 import { useQuery } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { Skeleton } from "antd";
-import { Order } from "@/app/staff/components";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 async function fetchOrder(orderId: string) {
 	return await fetch(
-		`${process.env.NEXT_PUBLIC_API_ENDPOINT}/order/get/${orderId}`,
-		{
-			credentials: "include",
-		}
+		`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/get/${orderId}`,
+		{ credentials: "include" }
 	).then(async (response) => {
 		if (response.status !== 200) {
 			const message = await Promise.resolve(response.json()).then(

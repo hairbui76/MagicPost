@@ -2,18 +2,15 @@
 import { CreateStaffProps } from "@/app/staff/utils/staffs";
 import Title from "@/components/Title/Title";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Staff from "../components/Staff";
 
 async function fetchStaff(staffId: string) {
 	return await fetch(
-		`${process.env.NEXT_PUBLIC_API_ENDPOINT}/user/Get/${staffId}`,
-		{
-			credentials: "include",
-		}
+		`${process.env.NEXT_PUBLIC_USER_ENDPOINT}/get/${staffId}`,
+		{ credentials: "include" }
 	).then(async (response) => {
 		if (response.status !== 200) {
 			const message = await Promise.resolve(response.json()).then(

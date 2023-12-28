@@ -179,10 +179,16 @@ public class OrderService : IOrderService
 			order.Status = OrderState.DELIVERING;
 			if (currentPoint.Type == PointType.TRANSACTION_POINT)
 			{
-				if (order!.SenderProvince == currentPoint.Province)
+				if (order.SenderProvince == currentPoint.Province)
 				{
 					Point toPoint = _webAPIDataContext.Points
-						.FirstOrDefault(p => p.Province == currentPoint.Province && p.Type == PointType.GATHERING_POINT) ?? throw new AppException("Destination not supported");
+						.FirstOrDefault(p => p.Province == currentPoint.Province && p.Type == PointType.GATHERING_POINT) ?? throw new AppException("Destination transaction to gathering not supported");
+					newDelivery.ToPointId = toPoint.Id;
+				}
+				else if (order.SenderDistrict == currentPoint.District)
+				{
+					Point toPoint = _webAPIDataContext.Points
+						.FirstOrDefault(p => p.District == currentPoint.District && p.Type == PointType.TRANSACTION_POINT) ?? throw new AppException("Destination transaction to transaction not supported");
 					newDelivery.ToPointId = toPoint.Id;
 				}
 			}
@@ -191,13 +197,13 @@ public class OrderService : IOrderService
 				if (order.ReceiverProvince == currentPoint.Province)
 				{
 					Point toPoint = _webAPIDataContext.Points
-						.FirstOrDefault(p => p.District == order.ReceiverDistrict && p.Type == PointType.TRANSACTION_POINT) ?? throw new AppException("Destination transaction point not supported");
+						.FirstOrDefault(p => p.District == order.ReceiverDistrict && p.Type == PointType.TRANSACTION_POINT) ?? throw new AppException("Destination gathering to transaction not supported");
 					newDelivery.ToPointId = toPoint.Id;
 				}
 				else
 				{
 					Point toPoint = _webAPIDataContext.Points
-						.FirstOrDefault(p => p.Type == PointType.GATHERING_POINT && p.Province == order.ReceiverProvince) ?? throw new AppException("Destination gathering point not supported");
+						.FirstOrDefault(p => p.Type == PointType.GATHERING_POINT && p.Province == order.ReceiverProvince) ?? throw new AppException("Destination gathering to gathering point not supported");
 					newDelivery.ToPointId = toPoint.Id;
 				}
 			}

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Avatar from "./Avatar";
 import Toggle from "./Toggle";
+import SearchBar from "./SearchBar";
 
 export default function Header({ onToggle }: { onToggle: () => void }) {
 	const router = useRouter();
@@ -35,12 +36,7 @@ export default function Header({ onToggle }: { onToggle: () => void }) {
 					className="md:w-32 w-10 h-auto"
 				/>
 			</picture>
-
-			<input
-				type="text"
-				placeholder="Search"
-				className="input input-bordered input-sm w-1/2 mx-auto"
-			/>
+			<SearchBar />
 			<Avatar src="/default_avatar.png" />
 			<button onClick={handleLogout}>
 				<FontAwesomeIcon icon={faDoorOpen} className="h-4" />

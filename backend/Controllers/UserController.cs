@@ -4,6 +4,7 @@ using MagicPostApi.Enums;
 using MagicPostApi.Middlewares;
 using MagicPostApi.Models;
 using MagicPostApi.Services;
+using MagicPostApi.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagicPostApi.Controllers;
@@ -15,15 +16,25 @@ public class UserController : ControllerBase
 	private readonly IMapper _mapper;
 	private readonly Config _config;
 	private readonly IUserService _userService;
-	public UserController(IMapper mapper, Config config, IUserService userService)
+	private readonly IPointService _pointService;
+	public UserController(IMapper mapper, Config config, IUserService userService, IPointService pointService)
 	{
 		_mapper = mapper;
 		_config = config;
 		_userService = userService;
+		_pointService = pointService;
 	}
 
-	// [HttpPost]
-	// public async Task<ActionResult<Response<User>>> CreateAsync(CreateMo)
+	[HttpPost]
+	public async Task<ActionResult<Response<PublicUserInfo>>> CreateAsync(CreateUserModel model)
+	{
+		User newUser = _mapper.Map<User>(model);
+		newUser.Password = Password.Hash(Password.DEFAULT_PASSWORD);
+		Point? point = await _pointService.FindByAddressAsync(model.Province!, model.District!, model.Ward!) ?? throw new AppException("Point not found in this area!");
+		newUser.PointId = point.Id;
+		await _userService.CreateAsync(newUser);
+		return Ok(new Response<PublicUserInfo>("Create staff successfully!", newUser.GetPublicInfo()));
+	}
 
 	[HttpGet]
 	public async Task<ActionResult<Response<List<User>>>> GetAsync()
@@ -43,7 +54,7 @@ public class UserController : ControllerBase
 	[HttpGet("{id}")]
 	[VerifyOwner]
 	[VerifyToken]
-	[VerifyRole(new Role[] { Role.COMPANY_ADMINISTRATOR })]
+	[VerifyRole(Role.COMPANY_ADMINISTRATOR)]
 	public async Task<ActionResult<User>> GetAsync(Guid id)
 	{
 		var user = await _userService.GetAsyncById(id);
@@ -57,6 +68,7 @@ public class UserController : ControllerBase
 	[VerifyToken]
 	public async Task<ActionResult> UpdateUserAsync(Guid id, UpdateUserModel model)
 	{
+		model.Password = Password.Hash(model.Password!);
 		await _userService.UpdateAsync(id, model);
 		return Ok(new { message = "Update user successfully!" });
 	}
@@ -65,6 +77,7 @@ public class UserController : ControllerBase
 	public async Task<IActionResult> CreateTransactionStaffAsync(CreateUserModel model)
 	{
 		User user = _mapper.Map<User>(model);
+		user.Password = Password.Hash(user.Password);
 		user.Role = Role.TRANSACION_STAFF;
 		await _userService.CreateAsync(user);
 		return CreatedAtAction(nameof(GetAsync), new { id = user.Id }, new { message = "Create transaction staff successfully!", user });
@@ -74,6 +87,7 @@ public class UserController : ControllerBase
 	public async Task<IActionResult> CreateGatheringStaffAsync(CreateUserModel model)
 	{
 		User user = _mapper.Map<User>(model);
+		user.Password = Password.Hash(user.Password);
 		user.Role = Role.GATHERING_STAFF;
 		await _userService.CreateAsync(user);
 		return CreatedAtAction(nameof(GetAsync), new { id = user.Id }, new { message = "Create transaction staff successfully!", user });

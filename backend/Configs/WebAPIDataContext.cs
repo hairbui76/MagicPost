@@ -30,19 +30,24 @@ public class WebAPIDataContext : DbContext
 		// Delivery has been sent from a point
 		modelBuilder.Entity<Delivery>()
 			.HasOne(d => d.FromPoint)
-			.WithOne()
-			.HasForeignKey<Delivery>(e => e.FromPointId);
+			.WithMany()
+			.HasForeignKey(e => e.FromPointId);
 
 		// Deliver has been sent to a point
 		modelBuilder.Entity<Delivery>()
 			.HasOne(d => d.ToPoint)
-			.WithOne()
-			.HasForeignKey<Delivery>(e => e.ToPointId);
+			.WithMany()
+			.HasForeignKey(e => e.ToPointId);
 
 		modelBuilder.Entity<Order>()
 			.HasMany(o => o.Items)
 			.WithOne()
 			.HasForeignKey(e => e.OrderId);
+
+		modelBuilder.Entity<Order>()
+			.HasOne(o => o.CurrentPoint)
+			.WithMany()
+			.HasForeignKey(e => e.CurrentPointId);
 
 		modelBuilder.Entity<Trans_Gather>()
 			.HasOne(tg => tg.GatheringPoint)

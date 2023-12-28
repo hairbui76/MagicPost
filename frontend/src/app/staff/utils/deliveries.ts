@@ -138,13 +138,16 @@ export async function confirmOrders(
 ) {
 	try {
 		const json = await fetch(
-			`${process.env.NEXT_PUBLIC_API_ENDPOINT}/${mode}/confirm`,
+			`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/${
+				mode === "incoming" ? "confirmIncomingOrders" : "forwardOrders"
+			}`,
 			{
 				credentials: "include",
-				method: "PUT",
-				body: JSON.stringify({
-					orders: selectedOrders,
-				}),
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(selectedOrders),
 			}
 		).then((response) => response.json());
 		return json;

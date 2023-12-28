@@ -1,4 +1,5 @@
 "use client";
+
 import SummaryTable from "@/components/SummaryTable";
 import PointContext, { PointContextProps } from "@/contexts/PointContext";
 import { useQuery } from "@tanstack/react-query";
@@ -28,10 +29,6 @@ async function filterPoints(pageNumber: number, pointTypeFilter?: string) {
 
 const columnHeadings = [
 	{
-		label: "Type",
-		value: "type",
-	},
-	{
 		label: "Point Name",
 		value: "pointName",
 	},
@@ -46,6 +43,10 @@ const columnHeadings = [
 	{
 		label: "Email",
 		value: "email",
+	},
+	{
+		label: "Type",
+		value: "type",
 	},
 ];
 

@@ -17,7 +17,7 @@ public class User : Model
 	public Guid? PointId { get; set; }
 	public Point? Point { get; }
 	public PublicUserInfo GetPublicInfo()
-			=> new() { Id = Id, Name = Name, Username = Username, Email = Email, PointId = PointId };
+			=> new() { Id = Id, Name = Name, Username = Username, Email = Email, PointId = PointId, Role = Role };
 }
 
 public class PublicUserInfo
@@ -26,6 +26,7 @@ public class PublicUserInfo
 	public required string Name { get; set; }
 	public required string Username { get; set; }
 	public required string Email { get; set; }
+	public required Role Role { get; set; }
 	public Guid? PointId { get; set; }
 }
 
@@ -38,6 +39,24 @@ public class LoginModel : Model
 }
 
 public class CreateUserModel : Model
+{
+	[Required]
+	public string? Name { get; set; }
+	[Required]
+	public string? Email { get; set; }
+	[Required]
+	public string? Username { get; set; }
+	[Required]
+	public Role Role { get; set; }
+	[Required]
+	public string? Province { get; set; }
+	[Required]
+	public string? District { get; set; }
+	[Required]
+	public string? Ward { get; set; }
+}
+
+public class RegisterModel : Model
 {
 	[Required]
 	public string? Name { get; set; }
@@ -59,5 +78,16 @@ public class UpdateUserModel : Model
 	public string? Email { get; set; }
 	public string? Password { get; set; }
 	public Guid? StaffPointId { get; set; }
-	public Guid? ManagerPointId { get; set; }
+}
+
+public class UserResponse : Response<User>
+{
+	public UserResponse(string Message, User? Data) : base(Message, Data) { }
+	public UserResponse() { }
+}
+
+public class UserListResponse : Response<List<User>>
+{
+	public UserListResponse(string Message, List<User>? Data) : base(Message, Data) { }
+	public UserListResponse() { }
 }

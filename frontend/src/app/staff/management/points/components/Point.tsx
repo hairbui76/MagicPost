@@ -1,5 +1,3 @@
-"use client";
-
 import PrimaryButton from "@/components/Button/PrimaryButton";
 import SecondaryButton from "@/components/Button/SecondaryButton";
 import Form from "@/components/Form/Form";

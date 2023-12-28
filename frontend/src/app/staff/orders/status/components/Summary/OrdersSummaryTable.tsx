@@ -1,4 +1,5 @@
 "use client";
+
 import SummaryTable from "@/components/SummaryTable";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "antd";
@@ -24,9 +25,7 @@ async function filterOrders(
 	return fetch(
 		`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/filter?` +
 			new URLSearchParams(filter),
-		{
-			credentials: "include",
-		}
+		{ credentials: "include" }
 	).then(async (res) => {
 		if (res.status !== 200) {
 			const json = await res.json();
@@ -65,7 +64,7 @@ export default function OrdersSummaryTable() {
 	const [categoryFilter, setCategoryFilter] = useState("");
 
 	const { isPending, error, data } = useQuery({
-		queryKey: ["orders", statusFilter, timeRange, categoryFilter],
+		queryKey: ["orders", statusFilter, timeRange, categoryFilter, pageNumber],
 		queryFn: () =>
 			filterOrders(
 				pageNumber,

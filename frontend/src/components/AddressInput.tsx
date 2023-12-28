@@ -1,4 +1,3 @@
-"use client";
 import { Address } from "@/app/staff/utils/orders";
 import AddressAutoComplete from "@/components/Form/AutoCompleteInput";
 import {

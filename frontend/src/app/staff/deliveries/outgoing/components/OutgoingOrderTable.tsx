@@ -1,17 +1,17 @@
 "use client";
 
-import OutgoingOrderSummary from "./OutgoingOrderSummary";
-import { useState } from "react";
-import { Moment } from "moment";
-import Actions from "../../components/Actions/Actions";
 import { confirmOrders, rejectOrders } from "@/app/staff/utils/deliveries";
-import Table from "@/components/legacy/Table/Table";
-import Pagination from "@/components/Pagination/Pagination";
-import { useQuery } from "@tanstack/react-query";
-import { toast } from "react-toastify";
-import { Skeleton } from "antd";
-import DeliveryOrderFilter from "../../components/DeliveryOrderFilter";
 import { Address } from "@/app/staff/utils/orders";
+import Pagination from "@/components/Pagination/Pagination";
+import Table from "@/components/legacy/Table/Table";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "antd";
+import { Moment } from "moment";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import Actions from "../../components/Actions/Actions";
+import DeliveryOrderFilter from "../../components/DeliveryOrderFilter";
+import OutgoingOrderSummary from "./OutgoingOrderSummary";
 
 async function filterOutgoingOrders(
 	pageNumber: number,
@@ -31,7 +31,7 @@ async function filterOutgoingOrders(
 	if (ward) filter[`province`] = ward;
 
 	return fetch(
-		`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/outgoing?` +
+		`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/getOutgoingOrders?` +
 			new URLSearchParams(filter),
 		{
 			credentials: "include",

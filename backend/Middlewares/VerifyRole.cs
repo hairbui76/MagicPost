@@ -14,7 +14,7 @@ public class VerifyRoleAttribute : TypeFilterAttribute
 		Order = (int)MiddlewareOrder.VERIFY_ROLE;
 	}
 
-	public VerifyRoleAttribute(Role[] roles) : base(typeof(VerifyRoleFilter))
+	public VerifyRoleAttribute(params Role[] roles) : base(typeof(VerifyRoleFilter))
 	{
 		Arguments = new object[] { roles };
 		Order = (int)MiddlewareOrder.VERIFY_ROLE;

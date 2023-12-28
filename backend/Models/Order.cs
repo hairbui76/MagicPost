@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using MagicPostApi.Enums;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Org.BouncyCastle.Asn1.Cms;
 
 namespace MagicPostApi.Models;
 
@@ -37,6 +38,7 @@ public class Order : Model
 	public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 	public OrderState Status { get; set; } = OrderState.PENDING;
 	public Guid? CurrentPointId { get; set; }
+	public Point? CurrentPoint { get; set; }
 	public PublicOrderInfo GetPublicOrderInfo()
 			=> new()
 			{
@@ -86,6 +88,7 @@ public class CreateOrderModel : Model
 	public required PackageInfo PackageInfo { get; set; }
 	[Required]
 	public required ExtraData ExtraData { get; set; }
+	public Guid? CurrentPointId { get; set; }
 }
 
 public class PublicOrderInfo : Model
@@ -99,10 +102,13 @@ public class PublicOrderInfo : Model
 	public required ExtraData ExtraData { get; set; }
 }
 
-public class OrderHistory {
-	public Point? Point {get; set;}
-	public DateTime? ArriveAt {get; set;}
+public class OrderHistory
+{
+	public Point? Point { get; set; }
+	public DateTime? ArriveAt { get; set; }
 }
+
+
 
 public class PackageInfo
 {
@@ -150,6 +156,6 @@ public class UpdateOrderModel
 
 public class ConfirmIncomingOrderModel
 {
-	public Guid? orderId {get; set;}
-	public bool Confirm {get; set;}
+	public Guid? orderId { get; set; }
+	public bool Confirm { get; set; }
 }

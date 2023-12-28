@@ -1,9 +1,9 @@
 "use client";
 
 import { CODProps } from "@/app/staff/types/Order/extradata";
+import Checkbox from "@/components/Form/Checkbox";
+import NumberInput from "@/components/Form/NumberInput";
 import { useEffect, useState } from "react";
-import Checkbox from "../../../../../components/Form/Checkbox";
-import NumberInput from "../../../../../components/Form/NumberInput";
 
 export default function CODField({
 	value,

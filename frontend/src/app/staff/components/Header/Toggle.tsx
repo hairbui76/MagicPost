@@ -1,4 +1,3 @@
-"use client";
 export default function Toggle({ onToggle }: { onToggle: () => void }) {
 	return (
 		<div className="flex-none">

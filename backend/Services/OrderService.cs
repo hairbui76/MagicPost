@@ -1,10 +1,12 @@
 using System.Data;
 using System.Net;
+using System.Reflection.Metadata.Ecma335;
 using AutoMapper;
 using MagicPostApi.Configs;
 using MagicPostApi.Enums;
 using MagicPostApi.Models;
 using MagicPostApi.Utils;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace MagicPostApi.Services;
@@ -14,12 +16,13 @@ public interface IOrderService
 	Task<List<PublicOrderInfo>> GetAsync();
 	Task<DataPagination<PublicOrderInfo>> FilterAsync(int pageNumber, OrderState? status, string? category, DateTime? startDate, DateTime? endDate);
 	Task<List<OrderHistory>> GetAsyncById(Guid id);
-	Task<List<PublicOrderInfo>> GetIncomingOrdersAsync(User user, int pageNumber);
+	Task<DataPagination<PublicOrderInfo>> GetIncomingOrdersAsync(User user, string? province, string? district, DateTime? startDate, DateTime? endDate, int pageNumber);
 	Task<bool> ConfirmIncomingOrdersAsync(User user, List<ConfirmIncomingOrderModel> orders);
-	Task<List<PublicOrderInfo>> GetOutgoingOrdersAsync(User user, int pageNumber);
+	Task<DataPagination<PublicOrderInfo>> GetOutgoingOrdersAsync(User user, string? province, string? district, int pageNumber);
 	Task<bool> ForwardOrdersAsync(User user, List<Guid> orderIds);
 	Task UpdateAsync(Guid id, UpdateOrderModel model);
-	Task CreateAsync(User user, Order newOrder);
+	// Task CreateAsync(User user, Order newOrder);
+	Task CreateAsync(Order newOrder);
 }
 
 public class OrderService : IOrderService
@@ -62,16 +65,35 @@ public class OrderService : IOrderService
 		return new DataPagination<PublicOrderInfo>(result, orders.Count(), pageNumber);
 	}
 
-	public async Task<List<PublicOrderInfo>> GetIncomingOrdersAsync(User user, int pageNumber)
+	public async Task<DataPagination<PublicOrderInfo>> GetIncomingOrdersAsync(User user, string? province, string? district, DateTime? startDate, DateTime? endDate, int pageNumber)
 	{
-		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId);
-		List<PublicOrderInfo> orders = _webAPIDataContext.Deliveries.Where(d => d.ToPointId == currentPoint.Id && d.State == DeliveryState.DELIVERING)
-														.Include(d => d.Order)
-														.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
-														.Take((int)Pagination.PAGESIZE)
-														.Select(d => d.Order.GetPublicOrderInfo())
-														.ToList();
-		return orders;
+		Point? currentPoint = await _webAPIDataContext.Points.Where(p => p.Id == user.PointId).FirstOrDefaultAsync();
+		var orders = _webAPIDataContext.Deliveries
+														.Include(d => d.FromPoint)
+														.Include(d => d.ToPoint)
+														.Where(d => d.ToPointId == currentPoint.Id && d.State == DeliveryState.DELIVERING)
+														.AsQueryable();
+		if (province != null)
+		{
+			orders = orders.Where(o => o.FromPoint.Province == province).AsQueryable();
+		}
+		if (district != null)
+		{
+			orders = orders.Where(o => o.FromPoint.District == district).AsQueryable();
+		}
+		if (startDate != null)
+		{
+			orders = orders.Where(o => DateTime.Compare(o.CreatedAt, startDate.Value) > 0).AsQueryable();
+		}
+		if (endDate != null)
+		{
+			orders = orders.Where(o => DateTime.Compare(o.CreatedAt, endDate.Value) < 0).AsQueryable();
+		}
+		List<PublicOrderInfo> result = await orders.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
+					.Take((int)Pagination.PAGESIZE)
+					.Select(d => d.Order.GetPublicOrderInfo())
+					.ToListAsync();
+		return new DataPagination<PublicOrderInfo>(result, orders.Count(), pageNumber);
 	}
 
 	public async Task<bool> ConfirmIncomingOrdersAsync(User user, List<ConfirmIncomingOrderModel> orders)
@@ -85,6 +107,7 @@ public class OrderService : IOrderService
 			if (deliveryUpdate != null)
 			{
 				deliveryUpdate.State = o.Confirm ? DeliveryState.ARRIVED : DeliveryState.UNSUCCESS;
+				deliveryUpdate.ReceiveTime = DateTime.UtcNow;
 				deliveriesUpdate.Add(deliveryUpdate);
 				Order? orderNeedUpdate = _ordersRepository.FirstOrDefault(ord => ord.Id == o.orderId);
 				orderNeedUpdate.CurrentPointId = currentPoint.Id;
@@ -97,30 +120,72 @@ public class OrderService : IOrderService
 		return true;
 	}
 
-	public async Task<List<PublicOrderInfo>> GetOutgoingOrdersAsync(User user, int pageNumber)
+	public async Task<DataPagination<PublicOrderInfo>> GetOutgoingOrdersAsync(User user, string? province, string? district, int pageNumber)
 	{
 		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId);
-		List<PublicOrderInfo> orders = _ordersRepository.Where(o => o.CurrentPointId == currentPoint.Id)
+
+		List<Order> orders = await _ordersRepository.Where(o => o.CurrentPointId == currentPoint.Id)
 														.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
 														.Take((int)Pagination.PAGESIZE)
-														.Select(o => o.GetPublicOrderInfo())
-														.ToList();
-		return orders;
+														.ToListAsync();
+		List<PublicOrderInfo> ordersToGo = new();
+		orders.ForEach(ord =>
+		{
+			ordersToGo.Add(ord.GetPublicOrderInfo());
+			Delivery newDelivery = new();
+			Point? nextPoint = null;
+			if (currentPoint?.Type == PointType.TRANSACTION_POINT)
+			{
+				if (ord.SenderProvince == currentPoint.Province)
+				{
+					nextPoint = _webAPIDataContext.Points.FirstOrDefault(p => p.Province == currentPoint.Province && p.Type == PointType.GATHERING_POINT);
+
+				}
+				else if (ord.SenderProvince == currentPoint.Province)
+				{
+					// Delivery to user and export the bill
+				}
+			}
+			else
+			{
+				if (ord.ReceiverProvince == currentPoint.Province)
+				{
+					nextPoint = _webAPIDataContext.Points.FirstOrDefault(p => p.District == ord.ReceiverDistrict && p.Type == PointType.TRANSACTION_POINT);
+				}
+				else
+				{
+					nextPoint = _webAPIDataContext.Points.FirstOrDefault(p => p.Province == ord.ReceiverProvince && p.Type == PointType.GATHERING_POINT);
+				}
+			}
+			if (province != null)
+			{
+				if (nextPoint.Province == province) ordersToGo.Add(ord.GetPublicOrderInfo());
+
+			}
+			if (district != null)
+			{
+				if (nextPoint.District == district) ordersToGo.Add(ord.GetPublicOrderInfo());
+			}
+		});
+		return new DataPagination<PublicOrderInfo>(ordersToGo, ordersToGo.Count, pageNumber);
 	}
 
 	public async Task<bool> ForwardOrdersAsync(User user, List<Guid> orderIds)
 	{
+		Console.WriteLine(orderIds);
 		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId);
 		List<Delivery> newDeliveries = new();
 		orderIds.ForEach(ord =>
 		{
 			Order? order = _ordersRepository.FirstOrDefault(o => o.Id == ord);
-			Delivery newDelivery = new Delivery();
-			newDelivery.FromPointId = currentPoint?.Id;
-			newDelivery.State = DeliveryState.DELIVERING;
+			Delivery newDelivery = new()
+			{
+				FromPointId = currentPoint?.Id,
+				State = DeliveryState.DELIVERING
+			};
 			if (currentPoint?.Type == PointType.TRANSACTION_POINT)
 			{
-				if (order.SenderProvince == currentPoint.Province)
+				if (order!.SenderProvince == currentPoint.Province)
 				{
 					newDelivery.ToPointId = _webAPIDataContext.Points
 						.FirstOrDefault(p => p.Province == currentPoint.Province && p.Type == PointType.GATHERING_POINT)?.Id;
@@ -132,7 +197,7 @@ public class OrderService : IOrderService
 			}
 			else
 			{
-				if (order.ReceiverProvince == currentPoint.Province)
+				if (order!.ReceiverProvince == currentPoint!.Province)
 				{
 					newDelivery.ToPointId = _webAPIDataContext.Points
 						.FirstOrDefault(p => p.District == order.ReceiverDistrict && p.Type == PointType.TRANSACTION_POINT)?.Id;
@@ -144,7 +209,6 @@ public class OrderService : IOrderService
 				}
 			}
 			newDelivery.CreatedAt = DateTime.UtcNow;
-			newDelivery.UpdatedAt = DateTime.UtcNow;
 			newDelivery.OrderId = order.Id;
 			newDeliveries.Add(newDelivery);
 		});
@@ -169,9 +233,9 @@ public class OrderService : IOrderService
 			.FirstOrDefaultAsync();
 		var orderHistory = new List<OrderHistory>()
 		{
-			new OrderHistory{Point = deliveries.FirstOrDefault()?.FromPoint, ArriveAt = deliveries.FirstOrDefault().CreatedAt}
+			new OrderHistory{Point = deliveries!.FirstOrDefault()?.FromPoint, ArriveAt = deliveries!.FirstOrDefault()!.CreatedAt}
 		};
-		deliveries.ToList().ForEach(d =>
+		deliveries!.ToList().ForEach(d =>
 		{
 			if (d.State == DeliveryState.ARRIVED)
 			{
@@ -194,9 +258,15 @@ public class OrderService : IOrderService
 		_webAPIDataContext.SaveChanges();
 	}
 
-	public async Task CreateAsync(User user, Order newOrder)
+	// public async Task CreateAsync(User user, Order newOrder)
+	// {
+	// 	newOrder.CurrentPointId = user.PointId;
+	// 	await _ordersRepository.AddAsync(newOrder);
+	// 	await _webAPIDataContext.SaveChangesAsync();
+	// }
+
+	public async Task CreateAsync(Order newOrder)
 	{
-		newOrder.CurrentPointId = user.PointId;
 		await _ordersRepository.AddAsync(newOrder);
 		await _webAPIDataContext.SaveChangesAsync();
 	}

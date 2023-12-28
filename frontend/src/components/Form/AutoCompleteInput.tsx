@@ -1,4 +1,3 @@
-"use client";
 import { District, Province, SpecificAddress, Ward } from "@/libs/address";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

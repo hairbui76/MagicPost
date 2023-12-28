@@ -26,10 +26,10 @@ public class AuthController : ControllerBase
 	[HttpGet]
 	[Route("/auth")]
 	[VerifyToken]
+	[VerifyPointAndAdmin]
 	public async Task<IActionResult> Index()
 	{
 		User? user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized");
-		// if (user.PointId == null) throw new AppException(HttpStatusCode.Forbidden, "You are not belonging to any points !");
 		var info = user.GetPublicInfo();
 		bool? resetAccess = (bool?)HttpContext.Items["reset_access"];
 		if (resetAccess == true)
@@ -79,7 +79,7 @@ public class AuthController : ControllerBase
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> Register(CreateUserModel model)
+	public async Task<IActionResult> Register(RegisterModel model)
 	{
 		User newUser = _mapper.Map<User>(model);
 		newUser.Password = Password.Hash(newUser.Password);

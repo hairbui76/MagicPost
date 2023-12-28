@@ -1,4 +1,4 @@
-"use client";
+// @ts-ignore
 import QrReader from "react-qr-scanner";
 
 export default function QrContainer({

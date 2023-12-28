@@ -9,11 +9,18 @@ import { toast } from "react-toastify";
 import PointFilter from "./PointFilter";
 import { Address } from "@/app/staff/utils/orders";
 
-async function filterPoints(pageNumber: number, pointTypeFilter?: string) {
+async function filterPoints(
+	pageNumber: number,
+	pointTypeFilter?: string,
+	pointFilter?: Address
+) {
 	const filter: { [key: string]: string } = {
 		pageNumber: pageNumber.toString(),
 	};
 	if (pointTypeFilter) filter["type"] = pointTypeFilter;
+	if (pointFilter?.province) filter["province"] = pointFilter?.province;
+	if (pointFilter?.district) filter["district"] = pointFilter?.district;
+	if (pointFilter?.ward) filter["ward"] = pointFilter?.ward;
 	return fetch(
 		`${process.env.NEXT_PUBLIC_POINT_ENDPOINT}/filter?` +
 			new URLSearchParams(filter),
@@ -68,7 +75,7 @@ export default function PointsSummaryTable() {
 		data: response,
 	} = useQuery({
 		queryKey: ["points", filterToggle, pageNumber],
-		queryFn: () => filterPoints(pageNumber, pointTypeFilter),
+		queryFn: () => filterPoints(pageNumber, pointTypeFilter, pointFilter),
 	});
 
 	useEffect(() => {

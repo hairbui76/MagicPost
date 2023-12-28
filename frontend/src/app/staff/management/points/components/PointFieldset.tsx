@@ -5,12 +5,19 @@ import Select from "../../../../../components/Form/Select";
 import TextInput from "../../../../../components/Form/TextInput";
 import { PointStateProps } from "../../../utils/points";
 
-export default function PointFieldSet({ state }: { state: PointStateProps }) {
+export default function PointFieldSet({
+	state,
+	disabled = false,
+}: {
+	state: PointStateProps;
+	disabled?: boolean;
+}) {
 	return (
 		<Fieldset
 			legend={"Point's Information"}
 			icon={faLocationDot}
 			className="sm:flex-col"
+			disabled={disabled}
 		>
 			<TextInput
 				label="Point name"

@@ -8,15 +8,19 @@ import SecondaryButton from "@/components/Button/SecondaryButton";
 import Form from "@/components/Form/Form";
 import StaffAssignPointField from "./StaffAssignPointFieldSet";
 import StaffFieldSet from "./StaffFieldSet";
+import { useRouter } from "next/navigation";
 
 export default function Staff({
 	staff = null,
 	handleSubmit,
+	editable = false,
 }: {
 	staff?: CreateStaffProps | null;
 	handleSubmit: (staff: CreateStaffProps) => void;
+	editable?: boolean;
 }) {
 	const state = useCreateStaffState(staff || emptyCreateStaff);
+	const router = useRouter();
 
 	const newStaff: CreateStaffProps = {
 		role: state.role.value,
@@ -27,21 +31,33 @@ export default function Staff({
 		pointId: state.pointId.value,
 		address: state.address.value,
 	};
-	console.log(newStaff);
 
 	return (
 		<Form
-			handleSubmit={() => handleSubmit(newStaff)}
+			handleSubmit={() =>
+				handleSubmit(staff ? { ...staff, ...newStaff } : newStaff)
+			}
 			className="w-full gap-4 flex flex-col"
 		>
-			<StaffFieldSet state={state} />
-			<StaffAssignPointField state={state} />
-			<div className="flex flex-row gap-4">
-				<PrimaryButton type="submit">Confirm</PrimaryButton>
-				<SecondaryButton type="reset" handleClick={() => state.resetStaff()}>
-					Reset
-				</SecondaryButton>
-			</div>
+			<StaffFieldSet state={state} disabled={!editable} editView={!!staff} />
+			<StaffAssignPointField state={state} disabled={!editable || !!staff} />
+			{editable ? (
+				<div className="flex flex-row gap-4">
+					<PrimaryButton type="submit">
+						{staff ? "Save changes" : "Confirm"}
+					</PrimaryButton>
+					<SecondaryButton
+						type="reset"
+						handleClick={
+							staff
+								? () => router.push("/staff/management/staffs")
+								: () => state.resetStaff()
+						}
+					>
+						{staff ? "Cancel" : "Reset"}
+					</SecondaryButton>
+				</div>
+			) : null}
 		</Form>
 	);
 }

@@ -27,12 +27,21 @@ const roles = [
 	},
 ];
 
-export default function StaffFieldSet({ state }: { state: StaffStateProps }) {
+export default function StaffFieldSet({
+	state,
+	disabled = false,
+	editView = false,
+}: {
+	state: StaffStateProps;
+	disabled?: boolean;
+	editView?: boolean;
+}) {
 	return (
 		<Fieldset
 			legend="Staff's Information"
 			icon={faLocationDot}
 			className="sm:flex-col"
+			disabled={disabled}
 		>
 			<Select
 				label="Role"
@@ -44,6 +53,7 @@ export default function StaffFieldSet({ state }: { state: StaffStateProps }) {
 				className="text-sm"
 				value={state.role.value}
 				required={true}
+				disabled={editView}
 			/>
 			<TextInput
 				label="Name"
@@ -62,6 +72,7 @@ export default function StaffFieldSet({ state }: { state: StaffStateProps }) {
 				handleChange={(username: string) =>
 					state.username.handleChange(username)
 				}
+				disabled={editView}
 			/>
 			<TextInput
 				label="Email"

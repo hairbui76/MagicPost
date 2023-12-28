@@ -12,6 +12,7 @@ export default function Select({
 	value = "",
 	handleChange,
 	flexDirection = "col",
+	disabled = false,
 }: {
 	label: string;
 	name: string;
@@ -21,6 +22,7 @@ export default function Select({
 	value?: string;
 	handleChange: (value: string) => void;
 	flexDirection?: "row" | "col";
+	disabled?: boolean;
 }) {
 	const [focused, setFocused] = useState(false);
 	return (
@@ -33,6 +35,7 @@ export default function Select({
 				onChange={(e) => handleChange(e.currentTarget.value)}
 				onFocus={() => setFocused(true)}
 				value={value}
+				disabled={disabled}
 			>
 				<option value="" disabled hidden>
 					--None--

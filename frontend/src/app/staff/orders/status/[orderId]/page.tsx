@@ -3,10 +3,52 @@
 import { OrderProps } from "@/app/staff/types/Order/orders";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
 import { Skeleton } from "antd";
 import { Order } from "@/app/staff/components";
-import { getOrderById } from "@/app/staff/utils/orders";
+import { useRouter } from "next/navigation";
+
+async function fetchOrder(orderId: string) {
+	return await fetch(
+		`${process.env.NEXT_PUBLIC_API_ENDPOINT}/order/get/${orderId}`,
+		{
+			credentials: "include",
+		}
+	).then(async (response) => {
+		if (response.status !== 200) {
+			const message = await Promise.resolve(response.json()).then(
+				(json) => json.message
+			);
+			throw new Error(message);
+		}
+		return response.json();
+	});
+}
+
+async function updateOrder(order: OrderProps) {
+	console.log(order);
+	return;
+	try {
+		toast.info(`Updating order ${order.id}`);
+		await fetch(
+			`${process.env.NEXT_PUBLIC_API_ENDPOINT}/order/UpdateOrder/${order.id}`,
+			{
+				credentials: "include",
+				body: JSON.stringify(order),
+				method: "PUT",
+			}
+		).then(async (response) => {
+			const message = await Promise.resolve(response.json()).then(
+				(json) => json.message
+			);
+			if (response.status !== 200) {
+				throw new Error(message);
+			}
+			toast.success(message);
+		});
+	} catch (error: any) {
+		toast.error(error.message);
+	}
+}
 
 export default function Page({
 	params,
@@ -15,32 +57,30 @@ export default function Page({
 		orderId: string;
 	};
 }) {
-	function updateOrder(newOrder: OrderProps) {
-		console.log(newOrder);
-	}
-
-	const [order, setOrder] = useState<OrderProps | null>(null);
+	const router = useRouter();
+	const { orderId } = params;
 	const { isPending, error, data } = useQuery({
-		queryKey: [`${params.orderId}`],
-		queryFn: async () => {
-			return await getOrderById(params.orderId);
-		},
+		queryKey: ["order-by-id", orderId],
+		queryFn: () => fetchOrder(orderId),
 	});
-	useEffect(() => {
-		if (data) {
-			const { order, message } = data;
-			setOrder(order);
-			toast.success(data.message);
-		}
-	}, [data, params, setOrder]);
 
 	if (isPending) return <Skeleton active />;
 
 	if (error) toast.error(error.message);
 
-	return order ? (
-		<Order order={order} handleSubmit={updateOrder} />
-	) : (
-		"Not found"
-	);
+	if (data) {
+		const order = data.data.data;
+
+		return (
+			<Order
+				order={order}
+				handleSubmit={(newOrder: OrderProps) => {
+					router.push("/staff/orders/status");
+					updateOrder(newOrder);
+				}}
+			/>
+		);
+	}
+
+	return "Not found";
 }

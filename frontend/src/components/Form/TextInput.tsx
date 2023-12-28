@@ -12,6 +12,7 @@ export default function TextInput({
 	className = "",
 	value,
 	handleChange,
+	disabled = false,
 }: {
 	label: string;
 	placeholder: string;
@@ -21,6 +22,7 @@ export default function TextInput({
 	className?: string;
 	value: string;
 	handleChange: (value: string) => void;
+	disabled?: boolean;
 }) {
 	const [focused, setFocused] = useState(false);
 	return (
@@ -36,6 +38,7 @@ export default function TextInput({
 				required={required}
 				value={value}
 				onChange={(e) => handleChange(e.currentTarget.value)}
+				disabled={disabled}
 			/>
 		</InputContainer>
 	);

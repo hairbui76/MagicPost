@@ -9,11 +9,19 @@ import { toast } from "react-toastify";
 import StaffFilter from "./StaffFilter";
 import { Address } from "@/app/staff/utils/orders";
 
-async function filterStaffs(pageNumber: number, roleFilter?: string) {
+async function filterStaffs(
+	pageNumber: number,
+	roleFilter: string,
+	pointFilter: Address
+) {
 	const filter: { [key: string]: string } = {
 		pageNumber: pageNumber.toString(),
 	};
 	if (roleFilter) filter["role"] = roleFilter;
+	if (pointFilter.province) filter["province"] = pointFilter.province;
+	if (pointFilter.district) filter["district"] = pointFilter?.district;
+	if (pointFilter.ward) filter["ward"] = pointFilter.ward;
+
 	return fetch(
 		`${process.env.NEXT_PUBLIC_USER_ENDPOINT}/filter?` +
 			new URLSearchParams(filter),
@@ -67,7 +75,7 @@ export default function StaffsSummaryTable() {
 		data: response,
 	} = useQuery({
 		queryKey: ["staffs", filterToggle, pageNumber],
-		queryFn: () => filterStaffs(pageNumber, roleFilter),
+		queryFn: () => filterStaffs(pageNumber, roleFilter, pointFilter),
 	});
 
 	useEffect(() => {

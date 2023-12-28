@@ -1,5 +1,5 @@
 import TableRow from "@/app/staff/components/Table/TableRow";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -29,16 +29,8 @@ export default function Summary<T extends DatabaseTableProps>({
 	return (
 		<TableRow>
 			<td>
-				<button type="button" className="mx-auto block">
-					<FontAwesomeIcon icon={faBars} />
-				</button>
-			</td>
-			<td>
-				<Link
-					className="mx-auto block w-fit link text-[#007FFF]"
-					href={`${pathname}/${item.id}`}
-				>
-					{item.id}
+				<Link className="mx-auto block w-fit" href={`${pathname}/${item.id}`}>
+					<FontAwesomeIcon icon={faEye} />
 				</Link>
 			</td>
 			{mapHeaders(headers, item).map((value, index) => (

@@ -80,7 +80,7 @@ export default function Order({
 				</Link>
 			) : null}
 			<Form
-				handleSubmit={() => handleSubmit(newOrder)}
+				handleSubmit={() => handleSubmit({ ...order, ...newOrder })}
 				className="w-full gap-4 lg:grid lg:grid-cols-2 flex flex-col"
 			>
 				<CustomerFieldset

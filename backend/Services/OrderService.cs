@@ -21,7 +21,7 @@ public interface IOrderService
 	Task<DataPagination<PublicOrderInfo>> GetOutgoingOrdersAsync(User user, string? province, string? district, int pageNumber);
 	Task<bool> ForwardOrdersAsync(User user, List<Guid> orderIds);
 	Task UpdateAsync(Guid id, UpdateOrderModel model);
-	Task CreateAsync(User user, Order newOrder);
+	// Task CreateAsync(User user, Order newOrder);
 	Task CreateAsync(Order newOrder);
 }
 
@@ -67,7 +67,7 @@ public class OrderService : IOrderService
 
 	public async Task<DataPagination<PublicOrderInfo>> GetIncomingOrdersAsync(User user, string? province, string? district, DateTime? startDate, DateTime? endDate, int pageNumber)
 	{
-		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId);
+		Point? currentPoint = await _webAPIDataContext.Points.Where(p => p.Id == user.PointId).FirstOrDefaultAsync();
 		var orders = _webAPIDataContext.Deliveries
 														.Include(d => d.FromPoint)
 														.Include(d => d.ToPoint)
@@ -172,14 +172,17 @@ public class OrderService : IOrderService
 
 	public async Task<bool> ForwardOrdersAsync(User user, List<Guid> orderIds)
 	{
+		Console.WriteLine(orderIds);
 		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId);
 		List<Delivery> newDeliveries = new();
 		orderIds.ForEach(ord =>
 		{
 			Order? order = _ordersRepository.FirstOrDefault(o => o.Id == ord);
-			Delivery newDelivery = new Delivery();
-			newDelivery.FromPointId = currentPoint?.Id;
-			newDelivery.State = DeliveryState.DELIVERING;
+			Delivery newDelivery = new()
+			{
+				FromPointId = currentPoint?.Id,
+				State = DeliveryState.DELIVERING
+			};
 			if (currentPoint?.Type == PointType.TRANSACTION_POINT)
 			{
 				if (order!.SenderProvince == currentPoint.Province)
@@ -255,12 +258,12 @@ public class OrderService : IOrderService
 		_webAPIDataContext.SaveChanges();
 	}
 
-	public async Task CreateAsync(User user, Order newOrder)
-	{
-		newOrder.CurrentPointId = user.PointId;
-		await _ordersRepository.AddAsync(newOrder);
-		await _webAPIDataContext.SaveChangesAsync();
-	}
+	// public async Task CreateAsync(User user, Order newOrder)
+	// {
+	// 	newOrder.CurrentPointId = user.PointId;
+	// 	await _ordersRepository.AddAsync(newOrder);
+	// 	await _webAPIDataContext.SaveChangesAsync();
+	// }
 
 	public async Task CreateAsync(Order newOrder)
 	{

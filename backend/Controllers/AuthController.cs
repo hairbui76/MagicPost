@@ -82,24 +82,24 @@ public class AuthController : ControllerBase
 	public async Task<IActionResult> Register(RegisterModel model)
 	{
 		User newUser = _mapper.Map<User>(model);
-		newUser.Password = Password.Hash(newUser.Password);
+		// newUser.Password = Password.Hash(newUser.Password);
 		await _userService.CreateAsync(newUser);
 		var info = newUser.GetPublicInfo();
-		var tasks = await Task.WhenAll(_userService.PrepareAccessToken(info), _userService.PrepareRefreshToken(info));
-		Response.Cookies.Append("access_token", tasks[0].Item1, new CookieOptions
-		{
-			Secure = _config.ENV == "production",
-			HttpOnly = true,
-			Path = "/",
-			Expires = tasks[0].Item2,
-		});
-		Response.Cookies.Append("refresh_token", tasks[1].Item1, new CookieOptions
-		{
-			Secure = _config.ENV == "production",
-			HttpOnly = true,
-			Path = "/",
-			Expires = tasks[1].Item2,
-		});
+		// var tasks = await Task.WhenAll(_userService.PrepareAccessToken(info), _userService.PrepareRefreshToken(info));
+		// Response.Cookies.Append("access_token", tasks[0].Item1, new CookieOptions
+		// {
+		// 	Secure = _config.ENV == "production",
+		// 	HttpOnly = true,
+		// 	Path = "/",
+		// 	Expires = tasks[0].Item2,
+		// });
+		// Response.Cookies.Append("refresh_token", tasks[1].Item1, new CookieOptions
+		// {
+		// 	Secure = _config.ENV == "production",
+		// 	HttpOnly = true,
+		// 	Path = "/",
+		// 	Expires = tasks[1].Item2,
+		// });
 		return Ok(new { message = "Register successfully!", user = info });
 	}
 

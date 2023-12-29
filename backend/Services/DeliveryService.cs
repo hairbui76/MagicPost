@@ -13,7 +13,7 @@ public interface IDeliveryService
 	Task<List<Delivery>> GetAsync();
 	Task<Delivery?> GetAsync(Guid id);
 	Task CreateAsync(Delivery newDelivery);
-	Task<List<DeliveryHistory>> GetDeliveryHistory(Guid id, string? type, string? status, int pageNumber);
+	Task<DataPagination<DeliveryHistory>> GetDeliveryHistory(Guid id, string? type, string? status, int pageNumber);
 }
 
 public class DeliveryServce : IDeliveryService
@@ -44,13 +44,11 @@ public class DeliveryServce : IDeliveryService
 		await _webAPIDataContext.SaveChangesAsync();
 	}
 
-	public async Task<List<DeliveryHistory>> GetDeliveryHistory(Guid id, string? type, string? status, int pageNumber)
+	public async Task<DataPagination<DeliveryHistory>> GetDeliveryHistory(Guid id, string? type, string? status, int pageNumber)
 	{
-		Point? currentPoint = _webAPIDataContext.Points.FirstOrDefault(p => p.Id == id);
-		var relatedDelivery = await _deliveriesRepository.Where(d => d.FromPointId == currentPoint!.Id || d.ToPointId == currentPoint.Id)
-												.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
-												.Take((int)Pagination.PAGESIZE)
-												.ToListAsync();
+		User? CurentUser = await _webAPIDataContext.Users.FirstOrDefaultAsync(p => p.Id == id);
+		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == id);
+		var relatedDelivery = await _deliveriesRepository.Where(d => d.FromPointId == currentPoint!.Id || d.ToPointId == currentPoint.Id).ToListAsync();
 		List<DeliveryHistory> deliveryHistory = new();
 		relatedDelivery.ForEach(d => deliveryHistory.AddRange(d.GetOperationDeliveryHistory()));
 		if (type != null)
@@ -61,6 +59,7 @@ public class DeliveryServce : IDeliveryService
 		{
 			deliveryHistory = deliveryHistory.Where(d => d.Status == status).ToList();
 		}
-		return deliveryHistory;
+		deliveryHistory = deliveryHistory.Skip((int)Pagination.PAGESIZE * (pageNumber - 1)).Take((int)Pagination.PAGESIZE).ToList();
+		return new DataPagination<DeliveryHistory>(deliveryHistory, deliveryHistory.Count(), pageNumber);
 	}
 }

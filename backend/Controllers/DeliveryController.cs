@@ -44,7 +44,7 @@ public class DeliveryController : ControllerBase
 	[VerifyToken]
 	public async Task<IActionResult> GetDeliveryHistory(Guid id, int pageNumber, string type, string status)
 	{
-		List<DeliveryHistory> deliveryHistories = await _deliveryService.GetDeliveryHistory(id, type, status, pageNumber);
-		return Ok(new Response<List<DeliveryHistory>> { Message = "Get Delivery Successfully", Data = deliveryHistories });
+		DataPagination<DeliveryHistory> deliveryHistories = await _deliveryService.GetDeliveryHistory(id, type, status, pageNumber);
+		return Ok(new Response<DataPagination<DeliveryHistory>> { Message = "Get Delivery Successfully", Data = deliveryHistories });
 	}
 }

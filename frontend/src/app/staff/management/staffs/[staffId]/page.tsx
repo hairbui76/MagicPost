@@ -2,7 +2,7 @@
 import { CreateStaffProps } from "@/app/staff/utils/staffs";
 import Title from "@/components/Title/Title";
 import { useQuery } from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Staff from "../components/Staff";
@@ -23,35 +23,23 @@ async function fetchStaff(staffId: string) {
 }
 
 async function updateStaff(user: CreateStaffProps) {
-	try {
-		toast.info(`Updating staff ${user.id}`);
-		await fetch(
-			`${process.env.NEXT_PUBLIC_API_ENDPOINT}/user/UpdateUser/${user.id}`,
-			{
-				credentials: "include",
-				body: JSON.stringify(user),
-				method: "PUT",
-			}
-		).then(async (response) => {
-			const message = await Promise.resolve(response.json()).then(
-				(json) => json.message
-			);
-			if (response.status !== 200) {
-				throw new Error(message);
-			}
-			toast.success(message);
-		});
-	} catch (error: any) {
-		toast.error(error.message);
-	}
+	return fetch(
+		`${process.env.NEXT_PUBLIC_API_ENDPOINT}/user/UpdateUser/${user.id}`,
+		{
+			credentials: "include",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(user),
+			method: "PUT",
+		}
+	);
 }
 
 export default function Page() {
 	const { staffId }: { staffId: string } = useParams();
-	const router = useRouter();
+	const [trigger, setTrigger] = useState(false);
 	const [editable, setEditable] = useState(false);
 	const { isLoading, data, error } = useQuery({
-		queryKey: ["user", staffId],
+		queryKey: ["user", staffId, trigger],
 		queryFn: () => fetchStaff(staffId),
 	});
 
@@ -71,12 +59,12 @@ export default function Page() {
 			phoneNumber,
 			pointId,
 			address: {
-				name: point.address,
-				lat: point.addressLat,
-				long: point.addressLong,
-				province: point.province,
-				district: point.district,
-				ward: point.ward,
+				name: point.address.name,
+				lat: point.address.lat,
+				long: point.address.long,
+				province: point.address.province,
+				district: point.address.district,
+				ward: point.address.ward,
 			},
 		};
 		return (
@@ -95,9 +83,18 @@ export default function Page() {
 				</div>
 				<Staff
 					staff={staff}
-					handleSubmit={(staff: CreateStaffProps) => {
-						updateStaff(staff);
-						router.push("/staff/management/staffs");
+					handleSubmit={async (newStaff: CreateStaffProps) => {
+						try {
+							const response = await updateStaff(newStaff);
+							const { message } = await response.json();
+							if (response.status !== 200) throw new Error(message);
+							toast.success(message);
+							setTrigger(!trigger);
+							setEditable(false);
+							// router.push("/staff/orders/status");
+						} catch (err: any) {
+							toast.error(err.message);
+						}
 					}}
 					editable={editable}
 				/>

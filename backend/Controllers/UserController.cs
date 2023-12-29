@@ -63,11 +63,9 @@ public class UserController : ControllerBase
 	}
 
 	[HttpPut("{id}")]
-	[VerifyOwner]
 	[VerifyToken]
 	public async Task<ActionResult> UpdateUserAsync(Guid id, UpdateUserModel model)
 	{
-		model.Password = Password.Hash(model.Password!);
 		await _userService.UpdateAsync(id, model);
 		return Ok(new { message = "Update user successfully!" });
 	}

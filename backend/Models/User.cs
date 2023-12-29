@@ -82,11 +82,17 @@ public class RegisterModel : Model
 
 public class UpdateUserModel : Model
 {
+	[Required]
 	public string? Name { get; set; }
-	public string? Username { get; set; }
+	[Required]
 	public string? Email { get; set; }
-	public string? Password { get; set; }
-	public Guid? StaffPointId { get; set; }
+	[Required]
+	public string? PhoneNumber { get; set; }
+	[Required]
+	public string? Username { get; set; }
+	[Required]
+	public Role Role { get; set; }
+	public Guid? PointId { get; set; }
 }
 
 public class UserResponse : Response<User>

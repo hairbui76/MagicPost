@@ -109,10 +109,10 @@ public class OrderController : ControllerBase
 		return Ok(new { message = "Forward outgoing orders successfully!" });
 	}
 
-	[HttpGet("{id}")]
+	[HttpGet]
 	[VerifyToken]
 	[VerifyRole(Role.TRANSACTION_STAFF, Role.GATHERING_STAFF, Role.GATHERING_POINT_MANAGER, Role.TRANSACTION_POINT_MANAGER)]
-	public async Task<ActionResult<Response<DataPagination<PublicOrderInfo>>>> GetArrivedOrdersAsync(int pageNumber, DateTime? startDate, DateTime? endDate, string category)
+	public async Task<ActionResult<Response<DataPagination<PublicOrderInfo>>>> GetArrivedOrdersAsync(int pageNumber, DateTime? startDate, DateTime? endDate, string? category)
 	{
 		User? user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");
 		var orders = await _orderService.GetArrivedOrderAsync(user, pageNumber, startDate, endDate, category);

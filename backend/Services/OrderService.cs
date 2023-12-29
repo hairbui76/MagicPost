@@ -24,7 +24,7 @@ public interface IOrderService
 	Task UpdateAsync(Guid id, UpdateOrderModel model);
 	// Task CreateAsync(User user, Order newOrder);
 	Task CreateAsync(Order newOrder);
-	Task<DataPagination<PublicOrderInfo>> GetArrivedOrderAsync(User? user, int pageNumber, DateTime? startDate, DateTime? endDate, string? category);
+	Task<DataPagination<PublicOrderInfo>> GetArrivedOrderAsync(User user, int pageNumber, DateTime? startDate, DateTime? endDate, string? category);
 	Task<bool> ConfirmArrivedOrdersAsync(List<Guid> orders);
 	Task<bool> RejectArrivedOrdersAsync(List<RejectedOrder> rejectedOrders);
 }
@@ -317,9 +317,9 @@ public class OrderService : IOrderService
 		await _webAPIDataContext.SaveChangesAsync();
 	}
 
-	public async Task<DataPagination<PublicOrderInfo>> GetArrivedOrderAsync(User? user, int pageNumber, DateTime? startDate, DateTime? endDate, string? category)
+	public async Task<DataPagination<PublicOrderInfo>> GetArrivedOrderAsync(User user, int pageNumber, DateTime? startDate, DateTime? endDate, string? category)
 	{
-		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.Id);
+		Point currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId) ?? throw new AppException(HttpStatusCode.NotFound, "Current point not found");
 		List<Order> orders = await _ordersRepository.Where(o => o.CurrentPointId == currentPoint.Id
 													&& o.Status == OrderState.ARRIVED && o.ReceiverProvince == currentPoint.Province
 													&& o.ReceiverDistrict == currentPoint.District)

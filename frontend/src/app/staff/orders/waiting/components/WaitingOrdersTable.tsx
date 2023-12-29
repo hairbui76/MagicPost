@@ -1,5 +1,6 @@
 "use client";
 
+import { OrderProps } from "@/app/staff/types/Order/orders";
 import Pagination from "@/components/Pagination/Pagination";
 import Table from "@/components/legacy/Table/Table";
 import { useQuery } from "@tanstack/react-query";
@@ -9,7 +10,6 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import Actions from "../../../components/Actions/Actions";
 import WaitingOrderFilter from "./WaitingOrderFilter";
-import { OrderProps } from "@/app/staff/types/Order/orders";
 import WaitingOrderSummary from "./WaitingOrderSummary";
 
 async function filterWaitingOrders(
@@ -26,7 +26,7 @@ async function filterWaitingOrders(
 	if (categoryFilter) filter[`category`] = categoryFilter;
 
 	return fetch(
-		`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/waiting?` +
+		`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/getArrivedOrders?` +
 			new URLSearchParams(filter),
 		{
 			credentials: "include",

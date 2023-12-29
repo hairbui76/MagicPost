@@ -77,7 +77,7 @@ export default function OutgoingOrderTable() {
 	if (isLoading) return <Skeleton active />;
 
 	if (error) toast.error(error.message);
-	console.log(data?.data.totalPage);
+
 	return (
 		<div className="flex flex-col gap-4">
 			<DeliveryOrderFilter

@@ -19,6 +19,8 @@ public class User : Model
 	public Point? Point { get; }
 	public PublicUserInfo GetPublicInfo()
 			=> new() { Id = Id, Name = Name, Username = Username, Email = Email, PhoneNumber = PhoneNumber, PointId = PointId, Role = Role };
+	public PublicUserInfo GetPublicUserInfoWithPoint()
+			=> new() { Id = Id, Name = Name, Username = Username, Email = Email, PhoneNumber = PhoneNumber, PointId = PointId, Role = Role, Point = Point?.GetPublicPointInfo() };
 }
 
 public class PublicUserInfo
@@ -30,6 +32,7 @@ public class PublicUserInfo
 	public required string PhoneNumber { get; set; }
 	public required Role Role { get; set; }
 	public Guid? PointId { get; set; }
+	public PublicPointInfo? Point { get; set; }
 }
 
 public class LoginModel : Model

@@ -6,9 +6,9 @@ import {
 import PrimaryButton from "@/components/Button/PrimaryButton";
 import SecondaryButton from "@/components/Button/SecondaryButton";
 import Form from "@/components/Form/Form";
+import { useRouter } from "next/navigation";
 import StaffAssignPointField from "./StaffAssignPointFieldSet";
 import StaffFieldSet from "./StaffFieldSet";
-import { useRouter } from "next/navigation";
 
 export default function Staff({
 	staff = null,

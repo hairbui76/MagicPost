@@ -14,7 +14,7 @@ public interface IUserService
 {
 	Task<List<User>> GetAsync();
 	Task<DataPagination<PublicUserInfo>> FilterAsync(int pageNumber, Role? role);
-	Task<User?> GetAsyncById(Guid id);
+	Task<PublicUserInfo?> GetAsyncById(Guid id);
 	Task<User?> GetAsyncByUsername(string username);
 	Task<User?> GetAsyncByEmail(string email);
 	Task CreateAsync(User newUser);
@@ -60,17 +60,11 @@ public class UserService : IUserService
 		return new DataPagination<PublicUserInfo>(result, users.Count(), pageNumber);
 	}
 
-	public async Task<User?> GetAsyncById(Guid id)
+	public async Task<PublicUserInfo?> GetAsyncById(Guid id)
 			=> await _usersRepository
 						.Where(u => u.Id == id)
-						// .Include(u => u.StaffPoint)
-						// 	.ThenInclude(p => p != null ? p.Staffs : null)
-						// .Include(u => u.StaffPoint)
-						// 	.ThenInclude(p => p != null ? p.Manager : null)
-						// .Include(u => u.ManagerPoint)
-						// 	.ThenInclude(p => p != null ? p.Staffs : null)
-						// .Include(u => u.ManagerPoint)
-						// 	.ThenInclude(p => p != null ? p.Manager : null)
+						.Include(u => u.Point)
+						.Select(u => u.GetPublicUserInfoWithPoint())
 						.FirstOrDefaultAsync();
 
 	public async Task<User?> GetAsyncByUsername(string username) =>
@@ -87,7 +81,9 @@ public class UserService : IUserService
 
 	public async Task UpdateAsync(Guid id, UpdateUserModel model)
 	{
-		User user = await GetAsyncById(id) ?? throw new AppException(HttpStatusCode.NotFound, "User not found");
+		User user = await _usersRepository
+				.Where(u => u.Id == id)
+				.FirstOrDefaultAsync() ?? throw new AppException(HttpStatusCode.NotFound, "User not found");
 		_mapper.Map(model, user);
 		_usersRepository.Update(user);
 		_webAPIDataContext.SaveChanges();

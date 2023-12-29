@@ -48,8 +48,6 @@ public class DeliveryServce : IDeliveryService
 	{
 		Point? currentPoint = _webAPIDataContext.Points.FirstOrDefault(p => p.Id == user.PointId);
 		var relatedDelivery = await _deliveriesRepository.Where(d => d.FromPointId == currentPoint!.Id || d.ToPointId == currentPoint.Id)
-												.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
-												.Take((int)Pagination.PAGESIZE)
 												.ToListAsync();
 		List<DeliveryHistory> deliveryHistory = new();
 		relatedDelivery.ForEach(d => deliveryHistory.AddRange(d.GetOperationDeliveryHistory()));

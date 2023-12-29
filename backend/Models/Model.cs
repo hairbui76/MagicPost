@@ -22,6 +22,7 @@ public class DataPagination<T>
 		this.DataCount = DataCount;
 		this.PageNumber = PageNumber;
 		TotalPage = (int)Math.Ceiling((double)DataCount / PageSize);
+		TotalPage = TotalPage == 0 ? 1 : TotalPage;
 	}
 	public DataPagination(List<T> Data, int DataCount, int PageNumber, int PageSize)
 	{
@@ -29,6 +30,7 @@ public class DataPagination<T>
 		this.DataCount = DataCount;
 		this.PageNumber = PageNumber;
 		TotalPage = (int)Math.Ceiling((double)(DataCount / PageSize));
+		TotalPage = TotalPage == 0 ? 1 : TotalPage;
 	}
 	public DataPagination() { }
 }

@@ -60,10 +60,12 @@ public class OrderController : ControllerBase
 	}
 
 	[HttpPost]
-	// [VerifyToken]
+	[VerifyToken]
 	// [VerifyPointAndAdmin]
 	public async Task<IActionResult> CreateAsync(CreateOrderModel model)
 	{
+		User user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");
+		model.CurrentPointId = user.PointId;
 		Order order = _mapper.Map<Order>(model);
 		await _orderService.CreateAsync(order);
 		return Ok(new { message = "Create order successfully!", order });
@@ -82,7 +84,7 @@ public class OrderController : ControllerBase
 	[HttpPost]
 	[VerifyToken]
 	[VerifyRole(Role.TRANSACTION_STAFF, Role.GATHERING_STAFF)]
-	public async Task<IActionResult> ConfirmIncomingOrdersAsync(List<ConfirmIncomingOrderModel> orders)
+	public async Task<IActionResult> ConfirmIncomingOrdersAsync(List<Guid> orders)
 	{
 		User? user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");
 		await _orderService.ConfirmIncomingOrdersAsync(user, orders);

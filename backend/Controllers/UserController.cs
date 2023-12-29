@@ -31,7 +31,7 @@ public class UserController : ControllerBase
 	{
 		User newUser = _mapper.Map<User>(model);
 		newUser.Password = Password.Hash(Password.DEFAULT_PASSWORD);
-		Point? point = await _pointService.FindByAddressAsync(model.Province!, model.District!, model.Ward!) ?? throw new AppException("Point not found in this area!");
+		Point? point = await _pointService.AssignStaff(newUser.Role, model.Province!, model.District!) ?? throw new AppException("Point not found in this area!");
 		newUser.PointId = point.Id;
 		await _userService.CreateAsync(newUser);
 		return Ok(new Response<PublicUserInfo>("Create staff successfully!", newUser.GetPublicInfo()));

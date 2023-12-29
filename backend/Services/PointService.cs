@@ -12,7 +12,7 @@ public interface IPointService
 {
 	Task<List<Point>> GetAsync();
 	Task<DataPagination<PublicPointInfo>> FilterAsync(int pageNumber, string? province, string? district, string? ward, PointType? type);
-	Task<Point?> FindByAddressAsync(string province, string district, string ward);
+	Task<Point?> AssignStaff(Role role, string province, string district);
 	Task<List<Point>> GetAllTransactionPointsAsync();
 	Task<List<Point>> GetAllGatheringPointsAsync();
 	Task<Point?> GetPointByIdAsync(Guid id);
@@ -63,9 +63,21 @@ public class PointService : IPointService
 		return new DataPagination<PublicPointInfo>(result, points.Count(), pageNumber);
 	}
 
-	public async Task<Point?> FindByAddressAsync(string province, string district, string ward)
-			=> await _pointsRepository.Where(p => p.Province == province && p.District == district && p.Ward == ward)
-																.FirstOrDefaultAsync();
+	public async Task<Point?> AssignStaff(Role role, string province, string district)
+	{
+		// Check if role is transaction staff or manager
+		if (role == Role.TRANSACTION_STAFF || role == Role.TRANSACTION_POINT_MANAGER)
+		{
+			return await _pointsRepository.Where(p => p.Type == PointType.TRANSACTION_POINT && p.Province == province && p.District == district)
+						.FirstOrDefaultAsync();
+		}
+		else if (role == Role.GATHERING_STAFF || role == Role.GATHERING_POINT_MANAGER)
+		{
+			return await _pointsRepository.Where(p => p.Type == PointType.GATHERING_POINT && p.Province == province)
+						.FirstOrDefaultAsync();
+		}
+		return null;
+	}
 
 	public async Task<List<Point>> GetAllTransactionPointsAsync()
 			=> await _pointsRepository.Where(p => p.Type == PointType.TRANSACTION_POINT).ToListAsync();

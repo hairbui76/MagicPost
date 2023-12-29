@@ -18,7 +18,7 @@ public interface IOrderService
 	Task<PublicOrderInfo?> GetAsyncById(Guid id);
 	Task<List<OrderHistory>> GetOrderHistoryAsyncById(Guid id);
 	Task<DataPagination<PublicOrderInfo>> GetIncomingOrdersAsync(User user, string? province, string? district, DateTime? startDate, DateTime? endDate, int pageNumber);
-	Task<bool> ConfirmIncomingOrdersAsync(User user, List<ConfirmIncomingOrderModel> orders);
+	Task<bool> ConfirmIncomingOrdersAsync(User user, List<Guid> orders);
 	Task<DataPagination<PublicOrderInfo>> GetOutgoingOrdersAsync(User user, string? province, string? district, int pageNumber);
 	Task<bool> ForwardOrdersAsync(User user, List<Guid> orderIds);
 	Task UpdateAsync(Guid id, UpdateOrderModel model);
@@ -102,21 +102,30 @@ public class OrderService : IOrderService
 		return new DataPagination<PublicOrderInfo>(result, orders.Count(), pageNumber);
 	}
 
-	public async Task<bool> ConfirmIncomingOrdersAsync(User user, List<ConfirmIncomingOrderModel> orders)
+	public async Task<bool> ConfirmIncomingOrdersAsync(User user, List<Guid> orders)
 	{
 		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId);
 		List<Delivery> deliveriesUpdate = new();
 		List<Order> ordersUpdate = new();
 		orders.ForEach(o =>
 		{
-			Delivery? deliveryUpdate = _webAPIDataContext.Deliveries.FirstOrDefault(d => d.OrderId == o.orderId && d.State == DeliveryState.DELIVERING);
+			Delivery? deliveryUpdate = _webAPIDataContext.Deliveries.FirstOrDefault(d => d.OrderId == o && d.State == DeliveryState.DELIVERING);
 			if (deliveryUpdate != null)
 			{
-				deliveryUpdate.State = o.Confirm ? DeliveryState.ARRIVED : DeliveryState.UNSUCCESS;
+				// deliveryUpdate.State = o.Confirm ? DeliveryState.ARRIVED : DeliveryState.UNSUCCESS;
+				deliveryUpdate.State = DeliveryState.ARRIVED;
 				deliveryUpdate.ReceiveTime = DateTime.UtcNow;
 				deliveriesUpdate.Add(deliveryUpdate);
-				Order? orderNeedUpdate = _ordersRepository.FirstOrDefault(ord => ord.Id == o.orderId);
+				Order? orderNeedUpdate = _ordersRepository.FirstOrDefault(ord => ord.Id == o);
 				orderNeedUpdate.CurrentPointId = currentPoint.Id;
+				if (currentPoint.Province == orderNeedUpdate.SenderProvince && currentPoint.District == orderNeedUpdate.SenderDistrict && currentPoint.Type == PointType.TRANSACTION_POINT)
+				{
+					orderNeedUpdate.Status = OrderState.ARRIVED;
+				}
+				else
+				{
+					orderNeedUpdate.Status = OrderState.PENDING;
+				}
 				ordersUpdate.Add(orderNeedUpdate);
 			}
 		});
@@ -192,17 +201,17 @@ public class OrderService : IOrderService
 				if (order.SenderProvince == currentPoint.Province)
 				{
 					Point toPoint = _webAPIDataContext.Points
-						.FirstOrDefault(p => p.Province == currentPoint.Province && p.Type == PointType.TRANSACTION_POINT) ?? throw new AppException("Cannot find destination transaction point (district transaction -> district transaction)");
+						.FirstOrDefault(p => p.Province == currentPoint.Province && p.Type == PointType.GATHERING_POINT) ?? throw new AppException("Cannot find destination transaction point (district transaction -> district transaction)");
 					newDelivery.ToPointId = toPoint.Id;
 				}
 				// Else it will be delivery outside province (province -> province)
 				// => So first create deliver from district transaction to province gathering
-				else
-				{
-					Point toPoint = _webAPIDataContext.Points
-						.FirstOrDefault(p => p.Province == currentPoint.Province && p.Type == PointType.GATHERING_POINT) ?? throw new AppException("Cannot find destination gathering point (district transaction -> province transaction)");
-					newDelivery.ToPointId = toPoint.Id;
-				}
+				// else
+				// {
+				// 	Point toPoint = _webAPIDataContext.Points
+				// 		.FirstOrDefault(p => p.Province == currentPoint.Province && p.Type == PointType.GATHERING_POINT) ?? throw new AppException("Cannot find destination gathering point (district transaction -> province transaction)");
+				// 	newDelivery.ToPointId = toPoint.Id;
+				// }
 			}
 			// Now current point is gathering
 			else

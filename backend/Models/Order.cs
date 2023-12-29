@@ -147,6 +147,15 @@ public class CustomerProps
 	public string? Phone { get; set; }
 }
 
+public class ForwardOrderModel
+{
+	[Required]
+	public List<Guid>? Orders { get; set; }
+	[Required]
+	public bool Confirm { get; set; }
+	public string? Reason { get; set; }
+}
+
 public class UpdateOrderModel : Model
 {
 	[Required]

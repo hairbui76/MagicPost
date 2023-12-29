@@ -167,13 +167,16 @@ const [
 	filterOutGoingOrders,
 	filterWaitingOrder,
 	filterOrders,
-] = ["/order/filter", "/order/filter", "/order/filter", "/order/filter"].map(
-	(path) => createFilterOrdersFunction(path)
-);
+] = [
+	"/order/getIncomingOrders",
+	"/order/getOutgoingOrders",
+	"/order/getArrivedOrders",
+	"/order/filter",
+].map((path) => createFilterOrdersFunction(path));
 
 const [confirmIncomingOrders, confirmOutGoingOrders, confirmWaitingOrders] = [
-	".",
-	".",
+	"/order/confirmIncomingOrders",
+	"/order/forwardOrders",
 	".",
 ].map((path) => createConfirmOrdersFunction(path));
 
@@ -243,11 +246,12 @@ function createConfirmOrdersFunction(path: string) {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({
-					orders,
-					confirm,
-					reason,
-				}),
+				// body: JSON.stringify({
+				// 	orders,
+				// 	confirm,
+				// 	reason,
+				// }),
+				body: JSON.stringify(orders),
 			}).then(async (response) => {
 				if (response.status !== 200) {
 					const message = await Promise.resolve(response.json()).then(

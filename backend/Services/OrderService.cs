@@ -234,7 +234,8 @@ public class OrderService : IOrderService
 
 	public async Task<bool> ConfirmArrivedOrdersAsync(List<Guid> orders)
 	{
-		orders.ForEach(orderId=> {
+		orders.ForEach(orderId =>
+		{
 			Order? order = _ordersRepository.FirstOrDefault(o => o.Id == orderId);
 			order.Status = OrderState.DELIVERED;
 			_ordersRepository.Update(order);
@@ -243,9 +244,10 @@ public class OrderService : IOrderService
 		return true;
 	}
 
-	public async Task<bool> RejectArrivedOrdersAsync(List<RejectedOrder> rejectedOrders) 
+	public async Task<bool> RejectArrivedOrdersAsync(List<RejectedOrder> rejectedOrders)
 	{
-		rejectedOrders.ForEach(ord => {
+		rejectedOrders.ForEach(ord =>
+		{
 			Order? order = _ordersRepository.FirstOrDefault(o => o.Id == ord.OrderId);
 			order.Status = OrderState.CANCELLED;
 			order.Note = ord.Reason;
@@ -294,22 +296,22 @@ public class OrderService : IOrderService
 		return orderHistory;
 	}
 
-	public async Task<DataPagination<PublicOrderInfo>> GetArrivedOrderAsync(User? user, int pageNumber, DateTime? startDate, DateTime? endDate, string? category) 
+	public async Task<DataPagination<PublicOrderInfo>> GetArrivedOrderAsync(User? user, int pageNumber, DateTime? startDate, DateTime? endDate, string? category)
 	{
 		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.Id);
-		List<Order> orders = await _ordersRepository.Where(o => o.CurrentPointId == currentPoint.Id 
-													&& o.Status == OrderState.ARRIVED && o.ReceiverProvince == currentPoint.Province 
+		List<Order> orders = await _ordersRepository.Where(o => o.CurrentPointId == currentPoint.Id
+													&& o.Status == OrderState.ARRIVED && o.ReceiverProvince == currentPoint.Province
 													&& o.ReceiverDistrict == currentPoint.District)
 													.ToListAsync();
-		if (startDate != null) 
+		if (startDate != null)
 		{
 			orders = orders.Where(o => DateTime.Compare(startDate.Value, o.UpdatedAt) < 0).ToList();
 		}
-		if (endDate != null) 
+		if (endDate != null)
 		{
 			orders = orders.Where(o => DateTime.Compare(endDate.Value, o.UpdatedAt) > 0).ToList();
 		}
-		if (category != null) 
+		if (category != null)
 		{
 			orders = orders.Where(o => o.Type == category).ToList();
 		}

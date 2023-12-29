@@ -48,7 +48,7 @@ public class DeliveryController : ControllerBase
 	public async Task<ActionResult<DataPagination<DeliveryHistory>>> GetDeliveryHistory(int pageNumber, string? type, string? status)
 	{
 		User user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");
-		// DataPagination<DeliveryHistory> deliveryHistories = await _deliveryService.GetDeliveryHistory(user, type, status, pageNumber);
+		DataPagination<DeliveryHistory> deliveryHistories = await _deliveryService.GetDeliveryHistory(user, type, status, pageNumber);
 		return Ok(new Response<DataPagination<DeliveryHistory>>("Get delivery successfully!", null));
 	}
 }

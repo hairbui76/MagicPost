@@ -91,6 +91,12 @@ public class CreateOrderModel : Model
 	public Guid? CurrentPointId { get; set; }
 }
 
+public class RejectedOrder : Model
+{
+	public Guid? OrderId { get; set; }
+	public string? Reason { get; set; }
+}
+
 public class PublicOrderInfo : Model
 {
 	public Guid? Id { get; set; }

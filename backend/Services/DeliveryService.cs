@@ -61,6 +61,7 @@ public class DeliveryServce : IDeliveryService
 		{
 			deliveryHistory = deliveryHistory.Where(d => d.Status == status).ToList();
 		}
-		return null;
+		deliveryHistory = deliveryHistory.Skip((int)Pagination.PAGESIZE * (pageNumber - 1)).Take((int)Pagination.PAGESIZE).ToList();
+		return new DataPagination<DeliveryHistory>(deliveryHistory, deliveryHistory.Count, pageNumber);
 	}
 }

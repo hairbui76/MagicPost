@@ -11,19 +11,21 @@ export default function Actions({
 	selected,
 	onConfirm,
 	onReject,
-	rejectReason,
-	setRejectReason,
+	reason,
+	setReason,
+	onRefresh,
 }: {
 	selectAll: boolean;
 	onSelectAll: () => void;
 	selected: boolean;
 	onConfirm: () => void;
 	onReject: () => void;
-	rejectReason: string;
-	setRejectReason: Dispatch<SetStateAction<string>>;
+	reason: string;
+	setReason: Dispatch<SetStateAction<string>>;
+	onRefresh: () => void;
 }) {
 	return (
-		<Fieldset legend="Actions" icon={faList}>
+		<Fieldset legend="Actions" icon={faList} className="w-full">
 			<div className="w-full flex flex-row gap-4">
 				<SecondaryButton
 					type="button"
@@ -43,7 +45,7 @@ export default function Actions({
 				<SecondaryButton
 					type="button"
 					className="btn-error disabled:bg-[#EF959D]"
-					disabled={!selected || !rejectReason}
+					disabled={!selected || !reason}
 					handleClick={() => onReject()}
 				>
 					Reject
@@ -53,9 +55,9 @@ export default function Actions({
 					className="custom-input disabled:bg-[#B7B6C1]"
 					placeholder="Reason for reject"
 					disabled={!selected}
-					onChange={(e) => setRejectReason(e.currentTarget.value)}
+					onChange={(e) => setReason(e.currentTarget.value)}
 				/>
-				<button type="button">
+				<button type="button" onClick={onRefresh}>
 					<FontAwesomeIcon icon={faRotateRight} className="w-full" />
 				</button>
 			</div>

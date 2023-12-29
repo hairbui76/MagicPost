@@ -8,9 +8,13 @@ import { usePathname } from "next/navigation";
 export default function Summary<T extends DatabaseTableProps>({
 	item,
 	headers,
+	selected = false,
+	onSelectToggle,
 }: {
 	item: T;
 	headers: Array<{ label: string; value: string }>;
+	selected?: boolean;
+	onSelectToggle?: ((id: string) => void) | undefined;
 }) {
 	const pathname = usePathname();
 	const mapHeaders = (
@@ -30,6 +34,16 @@ export default function Summary<T extends DatabaseTableProps>({
 	};
 	return (
 		<TableRow>
+			{!!onSelectToggle ? (
+				<td>
+					<input
+						type="checkbox"
+						className="checkbox checkbox-sm border-1 border-custom-text-color block my-auto"
+						onChange={() => onSelectToggle(item.id as string)}
+						checked={selected}
+					/>
+				</td>
+			) : null}
 			<td>
 				<Link className="mx-auto block w-fit" href={`${pathname}/${item.id}`}>
 					<FontAwesomeIcon icon={faEye} />

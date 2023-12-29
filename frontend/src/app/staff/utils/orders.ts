@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "react-toastify";
 import { useReducer, useState } from "react";
 import uniqid from "uniqid";
 import { OrderProps } from "../types/Order/orders";
@@ -161,26 +162,105 @@ export function useOrderState(order: OrderProps) {
 	};
 }
 
-export async function getOrders() {
-	return fetch(`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/get`, {
-		credentials: "include",
-	}).then(async (res) => {
-		if (res.status !== 200) {
-			const json = await res.json();
-			throw new Error(json.message);
-		}
-		return res.json();
-	});
+const [
+	filterIncomingOrders,
+	filterOutGoingOrders,
+	filterWaitingOrder,
+	filterOrders,
+] = ["/order/filter", "/order/filter", "/order/filter", "/order/filter"].map(
+	(path) => createFilterOrdersFunction(path)
+);
+
+const [confirmIncomingOrders, confirmOutGoingOrders, confirmWaitingOrders] = [
+	".",
+	".",
+	".",
+].map((path) => createConfirmOrdersFunction(path));
+
+export {
+	filterIncomingOrders,
+	filterOutGoingOrders,
+	filterWaitingOrder,
+	filterOrders,
+	confirmIncomingOrders,
+	confirmOutGoingOrders,
+	confirmWaitingOrders,
+};
+
+function createFilterOrdersFunction(path: string) {
+	const filterOrders = async (params: {
+		pageNumber: number;
+		status?: string;
+		category?: string;
+		startDate?: Date;
+		endDate?: Date;
+		province?: string | undefined | null;
+		district?: string | undefined | null;
+		ward?: string | undefined | null;
+	}) => {
+		const { pageNumber, startDate, endDate, status, category } = params;
+		const filter: { [key: string]: string } = {
+			pageNumber: pageNumber.toString(),
+		};
+		if (startDate) filter[`startDate`] = startDate.toISOString();
+		if (endDate) filter[`endDate`] = endDate.toISOString();
+		if (status) filter[`status`] = status;
+		if (category) filter[`category`] = category;
+
+		return fetch(
+			process.env.NEXT_PUBLIC_API_ENDPOINT +
+				path +
+				"?" +
+				new URLSearchParams(filter),
+			{
+				credentials: "include",
+			}
+		).then(async (res) => {
+			if (res.status !== 200) {
+				const json = await res.json();
+				throw new Error(json.message);
+			}
+			return res.json();
+		});
+	};
+	return filterOrders;
 }
 
-export async function getOrderById(orderId: string) {
-	return fetch(`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/get/${orderId}`, {
-		credentials: "include",
-	}).then(async (res) => {
-		if (res.status !== 200) {
-			const json = await res.json();
-			throw new Error(json.message);
+function createConfirmOrdersFunction(path: string) {
+	return async ({
+		orders,
+		confirm,
+		reason,
+	}: {
+		orders: string[];
+		confirm: boolean;
+		reason?: string;
+	}) => {
+		try {
+			const json = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT + path, {
+				credentials: "include",
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					orders,
+					confirm,
+					reason,
+				}),
+			}).then(async (response) => {
+				if (response.status !== 200) {
+					const message = await Promise.resolve(response.json()).then(
+						(json) => json.message
+					);
+					throw new Error(message);
+				}
+				return response.json();
+			});
+			toast.success(json.message);
+			return json;
+		} catch (err: any) {
+			toast.error(err.message);
 		}
-		return res.json();
-	});
+	};
 }

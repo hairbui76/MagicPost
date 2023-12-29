@@ -1,11 +1,18 @@
 import Title from "@/components/Title/Title";
-import IncomingOrderTable from "./components/IncomingOrderTable";
+import OrdersSummaryTable from "../../components/Order/OrderSummaryTable/OrdersSummaryTable";
+import {
+	confirmIncomingOrders,
+	filterIncomingOrders,
+} from "../../utils/orders";
 
 export default function Page() {
 	return (
 		<div>
 			<Title>Incoming Orders</Title>
-			<IncomingOrderTable />
+			<OrdersSummaryTable
+				filterOrders={filterIncomingOrders}
+				action={confirmIncomingOrders}
+			/>
 		</div>
 	);
 }

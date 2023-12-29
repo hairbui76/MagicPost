@@ -1,11 +1,15 @@
 import Title from "@/components/Title/Title";
-import WaitingOrderTable from "./components/WaitingOrdersTable";
+import OrdersSummaryTable from "../../components/Order/OrderSummaryTable/OrdersSummaryTable";
+import { confirmWaitingOrders, filterWaitingOrder } from "../../utils/orders";
 
 export default function Page() {
 	return (
 		<div>
 			<Title>Waiting For Receiver</Title>
-			<WaitingOrderTable />
+			<OrdersSummaryTable
+				filterOrders={filterWaitingOrder}
+				action={confirmWaitingOrders}
+			/>
 		</div>
 	);
 }

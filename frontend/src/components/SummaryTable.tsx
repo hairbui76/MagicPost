@@ -3,39 +3,37 @@ import type { Dispatch, SetStateAction } from "react";
 import Pagination from "./Pagination/Pagination";
 import Summary from "./Summary";
 
-function renderItems<T extends DatabaseTableProps>(
-	items: Array<T>,
-	filter?: ((items: Array<T>) => Array<T>) | undefined
-) {
-	if (!filter) {
-		return items;
-	}
-	return filter(items);
-}
-
 export default function SummaryTable<T extends DatabaseTableProps>({
 	items,
 	columnHeadings,
-	filter,
 	children,
 	pageNumber,
 	totalPage,
 	setPageNumber,
+	selected,
+	onSelectToggle,
 }: {
 	items: Array<T>;
 	columnHeadings: Array<{ label: string; value: string }>;
-	filter?: ((items: Array<T>) => Array<T>) | undefined;
-	children?: React.ReactElement;
+	children?: React.ReactElement | Array<React.ReactNode>;
 	pageNumber: number;
 	totalPage: number;
 	setPageNumber: Dispatch<SetStateAction<number>>;
+	selected?: string[];
+	onSelectToggle?: ((id: string) => void) | undefined;
 }) {
 	return (
 		<div className="flex flex-col items-center gap-4 w-full">
 			{children}
-			<Table columnHeadings={columnHeadings}>
-				{renderItems(items, filter).map((item) => (
-					<Summary key={item.id} item={item} headers={columnHeadings} />
+			<Table columnHeadings={columnHeadings} selectable={!!onSelectToggle}>
+				{items.map((item) => (
+					<Summary
+						key={item.id}
+						item={item}
+						headers={columnHeadings}
+						selected={!!(selected && selected.find((id) => id === item.id))}
+						onSelectToggle={onSelectToggle}
+					/>
 				))}
 			</Table>
 			<Pagination

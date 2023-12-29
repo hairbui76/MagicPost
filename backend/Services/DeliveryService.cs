@@ -61,6 +61,6 @@ public class DeliveryServce : IDeliveryService
 		{
 			deliveryHistory = deliveryHistory.Where(d => d.Status == status).ToList();
 		}
-		return deliveryHistory;
+		return null;
 	}
 }

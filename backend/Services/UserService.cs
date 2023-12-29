@@ -61,14 +61,11 @@ public class UserService : IUserService
 	}
 
 	public async Task<PublicUserInfo?> GetAsyncById(Guid id)
-	{
-		PublicUserInfo user = await _usersRepository
-					.Where(u => u.Id == id)
-					.Include(u => u.Point)
-					.Select(u => u.GetPublicUserInfoWithPoint())
-					.FirstOrDefaultAsync();
-		return user;
-	}
+			=> await _usersRepository
+						.Where(u => u.Id == id)
+						.Include(u => u.Point)
+						.Select(u => u.GetPublicUserInfoWithPoint())
+						.FirstOrDefaultAsync();
 
 	public async Task<User?> GetAsyncByUsername(string username) =>
 			await _usersRepository.FirstOrDefaultAsync(x => x.Username == username);
@@ -84,10 +81,12 @@ public class UserService : IUserService
 
 	public async Task UpdateAsync(Guid id, UpdateUserModel model)
 	{
-		// User user = await GetAsyncById(id) ?? throw new AppException(HttpStatusCode.NotFound, "User not found");
-		// _mapper.Map(model, user);
-		// _usersRepository.Update(user);
-		// _webAPIDataContext.SaveChanges();
+		User user = await _usersRepository
+				.Where(u => u.Id == id)
+				.FirstOrDefaultAsync() ?? throw new AppException(HttpStatusCode.NotFound, "User not found");
+		_mapper.Map(model, user);
+		_usersRepository.Update(user);
+		_webAPIDataContext.SaveChanges();
 	}
 
 	public async Task RemoveAsync(Guid id) =>

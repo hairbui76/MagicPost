@@ -124,7 +124,7 @@ public class OrderController : ControllerBase
 
 	[HttpGet("{id}")]
 	[VerifyToken]
-	[VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF, Role.GATHERING_POINT_MANAGER, Role.TRANSACTION_POINT_MANAGER)]
+	[VerifyRole(Role.TRANSACTION_STAFF, Role.GATHERING_STAFF, Role.GATHERING_POINT_MANAGER, Role.TRANSACTION_POINT_MANAGER)]
 	public async Task<ActionResult<bool>> ConfirmArrivedOrdersAsync(List<Guid> confirmOrders) 
 	{
 		User? user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");
@@ -134,7 +134,7 @@ public class OrderController : ControllerBase
 
 	[HttpGet("{id}")]
 	[VerifyToken]
-	[VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF, Role.GATHERING_POINT_MANAGER, Role.TRANSACTION_POINT_MANAGER)]
+	[VerifyRole(Role.TRANSACTION_STAFF, Role.GATHERING_STAFF, Role.GATHERING_POINT_MANAGER, Role.TRANSACTION_POINT_MANAGER)]
 	public async Task<ActionResult<bool>> RejectArrivedOrdersAsync(List<RejectedOrder> rejectedOrders) 
 	{
 		User? user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");

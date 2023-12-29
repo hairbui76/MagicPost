@@ -81,15 +81,13 @@ public class OrderController : ControllerBase
 		return Ok(new Response<DataPagination<PublicOrderInfo>>("Get incoming orders successfully!", ordersIncoming));
 	}
 
-	[HttpPut("{id}")]
 	[VerifyToken]
-	[VerifyOwner]
 	[VerifyRole(Role.TRANSACTION_STAFF, Role.GATHERING_STAFF)]
 	public async Task<IActionResult> ConfirmIncomingOrdersAsync(List<ConfirmIncomingOrderModel> orders)
 	{
-		User? user = (User?)HttpContext.Items["user"];
-		var result = await _orderService.ConfirmIncomingOrdersAsync(user!, orders);
-		return Ok(result);
+		User? user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");
+		await _orderService.ConfirmIncomingOrdersAsync(user, orders);
+		return Ok(new { message = "Confirm incoming orders successfully!" });
 	}
 
 	[HttpGet]
@@ -108,7 +106,7 @@ public class OrderController : ControllerBase
 	public async Task<IActionResult> ForwardOrdersAsync(List<Guid> orders)
 	{
 		User? user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");
-		await _orderService.ForwardOrdersAsync(user!, orders);
+		await _orderService.ForwardOrdersAsync(user, orders);
 		return Ok(new { message = "Forward outgoing orders successfully!" });
 	}
 

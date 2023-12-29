@@ -24,13 +24,13 @@ async function fetchOrder(orderId: string) {
 
 async function updateOrder(order: OrderProps) {
 	console.log(order);
-	return;
 	try {
 		toast.info(`Updating order ${order.id}`);
 		await fetch(
-			`${process.env.NEXT_PUBLIC_API_ENDPOINT}/order/UpdateOrder/${order.id}`,
+			`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/update/${order.id}`,
 			{
 				credentials: "include",
+				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(order),
 				method: "PUT",
 			}
@@ -73,7 +73,6 @@ export default function Page({
 			<Order
 				order={order}
 				handleSubmit={(newOrder: OrderProps) => {
-					router.push("/staff/orders/status");
 					updateOrder(newOrder);
 				}}
 			/>

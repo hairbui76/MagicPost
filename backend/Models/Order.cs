@@ -147,17 +147,17 @@ public class CustomerProps
 	public string? Phone { get; set; }
 }
 
-public class UpdateOrderModel
+public class UpdateOrderModel : Model
 {
-	public OrderState State { get; set; }
-	public string? SenderName { get; set; }
-	public string? SenderAddress { get; set; }
-	[Phone]
-	public string? SenderPhone { get; set; }
-	public string? Receiver { get; set; }
-	public string? ReceiverAddress { get; set; }
-	[Phone]
-	public string? ReceiverPhone { get; set; }
+	[Required]
+	public required CustomerProps Sender { get; set; }
+	[Required]
+	public required CustomerProps Receiver { get; set; }
+	[Required]
+	public required PackageInfo PackageInfo { get; set; }
+	[Required]
+	public required ExtraData ExtraData { get; set; }
+	public Guid? CurrentPointId { get; set; }
 }
 
 public class ConfirmIncomingOrderModel

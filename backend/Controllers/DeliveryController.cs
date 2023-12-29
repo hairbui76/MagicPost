@@ -12,7 +12,7 @@ namespace MagicPostApi.Controllers;
 [ApiController]
 [Route("[controller]/[action]")]
 [VerifyToken]
-[VerifyRole(Role.COMPANY_ADMINISTRATOR, Role.TRANSACTION_POINT_MANAGER, Role.TRANSACION_STAFF)]
+[VerifyRole(Role.COMPANY_ADMINISTRATOR, Role.TRANSACTION_POINT_MANAGER, Role.TRANSACTION_STAFF)]
 public class DeliveryController : ControllerBase
 {
 	private readonly IMapper _mapper;

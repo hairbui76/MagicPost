@@ -77,7 +77,7 @@ public class UserController : ControllerBase
 	{
 		User user = _mapper.Map<User>(model);
 		user.Password = Password.Hash(user.Password);
-		user.Role = Role.TRANSACION_STAFF;
+		user.Role = Role.TRANSACTION_STAFF;
 		await _userService.CreateAsync(user);
 		return CreatedAtAction(nameof(GetAsync), new { id = user.Id }, new { message = "Create transaction staff successfully!", user });
 	}

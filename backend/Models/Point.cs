@@ -81,11 +81,26 @@ public class CreatePointModel : Model
 
 public class UpdatePointModel : Model
 {
+	[Required]
 	public string? PointName { get; set; }
-	public string? ZipCode { get; set; }
+	[Required]
+	public PointType? Type { get; set; }
+	[Required]
 	public string? Address { get; set; }
+	[Required]
+	public float? AddressLat { get; set; }
+	[Required]
+	public float? AddressLong { get; set; }
+	[Required]
+	public string? Province { get; set; }
+	[Required]
+	public string? District { get; set; }
+	[Required]
+	public string? Ward { get; set; }
+	[Required]
 	[EmailAddress]
 	public string? Email { get; set; }
+	[Required]
 	[Phone]
 	public string? Phone { get; set; }
 }

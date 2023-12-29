@@ -46,10 +46,10 @@ public class PointController : ControllerBase
 			=> await _pointService.GetAllGatheringPointsAsync();
 
 	[HttpGet("{id}")]
-	public async Task<IActionResult> GetPointById(Guid id)
+	public async Task<ActionResult<Response<Point>>> GetPointById(Guid id)
 	{
 		Point point = await _pointService.GetPointByIdAsync(id) ?? throw new AppException(HttpStatusCode.NotFound, "Point not found");
-		return Ok(new { point });
+		return Ok(new Response<Point>("Get point successfully!", point));
 	}
 
 	[HttpGet]
@@ -102,7 +102,7 @@ public class PointController : ControllerBase
 	// [VerifyToken]
 	// [VerifyOwner]
 	// [VerifyRole(new Role[] { Role.COMPANY_ADMINISTRATOR, Role.TRANSACTION_POINT_MANAGER, Role.GATHERING_POINT_MANAGER })]
-	public async Task<IActionResult> UpdatePointAsync(Guid id, UpdatePointModel model)
+	public async Task<IActionResult> UpdateAsync(Guid id, UpdatePointModel model)
 	{
 		await _pointService.UpdateAsync(id, model);
 		return Ok(new { message = "Update point successfully!" });

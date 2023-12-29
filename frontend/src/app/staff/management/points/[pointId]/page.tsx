@@ -1,12 +1,12 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
-import { toast } from "react-toastify";
-import Point from "../components/Point";
 import { PointProps } from "@/app/staff/utils/points";
 import Title from "@/components/Title/Title";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import Point from "../components/Point";
 
 async function fetchPoint(pointId: string) {
 	return await fetch(
@@ -26,43 +26,38 @@ async function fetchPoint(pointId: string) {
 }
 
 async function updatePoint(point: PointProps) {
-	try {
-		toast.info(`Updating point ${point.id}`);
-		await fetch(
-			`${process.env.NEXT_PUBLIC_API_ENDPOINT}/point/UpdatePoint/${point.id}`,
-			{
-				credentials: "include",
-				body: JSON.stringify(point),
-				method: "PUT",
-			}
-		).then(async (response) => {
-			const message = await Promise.resolve(response.json()).then(
-				(json) => json.message
-			);
-			if (response.status !== 200) {
-				throw new Error(message);
-			}
-			toast.success(message);
-		});
-	} catch (error: any) {
-		toast.error(error.message);
-	}
+	const { address, ...detail } = point;
+	const newPoint = {
+		...detail,
+		address: address.name,
+		addressLat: address.lat,
+		addressLong: address.long,
+		province: address.province,
+		district: address.district,
+		ward: address.ward,
+	};
+	return fetch(`${process.env.NEXT_PUBLIC_POINT_ENDPOINT}/update/${point.id}`, {
+		credentials: "include",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(newPoint),
+		method: "PUT",
+	});
 }
 
 export default function Page() {
 	const { pointId }: { pointId: string } = useParams();
-	const router = useRouter();
+	const [trigger, setTrigger] = useState(false);
 	const [editable, setEditable] = useState(false);
 	const { isLoading, data, error } = useQuery({
-		queryKey: ["point", pointId],
+		queryKey: ["point", pointId, trigger],
 		queryFn: () => fetchPoint(pointId),
 	});
 	if (isLoading) return <div>Loading...</div>;
 
 	if (error) toast.error(error.message);
 
-	if (data.data.data) {
-		const { id, pointName, type, email, phone, createdAt } = data.data.data;
+	if (data.data) {
+		const { id, pointName, type, email, phone, createdAt } = data.data;
 		const point: PointProps = {
 			id,
 			pointName,
@@ -71,18 +66,18 @@ export default function Page() {
 			phone,
 			createdAt,
 			address: {
-				name: data.data.data.address,
-				lat: data.data.data.addressLat,
-				long: data.data.data.addressLong,
-				province: data.data.data.province,
-				district: data.data.data.district,
-				ward: data.data.data.ward,
+				name: data.data.address,
+				lat: data.data.addressLat,
+				long: data.data.addressLong,
+				province: data.data.province,
+				district: data.data.district,
+				ward: data.data.ward,
 			},
 		};
 		return (
 			<>
 				<div className="flex flex-row justify-between items-center">
-					<Title>{"Point: " + data.point.id}</Title>
+					<Title>{"Point: " + data.data.id}</Title>
 					{editable ? null : (
 						<button
 							className="btn btn-success mb-4 btn-sm"
@@ -95,9 +90,18 @@ export default function Page() {
 				</div>
 				<Point
 					point={point}
-					handleSubmit={(point: PointProps) => {
-						updatePoint(point);
-						router.push("/staff/management/points");
+					handleSubmit={async (newPoint: PointProps) => {
+						try {
+							const response = await updatePoint(newPoint);
+							const { message } = await response.json();
+							if (response.status !== 200) throw new Error(message);
+							toast.success(message);
+							setTrigger(!trigger);
+							setEditable(false);
+							// router.push("/staff/orders/status");
+						} catch (err: any) {
+							toast.error(err.message);
+						}
 					}}
 					editable={editable}
 				/>

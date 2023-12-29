@@ -4,7 +4,6 @@ import { Order } from "@/app/staff/components";
 import { OrderProps } from "@/app/staff/types/Order/orders";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "antd";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
@@ -39,7 +38,6 @@ export default function Page({
 		orderId: string;
 	};
 }) {
-	const router = useRouter();
 	const [trigger, setTrigger] = useState(false);
 	const { orderId } = params;
 	const { isPending, error, data } = useQuery({

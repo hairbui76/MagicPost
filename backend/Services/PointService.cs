@@ -91,7 +91,7 @@ public class PointService : IPointService
 	public async Task UpdateAsync(Guid id, UpdatePointModel model)
 	{
 		Point point = await GetPointByIdAsync(id) ?? throw new AppException(HttpStatusCode.NotFound, "Point not found");
-		_mapper.Map(model, point);
+		point = _mapper.Map(model, point);
 		_pointsRepository.Update(point);
 		_webAPIDataContext.SaveChanges();
 	}

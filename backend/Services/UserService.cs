@@ -52,7 +52,8 @@ public class UserService : IUserService
 		{
 			users = _usersRepository.Where(u => u.Role == role);
 		}
-		List<PublicUserInfo> result = await users.Select(o => o.GetPublicInfo())
+		List<PublicUserInfo> result = await users.OrderBy(u => u.Role)
+												.Select(o => o.GetPublicInfo())
 												.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
 												.Take((int)Pagination.PAGESIZE)
 												.ToListAsync();

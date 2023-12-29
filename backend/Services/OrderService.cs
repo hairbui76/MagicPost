@@ -59,7 +59,8 @@ public class OrderService : IOrderService
 		{
 			orders = orders.Where(o => DateTime.Compare(o.CreatedAt, startDate.Value) > 0);
 		}
-		List<PublicOrderInfo> result = await orders.Select(o => o.GetPublicOrderInfo())
+		List<PublicOrderInfo> result = await orders.OrderByDescending(o => o.CreatedAt)
+												.Select(o => o.GetPublicOrderInfo())
 												.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
 												.Take((int)Pagination.PAGESIZE)
 												.ToListAsync();

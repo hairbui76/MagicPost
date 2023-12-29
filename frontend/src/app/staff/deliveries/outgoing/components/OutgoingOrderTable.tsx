@@ -60,8 +60,9 @@ export default function OutgoingOrderTable() {
 		ward: "",
 	});
 	const [filterToggle, setFilterToggle] = useState(false);
+	const [trigger, setTrigger] = useState(false);
 	const { isLoading, error, data } = useQuery({
-		queryKey: ["outgoing", filterToggle, pageNumber],
+		queryKey: ["outgoing", filterToggle, pageNumber, trigger],
 		queryFn: () =>
 			filterOutgoingOrders(
 				pageNumber,
@@ -76,6 +77,7 @@ export default function OutgoingOrderTable() {
 	if (isLoading) return <Skeleton active />;
 
 	if (error) toast.error(error.message);
+	console.log(data?.data.totalPage);
 	return (
 		<div className="flex flex-col gap-4">
 			<DeliveryOrderFilter
@@ -95,7 +97,18 @@ export default function OutgoingOrderTable() {
 				selected={!!selectedOrders.length}
 				rejectReason={rejectReason}
 				setRejectReason={setRejectReason}
-				onConfirm={() => confirmOrders(selectedOrders, "outgoing")}
+				onConfirm={async () => {
+					try {
+						const response = await confirmOrders(selectedOrders, "outgoing");
+						const { message } = await response.json();
+						if (response.status === 200) {
+							toast.success(message);
+							setTrigger(!trigger);
+						} else toast.error(message);
+					} catch (err: any) {
+						toast.error(err);
+					}
+				}}
 				onReject={() => rejectOrders(selectedOrders, rejectReason, "outgoing")}
 			/>
 			<Table columnHeadings={["", "ID", "Arrived At", "Next Point"]}>

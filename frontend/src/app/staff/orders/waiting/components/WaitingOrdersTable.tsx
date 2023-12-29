@@ -50,7 +50,9 @@ async function confirmOrders(orders: Array<string>) {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(orders),
+				body: JSON.stringify({
+					orders,
+				}),
 			}
 		).then(async (response) => {
 			if (response.status !== 200) {
@@ -68,7 +70,7 @@ async function confirmOrders(orders: Array<string>) {
 	}
 }
 
-async function rejectOrders(orders: Array<string>) {
+async function rejectOrders(orders: Array<string>, rejectReason: string) {
 	try {
 		const json = await fetch(
 			`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/waiting/reject`,
@@ -78,7 +80,7 @@ async function rejectOrders(orders: Array<string>) {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(orders),
+				body: JSON.stringify({ orders, reason: rejectReason }),
 			}
 		).then(async (response) => {
 			if (response.status !== 200) {
@@ -147,7 +149,7 @@ export default function WaitingOrderTable() {
 				rejectReason={rejectReason}
 				setRejectReason={setRejectReason}
 				onConfirm={() => confirmOrders(selectedOrders)}
-				onReject={() => rejectOrders(selectedOrders)}
+				onReject={() => rejectOrders(selectedOrders, rejectReason)}
 			/>
 			<Table columnHeadings={["", "ID", "Created At", "Receiver", "Type"]}>
 				{data?.data.data.map((order: OrderProps) => {

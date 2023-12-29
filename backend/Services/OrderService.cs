@@ -299,7 +299,7 @@ public class OrderService : IOrderService
 	public async Task UpdateAsync(Guid id, UpdateOrderModel model)
 	{
 		Order? order = await _ordersRepository.Where(o => o.Id == id).FirstOrDefaultAsync() ?? throw new AppException(HttpStatusCode.NotFound, "Order not found!");
-		_mapper.Map(model, order);
+		order = _mapper.Map(model, order);
 		_ordersRepository.Update(order);
 		_webAPIDataContext.SaveChanges();
 	}

@@ -53,8 +53,6 @@ public class OrderController : ControllerBase
 
 	[HttpPut("{id}")]
 	[VerifyToken]
-	[VerifyOwner]
-	[VerifyRole(Role.TRANSACTION_STAFF, Role.GATHERING_STAFF)]
 	public async Task<IActionResult> UpdateAsync(Guid id, UpdateOrderModel model)
 	{
 		await _orderService.UpdateAsync(id, model);
@@ -81,6 +79,7 @@ public class OrderController : ControllerBase
 		return Ok(new Response<DataPagination<PublicOrderInfo>>("Get incoming orders successfully!", ordersIncoming));
 	}
 
+	[HttpPost]
 	[VerifyToken]
 	[VerifyRole(Role.TRANSACTION_STAFF, Role.GATHERING_STAFF)]
 	public async Task<IActionResult> ConfirmIncomingOrdersAsync(List<ConfirmIncomingOrderModel> orders)

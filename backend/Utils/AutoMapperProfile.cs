@@ -56,7 +56,28 @@ public class AutoMapperProfile : Profile
 				.ForMember(order => order.Note, opt => opt.MapFrom(createModel => createModel.ExtraData.Note));
 		// UpdateOrderModel -> Order
 		CreateMap<UpdateOrderModel, Order>()
-				.ForAllMembers(x => x.Condition(IgnoreNullAndEmptyString));
+				.ForMember(order => order.SenderName, opt => opt.MapFrom(updateModel => updateModel.Sender.Name))
+				.ForMember(order => order.SenderAddress, opt => opt.MapFrom(updateModel => updateModel.Sender.Address.Name))
+				.ForMember(order => order.SenderAddressLat, opt => opt.MapFrom(updateModel => updateModel.Sender.Address.Lat))
+				.ForMember(order => order.SenderAddressLong, opt => opt.MapFrom(updateModel => updateModel.Sender.Address.Long))
+				.ForMember(order => order.SenderProvince, opt => opt.MapFrom(updateModel => updateModel.Sender.Address.Province))
+				.ForMember(order => order.SenderDistrict, opt => opt.MapFrom(updateModel => updateModel.Sender.Address.District))
+				.ForMember(order => order.SenderWard, opt => opt.MapFrom(updateModel => updateModel.Sender.Address.Ward))
+				.ForMember(order => order.SenderPhone, opt => opt.MapFrom(updateModel => updateModel.Sender.Phone))
+				.ForMember(order => order.ReceiverName, opt => opt.MapFrom(updateModel => updateModel.Receiver.Name))
+				.ForMember(order => order.ReceiverAddress, opt => opt.MapFrom(updateModel => updateModel.Receiver.Address.Name))
+				.ForMember(order => order.ReceiverAddressLat, opt => opt.MapFrom(updateModel => updateModel.Receiver.Address.Lat))
+				.ForMember(order => order.ReceiverAddressLong, opt => opt.MapFrom(updateModel => updateModel.Receiver.Address.Long))
+				.ForMember(order => order.ReceiverProvince, opt => opt.MapFrom(updateModel => updateModel.Receiver.Address.Province))
+				.ForMember(order => order.ReceiverDistrict, opt => opt.MapFrom(updateModel => updateModel.Receiver.Address.District))
+				.ForMember(order => order.ReceiverWard, opt => opt.MapFrom(updateModel => updateModel.Receiver.Address.Ward))
+				.ForMember(order => order.ReceiverPhone, opt => opt.MapFrom(updateModel => updateModel.Receiver.Phone))
+				.ForMember(order => order.Items, opt => opt.MapFrom(updateModel => updateModel.PackageInfo.Items))
+				.ForMember(order => order.Type, opt => opt.MapFrom(updateModel => updateModel.PackageInfo.Type))
+				.ForMember(order => order.Properties, opt => opt.MapFrom(updateModel => string.Join("-", updateModel.PackageInfo.Properties)))
+				.ForMember(order => order.Cod, opt => opt.MapFrom(updateModel => updateModel.ExtraData.Cod))
+				.ForMember(order => order.Payer, opt => opt.MapFrom(updateModel => updateModel.ExtraData.Payer == "sender" ? PayType.SENDER : PayType.RECEIVER))
+				.ForMember(order => order.Note, opt => opt.MapFrom(updateModel => updateModel.ExtraData.Note));
 		// CreateDeliveryModel -> Delivery
 		CreateMap<CreateDeliveryModel, Delivery>();
 	}

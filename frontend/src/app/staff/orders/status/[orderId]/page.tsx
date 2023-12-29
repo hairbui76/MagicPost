@@ -5,6 +5,7 @@ import { OrderProps } from "@/app/staff/types/Order/orders";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "antd";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "react-toastify";
 
 async function fetchOrder(orderId: string) {
@@ -23,29 +24,12 @@ async function fetchOrder(orderId: string) {
 }
 
 async function updateOrder(order: OrderProps) {
-	console.log(order);
-	try {
-		toast.info(`Updating order ${order.id}`);
-		await fetch(
-			`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/update/${order.id}`,
-			{
-				credentials: "include",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(order),
-				method: "PUT",
-			}
-		).then(async (response) => {
-			const message = await Promise.resolve(response.json()).then(
-				(json) => json.message
-			);
-			if (response.status !== 200) {
-				throw new Error(message);
-			}
-			toast.success(message);
-		});
-	} catch (error: any) {
-		toast.error(error.message);
-	}
+	return fetch(`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/update/${order.id}`, {
+		credentials: "include",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(order),
+		method: "PUT",
+	});
 }
 
 export default function Page({
@@ -56,9 +40,10 @@ export default function Page({
 	};
 }) {
 	const router = useRouter();
+	const [trigger, setTrigger] = useState(false);
 	const { orderId } = params;
 	const { isPending, error, data } = useQuery({
-		queryKey: ["order-by-id", orderId],
+		queryKey: ["order-by-id", orderId, trigger],
 		queryFn: () => fetchOrder(orderId),
 	});
 
@@ -72,8 +57,17 @@ export default function Page({
 		return (
 			<Order
 				order={order}
-				handleSubmit={(newOrder: OrderProps) => {
-					updateOrder(newOrder);
+				handleSubmit={async (newOrder: OrderProps) => {
+					try {
+						const response = await updateOrder(newOrder);
+						const { message } = await response.json();
+						if (response.status !== 200) throw new Error(message);
+						toast.success(message);
+						setTrigger(!trigger);
+						// router.push("/staff/orders/status");
+					} catch (err: any) {
+						toast.error(err.message);
+					}
 				}}
 			/>
 		);

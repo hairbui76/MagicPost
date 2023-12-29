@@ -1,10 +1,14 @@
 "use client";
 
+import { AppContext } from "@/contexts";
+import { AppContextProps } from "@/contexts/AppContext";
 import Link from "next/link";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 export default function SearchBar() {
 	const [inputValue, setInputValue] = useState("");
+	const { user } = useContext(AppContext) as AppContextProps;
+	console.log(user);
 	return (
 		<div className="dropdown w-1/2 mx-auto">
 			<input
@@ -23,12 +27,34 @@ export default function SearchBar() {
 					<li>
 						<Link
 							className="hover:text-custom-text-color"
-							href={"/orders/status/" + inputValue}
+							href={"/staff/orders/status/" + inputValue}
 							onClick={() => setInputValue("")}
 						>
 							Order: <span className="text-[#256EFF]">{inputValue}</span>
 						</Link>
 					</li>
+					{user?.role.endsWith("STAFF") ? null : (
+						<li>
+							<Link
+								className="hover:text-custom-text-color"
+								href={"/staff/management/staffs/" + inputValue}
+								onClick={() => setInputValue("")}
+							>
+								Staff: <span className="text-[#256EFF]">{inputValue}</span>
+							</Link>
+						</li>
+					)}
+					{user?.role !== "COMPANY_ADMINISTRATOR" ? null : (
+						<li>
+							<Link
+								className="hover:text-custom-text-color"
+								href={"/staff/management/points/" + inputValue}
+								onClick={() => setInputValue("")}
+							>
+								Point: <span className="text-[#256EFF]">{inputValue}</span>
+							</Link>
+						</li>
+					)}
 				</ul>
 			) : null}
 		</div>

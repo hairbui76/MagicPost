@@ -80,5 +80,5 @@ export default function Page({
 		);
 	}
 
-	return "Not found";
+	return "Order not found";
 }

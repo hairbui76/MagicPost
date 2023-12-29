@@ -6,7 +6,7 @@ export default function Table({
 	children: React.ReactNode[];
 }) {
 	return (
-		<div className="flex flex-col gap-4 w-full">
+		<div className="flex flex-col gap-4 w-full overflow-x-auto">
 			<table className="table table-sm overflow-x-auto bg-custom-white rounded-md shadow-md w-full">
 				<thead className="text-custom-text-color">
 					<tr className="border-b-2 border-custom-grey">

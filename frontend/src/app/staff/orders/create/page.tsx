@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Order from "../../components/Order/Order";
 import { OrderProps } from "../../types/Order/orders";
@@ -13,6 +14,7 @@ async function getPlaceDetail(placeId: string) {
 }
 
 export default function Page() {
+	const router = useRouter();
 	async function handleSubmit(order: OrderProps) {
 		const itemsWithoutID = order.packageInfo.items.map(
 			({ name, quantity, weight, value }) => {
@@ -55,6 +57,7 @@ export default function Page() {
 		const response = await res.json();
 		if (res.status === 200) {
 			toast.success(response.message);
+			router.push("status");
 		} else {
 			toast.error(response.message);
 		}

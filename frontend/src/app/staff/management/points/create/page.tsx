@@ -1,9 +1,9 @@
 "use client";
 
+import Title from "@/components/Title/Title";
 import { toast } from "react-toastify";
 import { PointProps } from "../../../utils/points";
 import Point from "../components/Point";
-import Title from "@/components/Title/Title";
 
 async function getPlaceDetail(placeId: string) {
 	const res = await fetch(`/api/address/${placeId}`);
@@ -47,7 +47,7 @@ export default function Page() {
 	return (
 		<>
 			<Title>New Point</Title>
-			<Point handleSubmit={handleSubmit} />
+			<Point handleSubmit={handleSubmit} editable={true} />
 		</>
 	);
 }

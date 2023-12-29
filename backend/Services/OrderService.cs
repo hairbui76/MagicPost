@@ -237,9 +237,10 @@ public class OrderService : IOrderService
 
 	public async Task<PublicOrderInfo?> GetAsyncById(Guid id)
 		 => await _ordersRepository
-					 .Include(o => o.Items)
-					 .Select(o => o.GetPublicOrderInfo())
-					 .FirstOrDefaultAsync();
+					.Where(o => o.Id == id)
+					.Include(o => o.Items)
+					.Select(o => o.GetPublicOrderInfo())
+					.FirstOrDefaultAsync();
 
 	public async Task<List<OrderHistory>> GetOrderHistoryAsyncById(Guid id)
 	{

@@ -1,3 +1,4 @@
+"use client";
 import SubMenu from "./SubMenu";
 import MenuItem from "./MenuItem";
 import {
@@ -9,7 +10,11 @@ import {
 	faBuilding,
 	IconDefinition,
 	faClockRotateLeft,
+	faHourglassStart,
 } from "@fortawesome/free-solid-svg-icons";
+import { useContext } from "react";
+import { AppContext } from "@/contexts";
+import { AppContextProps } from "@/contexts/AppContext";
 
 export default function Menu() {
 	const getMenuItemProps = (
@@ -19,9 +24,11 @@ export default function Menu() {
 	): { label: string; path: string; icon: IconDefinition | null } => {
 		return { label, path, icon };
 	};
+	const { user } = useContext(AppContext) as AppContextProps;
 	const orderItems = [
 		getMenuItemProps("Create", "/staff/orders/create", faFolderPlus),
 		getMenuItemProps("Status", "/staff/orders/status", faListCheck),
+		getMenuItemProps("Waiting", "/staff/orders/waiting", faHourglassStart),
 	].map((props) => <MenuItem {...props} key={props.path} />);
 
 	const deliveryItems = [
@@ -42,12 +49,18 @@ export default function Menu() {
 		getMenuItemProps("Points", "/staff/management/points", faBuilding),
 	].map((props) => <MenuItem {...props} key={props.path} />);
 
-	return (
+	return user ? (
 		<ul className="menu w-full rounded-box">
 			<MenuItem label="Dashboard" path="/staff" />
 			<SubMenu label="Orders">{orderItems}</SubMenu>
 			<SubMenu label="Deliveries">{deliveryItems}</SubMenu>
-			<SubMenu label="Management">{managementItems}</SubMenu>
+			{!user.role.endsWith("STAFF") ? (
+				<SubMenu label="Management">
+					{user.role === "COMPANY_ADMINISTRATOR"
+						? managementItems
+						: managementItems.slice(0, 1)}
+				</SubMenu>
+			) : null}
 		</ul>
-	);
+	) : null;
 }

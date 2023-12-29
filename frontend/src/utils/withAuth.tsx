@@ -48,8 +48,19 @@ function withAuth(
 				toast.error("You must login first before performing this action");
 				router.push("/login");
 			} else if (data && data.user) {
-				toast.success(data.message);
 				setUser(data.user);
+				const role = data.user.role;
+				if (
+					(pathname.includes("staffs") && role.endsWith("STAFF")) ||
+					(pathname.includes("points") && role !== "COMPANY_ADMINISTRATOR")
+				) {
+					toast.warning(
+						"You do not have the permission for this functionality!"
+					);
+					router.push("/staff");
+				} else {
+					toast.success(data.message);
+				}
 			}
 		}, [isPending, data, router, pathname, setUser]);
 

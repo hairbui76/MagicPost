@@ -59,9 +59,7 @@ export default function Page() {
 
 	if (error) toast.error(error.message);
 
-	console.log(data);
-
-	if (data.data) {
+	if (data) {
 		const { id, role, name, username, email, phoneNumber, pointId, point } =
 			data.data;
 		const staff: CreateStaffProps = {
@@ -106,4 +104,5 @@ export default function Page() {
 			</>
 		);
 	}
+	return "Staff not found";
 }

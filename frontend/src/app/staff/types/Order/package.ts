@@ -34,6 +34,16 @@ export const PACKAGE_PROPERTIES = [
 	"Thermal Sensitive",
 ] as const;
 
+export const PACKAGE_PROPERTIES_VI = [
+	"Giá trị cao",
+	"Dễ vỡ",
+	"Tải trọng lớn",
+	"Hàng quá khổ",
+	"Chất lỏng",
+	"Chứa từ tính",
+	"Nhạy cảm với nhiệt",
+] as const;
+
 export type PackageProperties = (typeof PACKAGE_PROPERTIES)[number];
 
 export type PackagePropertiesProps = {

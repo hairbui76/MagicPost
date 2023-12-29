@@ -1,5 +1,6 @@
 "use client";
 
+import { Address } from "@/app/staff/utils/orders";
 import SummaryTable from "@/components/SummaryTable";
 import StaffContext, { StaffContextProps } from "@/contexts/StaffContext";
 import { useQuery } from "@tanstack/react-query";
@@ -7,7 +8,6 @@ import { Skeleton } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import StaffFilter from "./StaffFilter";
-import { Address } from "@/app/staff/utils/orders";
 
 async function filterStaffs(
 	pageNumber: number,

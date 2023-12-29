@@ -54,7 +54,7 @@ public class OrderController : ControllerBase
 	[HttpPut("{id}")]
 	[VerifyToken]
 	[VerifyOwner]
-	[VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF)]
+	[VerifyRole(Role.TRANSACTION_STAFF, Role.GATHERING_STAFF)]
 	public async Task<IActionResult> UpdateAsync(Guid id, UpdateOrderModel model)
 	{
 		await _orderService.UpdateAsync(id, model);
@@ -73,7 +73,7 @@ public class OrderController : ControllerBase
 
 	[HttpGet]
 	[VerifyToken]
-	[VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF, Role.GATHERING_POINT_MANAGER, Role.TRANSACTION_POINT_MANAGER)]
+	[VerifyRole(Role.TRANSACTION_STAFF, Role.GATHERING_STAFF, Role.GATHERING_POINT_MANAGER, Role.TRANSACTION_POINT_MANAGER)]
 	public async Task<ActionResult<Response<DataPagination<PublicOrderInfo>>>> GetIncomingOrdersAsync(string? province, string? district, DateTime? startDate, DateTime? endDate, int pageNumber)
 	{
 		User user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");
@@ -84,7 +84,7 @@ public class OrderController : ControllerBase
 	[HttpPut("{id}")]
 	[VerifyToken]
 	[VerifyOwner]
-	[VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF)]
+	[VerifyRole(Role.TRANSACTION_STAFF, Role.GATHERING_STAFF)]
 	public async Task<IActionResult> ConfirmIncomingOrdersAsync(List<ConfirmIncomingOrderModel> orders)
 	{
 		User? user = (User?)HttpContext.Items["user"];
@@ -94,7 +94,7 @@ public class OrderController : ControllerBase
 
 	[HttpGet]
 	[VerifyToken]
-	[VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF, Role.GATHERING_POINT_MANAGER, Role.TRANSACTION_POINT_MANAGER)]
+	[VerifyRole(Role.TRANSACTION_STAFF, Role.GATHERING_STAFF, Role.GATHERING_POINT_MANAGER, Role.TRANSACTION_POINT_MANAGER)]
 	public async Task<ActionResult<Response<DataPagination<PublicOrderInfo>>>> GetOutgoingOrdersAsync(string? province, string? district, int pageNumber)
 	{
 		User? user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");
@@ -104,7 +104,7 @@ public class OrderController : ControllerBase
 
 	[HttpPost]
 	[VerifyToken]
-	[VerifyRole(Role.TRANSACION_STAFF, Role.GATHERING_STAFF, Role.GATHERING_POINT_MANAGER, Role.TRANSACTION_POINT_MANAGER)]
+	[VerifyRole(Role.TRANSACTION_STAFF, Role.GATHERING_STAFF, Role.GATHERING_POINT_MANAGER, Role.TRANSACTION_POINT_MANAGER)]
 	public async Task<IActionResult> ForwardOrdersAsync(List<Guid> orders)
 	{
 		User? user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");

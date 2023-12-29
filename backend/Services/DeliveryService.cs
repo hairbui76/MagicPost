@@ -13,7 +13,7 @@ public interface IDeliveryService
 	Task<List<Delivery>> GetAsync();
 	Task<Delivery?> GetAsync(Guid id);
 	Task CreateAsync(Delivery newDelivery);
-	Task<List<DeliveryHistory>> GetDeliveryHistory(Guid id, string? type, string? status, int pageNumber);
+	Task<DataPagination<DeliveryHistory>> GetDeliveryHistory(User user, string? type, string? status, int pageNumber);
 }
 
 public class DeliveryServce : IDeliveryService
@@ -44,9 +44,9 @@ public class DeliveryServce : IDeliveryService
 		await _webAPIDataContext.SaveChangesAsync();
 	}
 
-	public async Task<List<DeliveryHistory>> GetDeliveryHistory(Guid id, string? type, string? status, int pageNumber)
+	public async Task<DataPagination<DeliveryHistory>> GetDeliveryHistory(User user, string? type, string? status, int pageNumber)
 	{
-		Point? currentPoint = _webAPIDataContext.Points.FirstOrDefault(p => p.Id == id);
+		Point? currentPoint = _webAPIDataContext.Points.FirstOrDefault(p => p.Id == user.PointId);
 		var relatedDelivery = await _deliveriesRepository.Where(d => d.FromPointId == currentPoint!.Id || d.ToPointId == currentPoint.Id)
 												.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
 												.Take((int)Pagination.PAGESIZE)
@@ -61,6 +61,6 @@ public class DeliveryServce : IDeliveryService
 		{
 			deliveryHistory = deliveryHistory.Where(d => d.Status == status).ToList();
 		}
-		return deliveryHistory;
+		return null;
 	}
 }

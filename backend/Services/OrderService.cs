@@ -59,7 +59,8 @@ public class OrderService : IOrderService
 		{
 			orders = orders.Where(o => DateTime.Compare(o.CreatedAt, startDate.Value) > 0);
 		}
-		List<PublicOrderInfo> result = await orders.Select(o => o.GetPublicOrderInfo())
+		List<PublicOrderInfo> result = await orders.OrderByDescending(o => o.CreatedAt)
+												.Select(o => o.GetPublicOrderInfo())
 												.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
 												.Take((int)Pagination.PAGESIZE)
 												.ToListAsync();
@@ -126,8 +127,10 @@ public class OrderService : IOrderService
 	{
 		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId) ?? throw new AppException(HttpStatusCode.NotFound, "The point you belong to not found!");
 
-		List<Order> orders = await _ordersRepository
-						.Where(o => o.CurrentPointId == currentPoint.Id && o.Status == OrderState.PENDING)
+		var query = _ordersRepository
+						.Where(o => o.CurrentPointId == currentPoint.Id && o.Status == OrderState.PENDING);
+		int count = query.Count();
+		List<Order> orders = await query
 						.Skip((int)Pagination.PAGESIZE * (pageNumber - 1))
 						.Take((int)Pagination.PAGESIZE)
 						.ToListAsync();
@@ -161,7 +164,7 @@ public class OrderService : IOrderService
 				if (nextPoint.District == district) ordersToGo.Add(ord.GetPublicOrderInfo());
 			}
 		});
-		return new DataPagination<PublicOrderInfo>(ordersToGo, ordersToGo.Count, pageNumber);
+		return new DataPagination<PublicOrderInfo>(ordersToGo, count, pageNumber);
 	}
 
 	public async Task<bool> ForwardOrdersAsync(User user, List<Guid> orderIds)
@@ -177,33 +180,44 @@ public class OrderService : IOrderService
 				State = DeliveryState.DELIVERING
 			};
 			order.Status = OrderState.DELIVERING;
+			// Check if current point is transaction
 			if (currentPoint.Type == PointType.TRANSACTION_POINT)
 			{
+				// Check if receiver province equals to current point province
+				// => So that delivery inside province (district -> district)
+				// => So that delivery from transaction to transaction
 				if (order.SenderProvince == currentPoint.Province)
 				{
 					Point toPoint = _webAPIDataContext.Points
-						.FirstOrDefault(p => p.Province == currentPoint.Province && p.Type == PointType.GATHERING_POINT) ?? throw new AppException("Destination transaction to gathering not supported");
+						.FirstOrDefault(p => p.Province == currentPoint.Province && p.Type == PointType.TRANSACTION_POINT) ?? throw new AppException("Cannot find destination transaction point (district transaction -> district transaction)");
 					newDelivery.ToPointId = toPoint.Id;
 				}
-				else if (order.SenderDistrict == currentPoint.District)
-				{
-					Point toPoint = _webAPIDataContext.Points
-						.FirstOrDefault(p => p.District == currentPoint.District && p.Type == PointType.TRANSACTION_POINT) ?? throw new AppException("Destination transaction to transaction not supported");
-					newDelivery.ToPointId = toPoint.Id;
-				}
-			}
-			else
-			{
-				if (order.ReceiverProvince == currentPoint.Province)
-				{
-					Point toPoint = _webAPIDataContext.Points
-						.FirstOrDefault(p => p.District == order.ReceiverDistrict && p.Type == PointType.TRANSACTION_POINT) ?? throw new AppException("Destination gathering to transaction not supported");
-					newDelivery.ToPointId = toPoint.Id;
-				}
+				// Else it will be delivery outside province (province -> province)
+				// => So first create deliver from district transaction to province gathering
 				else
 				{
 					Point toPoint = _webAPIDataContext.Points
-						.FirstOrDefault(p => p.Type == PointType.GATHERING_POINT && p.Province == order.ReceiverProvince) ?? throw new AppException("Destination gathering to gathering point not supported");
+						.FirstOrDefault(p => p.Province == currentPoint.Province && p.Type == PointType.GATHERING_POINT) ?? throw new AppException("Cannot find destination gathering point (district transaction -> province transaction)");
+					newDelivery.ToPointId = toPoint.Id;
+				}
+			}
+			// Now current point is gathering
+			else
+			{
+				// Check if receiver province equals to current point province
+				// => So that delivery from province gathering to district transaction
+				if (order.ReceiverProvince == currentPoint.Province)
+				{
+					Point toPoint = _webAPIDataContext.Points
+						.FirstOrDefault(p => p.District == order.ReceiverDistrict && p.Type == PointType.TRANSACTION_POINT) ?? throw new AppException("Cannot find destination transaction point (province gathering -> district transaction)");
+					newDelivery.ToPointId = toPoint.Id;
+				}
+				// Now receiver province not equals to current point province
+				// => So that delivery from province gathering to province gathering
+				else
+				{
+					Point toPoint = _webAPIDataContext.Points
+						.FirstOrDefault(p => p.Province == order.ReceiverProvince && p.Type == PointType.GATHERING_POINT) ?? throw new AppException("Cannot find destination transaction point (province gathering -> district transaction)");
 					newDelivery.ToPointId = toPoint.Id;
 				}
 			}
@@ -223,9 +237,10 @@ public class OrderService : IOrderService
 
 	public async Task<PublicOrderInfo?> GetAsyncById(Guid id)
 		 => await _ordersRepository
-					 .Include(o => o.Items)
-					 .Select(o => o.GetPublicOrderInfo())
-					 .FirstOrDefaultAsync();
+					.Where(o => o.Id == id)
+					.Include(o => o.Items)
+					.Select(o => o.GetPublicOrderInfo())
+					.FirstOrDefaultAsync();
 
 	public async Task<List<OrderHistory>> GetOrderHistoryAsyncById(Guid id)
 	{

@@ -28,9 +28,11 @@ public class Delivery : Model
 	}
 	public List<DeliveryHistory> GetOperationDeliveryHistory()
 	{
-		List<DeliveryHistory> history = new List<DeliveryHistory>();
-		history.Add(new DeliveryHistory() { OrderId = OrderId, Point = ToPoint!.ToString(), Type = "outgoing", Status = "pending", Reason = "", Time = CreatedAt });
-		history.Add(new DeliveryHistory() { OrderId = OrderId, Point = FromPoint!.ToString(), Status = "incoming", Reason = "", Time = CreatedAt });
+		List<DeliveryHistory> history = new()
+		{
+			new DeliveryHistory() { OrderId = OrderId, Point = ToPoint!.ToString(), Type = "outgoing", Status = "pending", Reason = "", Time = CreatedAt },
+			new DeliveryHistory() { OrderId = OrderId, Point = FromPoint!.ToString(), Status = "incoming", Reason = "", Time = CreatedAt }
+		};
 		if (State == DeliveryState.UNSUCCESS)
 		{
 			history.Add(new DeliveryHistory() { OrderId = OrderId, Point = ToPoint.ToString(), Type = "outgoing", Status = "rejected", Reason = "Your package couldn't reach the target point!", Time = ReceiveTime });

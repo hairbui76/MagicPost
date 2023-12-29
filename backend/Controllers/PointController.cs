@@ -31,7 +31,7 @@ public class PointController : ControllerBase
 
 	[HttpGet]
 	[VerifyToken]
-	public async Task<ActionResult<Response<DataPagination<PublicPointInfo>>>> FilterAsync(int pageNumber, string? province, string district, string ward, PointType? type)
+	public async Task<ActionResult<Response<DataPagination<PublicPointInfo>>>> FilterAsync(int pageNumber, string? province, string? district, string? ward, PointType? type)
 	{
 		DataPagination<PublicPointInfo> points = await _pointService.FilterAsync(pageNumber, province, district, ward, type);
 		return Ok(new Response<DataPagination<PublicPointInfo>>("Get points successfully", points));

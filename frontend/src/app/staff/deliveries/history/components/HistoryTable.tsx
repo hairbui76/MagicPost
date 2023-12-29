@@ -1,16 +1,16 @@
 "use client";
 
 import { DeliveryHistoryProps } from "@/app/staff/utils/deliveries";
-import { useQuery } from "@tanstack/react-query";
-import { toast } from "react-toastify";
-import HistoryItem from "./HistoryItem";
-import uniqid from "uniqid";
-import { useState } from "react";
-import HistoryFilter from "./HistoryFilter";
-import { Moment } from "moment";
-import Table from "@/components/legacy/Table/Table";
 import { Address } from "@/app/staff/utils/orders";
 import Pagination from "@/components/Pagination/Pagination";
+import Table from "@/components/legacy/Table/Table";
+import { useQuery } from "@tanstack/react-query";
+import { Moment } from "moment";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import uniqid from "uniqid";
+import HistoryFilter from "./HistoryFilter";
+import HistoryItem from "./HistoryItem";
 
 async function filterHistory(
 	pageNumber: number,
@@ -34,11 +34,9 @@ async function filterHistory(
 	if (ward) filter[`province`] = ward;
 
 	return fetch(
-		`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/history?` +
+		`${process.env.NEXT_PUBLIC_DELIVERY_ENDPOINT}/getDeliveryHistory?` +
 			new URLSearchParams(filter),
-		{
-			credentials: "include",
-		}
+		{ credentials: "include" }
 	).then(async (res) => {
 		if (res.status !== 200) {
 			const json = await res.json();

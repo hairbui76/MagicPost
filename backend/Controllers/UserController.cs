@@ -1,3 +1,4 @@
+using System.Net;
 using AutoMapper;
 using MagicPostApi.Configs;
 using MagicPostApi.Enums;
@@ -55,12 +56,10 @@ public class UserController : ControllerBase
 	// [VerifyOwner]
 	[VerifyToken]
 	// [VerifyRole(Role.COMPANY_ADMINISTRATOR)]
-	public async Task<ActionResult<User>> GetAsync(Guid id)
+	public async Task<ActionResult<Response<PublicUserInfo>>> GetAsync(Guid id)
 	{
-		var user = await _userService.GetAsyncById(id);
-		if (user == null)
-			return NotFound(new { message = "User not found" });
-		return user;
+		PublicUserInfo user = await _userService.GetAsyncById(id) ?? throw new AppException(HttpStatusCode.NotFound, "User not found");
+		return new Response<PublicUserInfo>("Get users successfully", user);
 	}
 
 	[HttpPut("{id}")]
@@ -78,7 +77,7 @@ public class UserController : ControllerBase
 	{
 		User user = _mapper.Map<User>(model);
 		user.Password = Password.Hash(user.Password);
-		user.Role = Role.TRANSACION_STAFF;
+		user.Role = Role.TRANSACTION_STAFF;
 		await _userService.CreateAsync(user);
 		return CreatedAtAction(nameof(GetAsync), new { id = user.Id }, new { message = "Create transaction staff successfully!", user });
 	}

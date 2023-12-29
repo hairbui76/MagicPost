@@ -28,5 +28,5 @@ export default function Page() {
 			toast.error(response.message);
 		}
 	}
-	return <Staff handleSubmit={handleSubmit} />;
+	return <Staff handleSubmit={handleSubmit} editable={true} />;
 }

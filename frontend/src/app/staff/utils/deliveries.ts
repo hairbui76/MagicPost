@@ -136,24 +136,19 @@ export async function confirmOrders(
 	selectedOrders: Array<string>,
 	mode: "incoming" | "outgoing"
 ) {
-	try {
-		const json = await fetch(
-			`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/${
-				mode === "incoming" ? "confirmIncomingOrders" : "forwardOrders"
-			}`,
-			{
-				credentials: "include",
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(selectedOrders),
-			}
-		).then((response) => response.json());
-		return json;
-	} catch (err) {
-		throw err;
-	}
+	return fetch(
+		`${process.env.NEXT_PUBLIC_ORDER_ENDPOINT}/${
+			mode === "incoming" ? "confirmIncomingOrders" : "forwardOrders"
+		}`,
+		{
+			credentials: "include",
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(selectedOrders),
+		}
+	);
 }
 
 export async function rejectOrders(

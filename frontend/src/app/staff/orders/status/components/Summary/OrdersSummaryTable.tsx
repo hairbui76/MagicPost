@@ -37,12 +37,24 @@ async function filterOrders(
 
 const columnHeadings = [
 	{
-		label: "ID",
-		value: "id",
-	},
-	{
 		label: "Created At",
 		value: "createdAt",
+	},
+	{
+		label: "Sender",
+		value: "sender.name",
+	},
+	{
+		label: "From",
+		value: "sender.address.name",
+	},
+	{
+		label: "Receiver",
+		value: "receiver.name",
+	},
+	{
+		label: "To",
+		value: "receiver.address.name",
 	},
 	{
 		label: "Category",

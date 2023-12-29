@@ -16,8 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 			// Set PropertyNamingPolicy to null for remaining properties naming policy
 			// Can be set to CamelCase instead of null
 			.AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null)
-			// Then Ignore cycle during Serialization
-			.AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
+			.AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
 			// Response json serialization always lowercase the first character
 			.AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver())
 			// Serialize enum

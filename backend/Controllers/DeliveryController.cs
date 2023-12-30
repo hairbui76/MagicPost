@@ -12,7 +12,7 @@ namespace MagicPostApi.Controllers;
 [ApiController]
 [Route("[controller]/[action]")]
 [VerifyToken]
-[VerifyRole(Role.COMPANY_ADMINISTRATOR, Role.TRANSACTION_POINT_MANAGER, Role.TRANSACTION_STAFF)]
+[VerifyRole(Role.COMPANY_ADMINISTRATOR, Role.TRANSACTION_POINT_MANAGER, Role.TRANSACTION_STAFF, Role.GATHERING_STAFF)]
 public class DeliveryController : ControllerBase
 {
 	private readonly IMapper _mapper;
@@ -45,6 +45,7 @@ public class DeliveryController : ControllerBase
 
 	[HttpGet]
 	[VerifyToken]
+	[VerifyRole(Role.COMPANY_ADMINISTRATOR, Role.TRANSACTION_POINT_MANAGER, Role.TRANSACTION_STAFF, Role.GATHERING_STAFF)]
 	public async Task<ActionResult<DataPagination<DeliveryHistory>>> GetDeliveryHistory(int pageNumber, string? type, string? status)
 	{
 		User user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");

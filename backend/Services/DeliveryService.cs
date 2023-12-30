@@ -59,6 +59,18 @@ public class DeliveryServce : IDeliveryService
 		{
 			deliveryHistory = deliveryHistory.Where(d => d.Status == status).ToList();
 		}
+		deliveryHistory.ForEach( his => {
+			Point? targetPoint = _webAPIDataContext.Points.FirstOrDefault( p => p.Id == new Guid(his.Point));
+			Order? order = _webAPIDataContext.Orders.FirstOrDefault(o => o.Id == his.OrderId);
+			if ( his.Type == "outgoing" && order?.ReceiverProvince == currentPoint?.Province && order?.ReceiverDistrict == currentPoint?.District ) 
+			{
+				his.Point = "Delivering To User";
+			}
+			else 
+			{
+				his.Point = targetPoint?.PointName;
+			}
+		});
 		deliveryHistory = deliveryHistory.Skip((int)Pagination.PAGESIZE * (pageNumber - 1)).Take((int)Pagination.PAGESIZE).ToList();
 		return new DataPagination<DeliveryHistory>(deliveryHistory, deliveryHistory.Count, pageNumber);
 	}

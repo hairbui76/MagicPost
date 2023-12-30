@@ -169,8 +169,8 @@ public class UpdateOrderModel : Model
 	public Guid? CurrentPointId { get; set; }
 }
 
-public class ConfirmIncomingOrderModel
+public class ConfirmIncomingOutgoingOrderModel
 {
-	public Guid? orderId { get; set; }
+	public List<Guid> Orders { get; set; } = new List<Guid>();
 	public bool Confirm { get; set; }
 }

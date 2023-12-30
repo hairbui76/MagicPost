@@ -246,12 +246,10 @@ function createConfirmOrdersFunction(path: string) {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				// body: JSON.stringify({
-				// 	orders,
-				// 	confirm,
-				// 	reason,
-				// }),
-				body: JSON.stringify(orders),
+				body: JSON.stringify({
+					orders,
+					confirm,
+				}),
 			}).then(async (response) => {
 				if (response.status !== 200) {
 					const message = await Promise.resolve(response.json()).then(

@@ -1,37 +1,47 @@
-import HoverNote from "@/app/staff/components/HoverNote/HoverNote";
-import OrderLink from "@/app/staff/components/Order/OrderLink/OrderLink";
 import TableRow from "@/app/staff/components/Table/TableRow";
 import { DeliveryHistoryProps } from "@/app/staff/utils/deliveries";
 import { formatDate } from "@/utils/helper";
 import {
 	faCheck,
-	faXmark,
+	faEye,
 	faHourglassHalf,
+	faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
+
+const destionationTypes: { [key: string]: string } = {
+	GATHERING_POINT: "Gathering Point",
+	TRANSACTION_POINT: "Transaction Point",
+};
 
 export default function HistoryItem({
 	orderId,
 	type,
-	point,
+	destination,
 	time,
 	status,
 	reason,
-	deliveryId,
+	toUser,
 }: DeliveryHistoryProps) {
 	return (
 		<TableRow>
 			<td>
-				<OrderLink id={orderId} />
+				<Link
+					className="mx-auto block w-fit link text-black"
+					href={`/staff/orders/status/${orderId}`}
+				>
+					<FontAwesomeIcon icon={faEye} />
+				</Link>
 			</td>
-			<td>{deliveryId}</td>
 			<td>{type}</td>
-			<td>{point}</td>
+			<td>{destination.pointName}</td>
+			<td>{destination.address}</td>
+			<td>{toUser ? "To User" : destionationTypes[destination.type]}</td>
 			<td>{formatDate(time)}</td>
 			<td>
 				<StatusBadge status={status} />
 			</td>
-			<td>{reason ? <HoverNote note={reason} /> : "-"}</td>
 		</TableRow>
 	);
 }

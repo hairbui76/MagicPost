@@ -18,9 +18,9 @@ public interface IOrderService
 	Task<PublicOrderInfo?> GetAsyncById(Guid id);
 	Task<List<OrderHistory>> GetOrderHistoryAsyncById(Guid id);
 	Task<DataPagination<PublicOrderInfo>> GetIncomingOrdersAsync(User user, string? province, string? district, DateTime? startDate, DateTime? endDate, int pageNumber);
-	Task<bool> ConfirmIncomingOrdersAsync(User user, List<Guid> orders);
+	Task<bool> ConfirmIncomingOrdersAsync(User user, ConfirmIncomingOutgoingOrderModel model);
 	Task<DataPagination<PublicOrderInfo>> GetOutgoingOrdersAsync(User user, string? province, string? district, int pageNumber);
-	Task<bool> ForwardOrdersAsync(User user, List<Guid> orderIds);
+	Task<bool> ForwardOrdersAsync(User user, ConfirmIncomingOutgoingOrderModel model);
 	Task UpdateAsync(Guid id, UpdateOrderModel model);
 	// Task CreateAsync(User user, Order newOrder);
 	Task CreateAsync(Order newOrder);
@@ -102,31 +102,41 @@ public class OrderService : IOrderService
 		return new DataPagination<PublicOrderInfo>(result, orders.Count(), pageNumber);
 	}
 
-	public async Task<bool> ConfirmIncomingOrdersAsync(User user, List<Guid> orders)
+	public async Task<bool> ConfirmIncomingOrdersAsync(User user, ConfirmIncomingOutgoingOrderModel model)
 	{
 		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId) ?? throw new AppException(HttpStatusCode.NotFound, "Current point not found");
+		List<Guid> orders = model.Orders;
 		List<Delivery> deliveriesUpdate = new();
 		List<Order> ordersUpdate = new();
 		orders.ForEach(o =>
 		{
-			Delivery? deliveryUpdate = _webAPIDataContext.Deliveries.FirstOrDefault(d => d.OrderId == o && d.State == DeliveryState.DELIVERING);
-			if (deliveryUpdate != null)
+			if (!model.Confirm)
 			{
-				// deliveryUpdate.State = o.Confirm ? DeliveryState.ARRIVED : DeliveryState.UNSUCCESS;
-				deliveryUpdate.State = DeliveryState.ARRIVED;
-				deliveryUpdate.ReceiveTime = DateTime.UtcNow;
-				deliveriesUpdate.Add(deliveryUpdate);
 				Order? orderNeedUpdate = _ordersRepository.FirstOrDefault(ord => ord.Id == o) ?? throw new AppException(HttpStatusCode.NotFound, "Order not found");
-				orderNeedUpdate.CurrentPointId = currentPoint.Id;
-				if (currentPoint.Province == orderNeedUpdate.ReceiverProvince && currentPoint.District == orderNeedUpdate.ReceiverDistrict && currentPoint.Type == PointType.TRANSACTION_POINT)
-				{
-					orderNeedUpdate.Status = OrderState.ARRIVED;
-				}
-				else
-				{
-					orderNeedUpdate.Status = OrderState.PENDING;
-				}
+				orderNeedUpdate.Status = OrderState.CANCELLED;
 				ordersUpdate.Add(orderNeedUpdate);
+			}
+			else
+			{
+				Delivery? deliveryUpdate = _webAPIDataContext.Deliveries.FirstOrDefault(d => d.OrderId == o && d.State == DeliveryState.DELIVERING);
+				if (deliveryUpdate != null)
+				{
+					// deliveryUpdate.State = o.Confirm ? DeliveryState.ARRIVED : DeliveryState.UNSUCCESS;
+					deliveryUpdate.State = DeliveryState.ARRIVED;
+					deliveryUpdate.ReceiveTime = DateTime.UtcNow;
+					deliveriesUpdate.Add(deliveryUpdate);
+					Order? orderNeedUpdate = _ordersRepository.FirstOrDefault(ord => ord.Id == o) ?? throw new AppException(HttpStatusCode.NotFound, "Order not found");
+					orderNeedUpdate.CurrentPointId = currentPoint.Id;
+					if (currentPoint.Province == orderNeedUpdate.ReceiverProvince && currentPoint.District == orderNeedUpdate.ReceiverDistrict && currentPoint.Type == PointType.TRANSACTION_POINT)
+					{
+						orderNeedUpdate.Status = OrderState.ARRIVED;
+					}
+					else
+					{
+						orderNeedUpdate.Status = OrderState.PENDING;
+					}
+					ordersUpdate.Add(orderNeedUpdate);
+				}
 			}
 		});
 		_webAPIDataContext.Deliveries.UpdateRange(deliveriesUpdate);
@@ -179,10 +189,11 @@ public class OrderService : IOrderService
 		return new DataPagination<PublicOrderInfo>(ordersToGo, count, pageNumber);
 	}
 
-	public async Task<bool> ForwardOrdersAsync(User user, List<Guid> orderIds)
+	public async Task<bool> ForwardOrdersAsync(User user, ConfirmIncomingOutgoingOrderModel model)
 	{
 		Point currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId) ?? throw new AppException(HttpStatusCode.NotFound, "The point you belong to not found!");
 		List<Delivery> newDeliveries = new();
+		List<Guid> orderIds = model.Orders;
 		orderIds.ForEach(ord =>
 		{
 			Order? order = _ordersRepository.FirstOrDefault(o => o.Id == ord)!;

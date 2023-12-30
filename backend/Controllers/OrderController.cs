@@ -84,11 +84,11 @@ public class OrderController : ControllerBase
 	[HttpPost]
 	[VerifyToken]
 	[VerifyRole(Role.TRANSACTION_STAFF, Role.GATHERING_STAFF)]
-	public async Task<IActionResult> ConfirmIncomingOrdersAsync(List<Guid> orders)
+	public async Task<IActionResult> ConfirmIncomingOrdersAsync(ConfirmIncomingOutgoingOrderModel model)
 	{
 		User? user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");
-		await _orderService.ConfirmIncomingOrdersAsync(user, orders);
-		return Ok(new { message = "Confirm incoming orders successfully!" });
+		await _orderService.ConfirmIncomingOrdersAsync(user, model);
+		return Ok(new { message = model.Confirm ? "Confirm incoming orders successfully!" : "Reject incoming orders successfully" });
 	}
 
 	[HttpGet]
@@ -104,11 +104,11 @@ public class OrderController : ControllerBase
 	[HttpPost]
 	[VerifyToken]
 	[VerifyRole(Role.TRANSACTION_STAFF, Role.GATHERING_STAFF, Role.GATHERING_POINT_MANAGER, Role.TRANSACTION_POINT_MANAGER)]
-	public async Task<IActionResult> ForwardOrdersAsync(List<Guid> orders)
+	public async Task<IActionResult> ForwardOrdersAsync(ConfirmIncomingOutgoingOrderModel model)
 	{
 		User? user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");
-		await _orderService.ForwardOrdersAsync(user, orders);
-		return Ok(new { message = "Forward outgoing orders successfully!" });
+		await _orderService.ForwardOrdersAsync(user, model);
+		return Ok(new { message = model.Confirm ? "Forward outgoing orders successfully!" : "Reject outgoing orders successfully" });
 	}
 
 	[HttpGet]
@@ -138,4 +138,8 @@ public class OrderController : ControllerBase
 		await _orderService.RejectArrivedOrdersAsync(rejectedOrders);
 		return Ok(new Response<bool>("Confirm deliveried order successfullly", true));
 	}
+}
+
+public class ConfirmIncomingOrdersAsync
+{
 }

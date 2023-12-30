@@ -1,11 +1,16 @@
 export type DeliveryHistoryProps = {
 	orderId: string;
 	type: "incoming" | "outgoing";
-	point: string;
+	destination: {
+		address: string;
+		pointName: string;
+		type: string;
+	};
 	status: "confirmed" | "rejected" | "pending";
 	reason: string;
 	time: string;
 	deliveryId: string | undefined;
+	toUser: boolean;
 };
 
 export async function getDeliveryHistory() {

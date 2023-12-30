@@ -97,13 +97,13 @@ export default function HistoryTable() {
 			/>
 			<Table
 				columnHeadings={[
-					"Order ID",
-					"Delivery ID",
-					"Type",
-					"From/To",
+					"",
+					"Category",
+					"To",
+					"Address",
+					"Point/User",
 					"Time",
 					"Status",
-					"Reason",
 				]}
 			>
 				{data?.data.data.map((event: DeliveryHistoryProps) => (

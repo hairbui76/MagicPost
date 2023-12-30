@@ -47,7 +47,10 @@ public class DeliveryServce : IDeliveryService
 	public async Task<DataPagination<DeliveryHistory>> GetDeliveryHistory(User user, string? type, string? status, int pageNumber)
 	{
 		Point? currentPoint = _webAPIDataContext.Points.FirstOrDefault(p => p.Id == user.PointId);
-		var relatedDelivery = await _deliveriesRepository.Where(d => d.FromPointId == currentPoint!.Id || d.ToPointId == currentPoint.Id)
+		var relatedDelivery = await _deliveriesRepository
+												.Where(d => d.FromPointId == currentPoint!.Id || d.ToPointId == currentPoint.Id)
+												.Include(d => d.ToPoint)
+												.Include(d => d.FromPoint)
 												.ToListAsync();
 		List<DeliveryHistory> deliveryHistory = new();
 		relatedDelivery.ForEach(d => deliveryHistory.AddRange(d.GetOperationDeliveryHistory()));
@@ -59,16 +62,18 @@ public class DeliveryServce : IDeliveryService
 		{
 			deliveryHistory = deliveryHistory.Where(d => d.Status == status).ToList();
 		}
-		deliveryHistory.ForEach( his => {
-			Point? targetPoint = _webAPIDataContext.Points.FirstOrDefault( p => p.Id == new Guid(his.Point));
+		deliveryHistory.ForEach(his =>
+		{
+			Point? targetPoint = _webAPIDataContext.Points.FirstOrDefault(p => p.Id == his.Destination.Id);
 			Order? order = _webAPIDataContext.Orders.FirstOrDefault(o => o.Id == his.OrderId);
-			if ( his.Type == "outgoing" && order?.ReceiverProvince == currentPoint?.Province && order?.ReceiverDistrict == currentPoint?.District ) 
+			if (his.Type == "outgoing" && order?.ReceiverProvince == currentPoint?.Province && order?.ReceiverDistrict == currentPoint?.District && currentPoint.Type == PointType.TRANSACTION_POINT)
 			{
-				his.Point = "Delivering To User";
+				his.Destination = null;
+				his.ToUser = true;
 			}
-			else 
+			else
 			{
-				his.Point = targetPoint?.PointName;
+				his.Destination = targetPoint;
 			}
 		});
 		deliveryHistory = deliveryHistory.Skip((int)Pagination.PAGESIZE * (pageNumber - 1)).Take((int)Pagination.PAGESIZE).ToList();

@@ -53,7 +53,24 @@ public class DeliveryServce : IDeliveryService
 												.Include(d => d.FromPoint)
 												.ToListAsync();
 		List<DeliveryHistory> deliveryHistory = new();
-		relatedDelivery.ForEach(d => deliveryHistory.AddRange(d.GetOperationDeliveryHistory()));
+		relatedDelivery.ForEach(d => {
+			if (d.FromPointId == currentPoint?.Id) 
+			{
+				deliveryHistory.Add(new DeliveryHistory() {OrderId = d.OrderId, Destination = d.ToPoint, Type = "Outgoing", Time = d.CreatedAt, Status = "pending", Reason = "" });
+				if (d.State == DeliveryState.ARRIVED) 
+					deliveryHistory.Add(new DeliveryHistory() {OrderId = d.OrderId, Destination = d.ToPoint, Type = "Outgoing", Status = "confirmed", Reason = "", Time = d.ReceiveTime });
+				if (d.State == DeliveryState.UNSUCCESS) 
+					deliveryHistory.Add(new DeliveryHistory() {OrderId = d.OrderId, Destination = d.ToPoint, Type = "Outgoing", Status = "rejected", Reason = "", Time = d.ReceiveTime });
+			}	
+			else 
+			{
+				deliveryHistory.Add(new DeliveryHistory() {OrderId = d.OrderId, Destination = d.ToPoint, Type = "incoming", Time = d.CreatedAt, Status = "pending", Reason = "" });
+				if (d.State == DeliveryState.ARRIVED) 
+					deliveryHistory.Add(new DeliveryHistory() {OrderId = d.OrderId, Destination = d.ToPoint, Type = "incoming", Status = "confirmed", Reason = "", Time = d.ReceiveTime });
+				if (d.State == DeliveryState.UNSUCCESS) 
+					deliveryHistory.Add(new DeliveryHistory() {OrderId = d.OrderId, Destination = d.ToPoint, Type = "incoming", Status = "rejected", Reason = "", Time = d.ReceiveTime });
+			}
+		});
 		if (type != null)
 		{
 			deliveryHistory = deliveryHistory.Where(d => d.Type == type).ToList();

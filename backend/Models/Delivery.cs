@@ -30,23 +30,23 @@ public class Delivery : Model
 	{
 		List<DeliveryHistory> history = new()
 		{
-			new DeliveryHistory() { OrderId = OrderId, Point = ToPoint?.ToString(), Type = "outgoing", Status = "pending", Reason = "", Time = CreatedAt },
-			new DeliveryHistory() { OrderId = OrderId, Point = FromPoint?.ToString(), Type = "incoming", Status="pending", Reason = "", Time = CreatedAt }
+			new DeliveryHistory() { OrderId = OrderId, Point = ToPointId?.ToString(), Type = "outgoing", Status = "pending", Reason = "", Time = CreatedAt },
+			new DeliveryHistory() { OrderId = OrderId, Point = FromPointId?.ToString(), Type = "incoming", Status="pending", Reason = "", Time = CreatedAt }
 		};
 		if (State == DeliveryState.UNSUCCESS)
 		{
-			history.Add(new DeliveryHistory() { OrderId = OrderId, Point = ToPoint?.ToString(), Type = "outgoing", Status = "rejected", Reason = "Your package couldn't reach the target point!", Time = ReceiveTime });
-			history.Add(new DeliveryHistory() { OrderId = OrderId, Point = FromPoint?.ToString(), Type = "incoming", Status = "rejected", Reason = "Your package couldn't reach the target point!", Time = ReceiveTime });
+			history.Add(new DeliveryHistory() { OrderId = OrderId, Point = ToPointId?.ToString(), Type = "outgoing", Status = "rejected", Reason = "Your package couldn't reach the target point!", Time = ReceiveTime });
+			history.Add(new DeliveryHistory() { OrderId = OrderId, Point = FromPointId?.ToString(), Type = "incoming", Status = "rejected", Reason = "Your package couldn't reach the target point!", Time = ReceiveTime });
 		}
 		else if (State == DeliveryState.ARRIVED)
 		{
-			history.Add(new DeliveryHistory() { OrderId = OrderId, Point = ToPoint?.ToString(), Type = "outgoing", Status = "confirmed", Reason = "", Time = ReceiveTime });
-			history.Add(new DeliveryHistory() { OrderId = OrderId, Point = FromPoint?.ToString(), Type = "incoming", Status = "confirmed", Reason = "", Time = ReceiveTime });
+			history.Add(new DeliveryHistory() { OrderId = OrderId, Point = ToPointId?.ToString(), Type = "outgoing", Status = "confirmed", Reason = "", Time = ReceiveTime });
+			history.Add(new DeliveryHistory() { OrderId = OrderId, Point = FromPointId?.ToString(), Type = "incoming", Status = "confirmed", Reason = "", Time = ReceiveTime });
 		}
 		else
 		{
-			history.Add(new DeliveryHistory() { OrderId = OrderId, Point = ToPoint?.ToString(), Type = "outgoing", Status = "confirmed", Reason = "", Time = ReceiveTime });
-			history.Add(new DeliveryHistory() { OrderId = OrderId, Point = FromPoint?.ToString(), Type = "incoming", Status = "confirmed", Reason = "", Time = ReceiveTime });
+			history.Add(new DeliveryHistory() { OrderId = OrderId, Point = ToPointId?.ToString(), Type = "outgoing", Status = "confirmed", Reason = "", Time = ReceiveTime });
+			history.Add(new DeliveryHistory() { OrderId = OrderId, Point = FromPointId?.ToString(), Type = "incoming", Status = "confirmed", Reason = "", Time = ReceiveTime });
 		}
 		return history;
 	}

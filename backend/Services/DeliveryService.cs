@@ -95,7 +95,7 @@ public class DeliveryServce : IDeliveryService
 			}
 		});
 		int count = deliveryHistory.Count;
-		deliveryHistory = deliveryHistory.OrderBy(d => d.Time).Skip((int)Pagination.PAGESIZE * (pageNumber - 1)).Take((int)Pagination.PAGESIZE).ToList();
+		deliveryHistory = deliveryHistory.OrderByDescending(d => d.Time).Skip((int)Pagination.PAGESIZE * (pageNumber - 1)).Take((int)Pagination.PAGESIZE).ToList();
 		return new DataPagination<DeliveryHistory>(deliveryHistory, count, pageNumber);
 	}
 }

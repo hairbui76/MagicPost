@@ -104,7 +104,7 @@ public class OrderService : IOrderService
 
 	public async Task<bool> ConfirmIncomingOrdersAsync(User user, List<Guid> orders)
 	{
-		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId);
+		Point? currentPoint = await _webAPIDataContext.Points.FirstOrDefaultAsync(p => p.Id == user.PointId) ?? throw new AppException(HttpStatusCode.NotFound, "Current point not found");
 		List<Delivery> deliveriesUpdate = new();
 		List<Order> ordersUpdate = new();
 		orders.ForEach(o =>
@@ -116,9 +116,9 @@ public class OrderService : IOrderService
 				deliveryUpdate.State = DeliveryState.ARRIVED;
 				deliveryUpdate.ReceiveTime = DateTime.UtcNow;
 				deliveriesUpdate.Add(deliveryUpdate);
-				Order? orderNeedUpdate = _ordersRepository.FirstOrDefault(ord => ord.Id == o);
+				Order? orderNeedUpdate = _ordersRepository.FirstOrDefault(ord => ord.Id == o) ?? throw new AppException(HttpStatusCode.NotFound, "Order not found");
 				orderNeedUpdate.CurrentPointId = currentPoint.Id;
-				if (currentPoint.Province == orderNeedUpdate.SenderProvince && currentPoint.District == orderNeedUpdate.SenderDistrict && currentPoint.Type == PointType.TRANSACTION_POINT)
+				if (currentPoint.Province == orderNeedUpdate.ReceiverProvince && currentPoint.District == orderNeedUpdate.ReceiverDistrict && currentPoint.Type == PointType.TRANSACTION_POINT)
 				{
 					orderNeedUpdate.Status = OrderState.ARRIVED;
 				}
@@ -245,7 +245,7 @@ public class OrderService : IOrderService
 	{
 		orders.ForEach(orderId =>
 		{
-			Order? order = _ordersRepository.FirstOrDefault(o => o.Id == orderId);
+			Order? order = _ordersRepository.FirstOrDefault(o => o.Id == orderId) ?? throw new AppException(HttpStatusCode.NotFound, "Order not found");
 			order.Status = OrderState.DELIVERED;
 			_ordersRepository.Update(order);
 		});

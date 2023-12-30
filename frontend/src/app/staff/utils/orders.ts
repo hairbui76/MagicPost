@@ -177,7 +177,7 @@ const [
 const [confirmIncomingOrders, confirmOutGoingOrders, confirmWaitingOrders] = [
 	"/order/confirmIncomingOrders",
 	"/order/forwardOrders",
-	".",
+	"/order/confirmArrivedOrders",
 ].map((path) => createConfirmOrdersFunction(path));
 
 export {

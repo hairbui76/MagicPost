@@ -31,7 +31,7 @@ public class Delivery : Model
 		List<DeliveryHistory> history = new()
 		{
 			new DeliveryHistory() { OrderId = OrderId, Point = ToPoint?.ToString(), Type = "outgoing", Status = "pending", Reason = "", Time = CreatedAt },
-			new DeliveryHistory() { OrderId = OrderId, Point = FromPoint?.ToString(), Status = "incoming", Reason = "", Time = CreatedAt }
+			new DeliveryHistory() { OrderId = OrderId, Point = FromPoint?.ToString(), Type = "incoming", Status="pending", Reason = "", Time = CreatedAt }
 		};
 		if (State == DeliveryState.UNSUCCESS)
 		{

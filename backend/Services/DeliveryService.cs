@@ -76,7 +76,8 @@ public class DeliveryServce : IDeliveryService
 				his.Destination = targetPoint;
 			}
 		});
-		deliveryHistory = deliveryHistory.Skip((int)Pagination.PAGESIZE * (pageNumber - 1)).Take((int)Pagination.PAGESIZE).ToList();
-		return new DataPagination<DeliveryHistory>(deliveryHistory, deliveryHistory.Count, pageNumber);
+		int count = deliveryHistory.Count;
+		deliveryHistory = deliveryHistory.OrderBy(d => d.Time).Skip((int)Pagination.PAGESIZE * (pageNumber - 1)).Take((int)Pagination.PAGESIZE).ToList();
+		return new DataPagination<DeliveryHistory>(deliveryHistory, count, pageNumber);
 	}
 }

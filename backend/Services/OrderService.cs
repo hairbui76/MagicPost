@@ -25,8 +25,8 @@ public interface IOrderService
 	// Task CreateAsync(User user, Order newOrder);
 	Task CreateAsync(Order newOrder);
 	Task<DataPagination<PublicOrderInfo>> GetArrivedOrderAsync(User user, int pageNumber, DateTime? startDate, DateTime? endDate, string? category);
-	Task<bool> ConfirmArrivedOrdersAsync(List<Guid> orders);
-	Task<bool> RejectArrivedOrdersAsync(List<RejectedOrder> rejectedOrders);
+	Task<bool> ConfirmArrivedOrdersAsync(ConfirmIncomingOutgoingOrderModel model);
+	Task<bool> RejectArrivedOrdersAsync(ConfirmIncomingOutgoingOrderModel model);
 }
 
 public class OrderService : IOrderService
@@ -252,8 +252,9 @@ public class OrderService : IOrderService
 		return true;
 	}
 
-	public async Task<bool> ConfirmArrivedOrdersAsync(List<Guid> orders)
+	public async Task<bool> ConfirmArrivedOrdersAsync(ConfirmIncomingOutgoingOrderModel model)
 	{
+		List<Guid> orders = model.Orders;
 		orders.ForEach(orderId =>
 		{
 			Order? order = _ordersRepository.FirstOrDefault(o => o.Id == orderId) ?? throw new AppException(HttpStatusCode.NotFound, "Order not found");
@@ -264,13 +265,13 @@ public class OrderService : IOrderService
 		return true;
 	}
 
-	public async Task<bool> RejectArrivedOrdersAsync(List<RejectedOrder> rejectedOrders)
+	public async Task<bool> RejectArrivedOrdersAsync(ConfirmIncomingOutgoingOrderModel model)
 	{
+		List<Guid> rejectedOrders = model.Orders;
 		rejectedOrders.ForEach(ord =>
 		{
-			Order? order = _ordersRepository.FirstOrDefault(o => o.Id == ord.OrderId);
+			Order? order = _ordersRepository.FirstOrDefault(o => o.Id == ord);
 			order.Status = OrderState.CANCELLED;
-			order.Note = ord.Reason;
 			_ordersRepository.Update(order);
 		});
 		await _webAPIDataContext.SaveChangesAsync();

@@ -123,19 +123,19 @@ public class OrderController : ControllerBase
 
 	[HttpPost]
 	[VerifyToken]
-	public async Task<ActionResult<bool>> ConfirmArrivedOrdersAsync(List<Guid> confirmOrders)
+	public async Task<ActionResult<bool>> ConfirmArrivedOrdersAsync(ConfirmIncomingOutgoingOrderModel model)
 	{
-		await _orderService.ConfirmArrivedOrdersAsync(confirmOrders);
+		await _orderService.ConfirmArrivedOrdersAsync(model);
 		return Ok(new Response<bool>("Confirm deliveried order successfullly", true));
 	}
 
 	[HttpGet("{id}")]
 	[VerifyToken]
 	[VerifyRole(Role.TRANSACTION_STAFF, Role.GATHERING_STAFF, Role.GATHERING_POINT_MANAGER, Role.TRANSACTION_POINT_MANAGER)]
-	public async Task<ActionResult<bool>> RejectArrivedOrdersAsync(List<RejectedOrder> rejectedOrders)
+	public async Task<ActionResult<bool>> RejectArrivedOrdersAsync(ConfirmIncomingOutgoingOrderModel model)
 	{
 		User? user = (User?)HttpContext.Items["user"] ?? throw new AppException(HttpStatusCode.Unauthorized, "Unauthorized!");
-		await _orderService.RejectArrivedOrdersAsync(rejectedOrders);
+		await _orderService.RejectArrivedOrdersAsync(model);
 		return Ok(new Response<bool>("Confirm deliveried order successfullly", true));
 	}
 }
